@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      Python脚本初探 | 小宇宙 | xiaoyusilen 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="xiaoyusilen">
+    
+    
+
+    <meta name="description" content="背景最近因为某些测试的原因，因此leader让我去写一个脚本做回归测试，简单的说，就是开发完一个新的接口以后，顺便运行一下修改后的代码有没有影响其他接口的正确性。在此之前，没有写过脚本的我=-=突然就方了，开始是准备用shell写的，但是因为shell解析json很麻烦，且开发机上各种问题无法下载解析插件，后来决定用python来写，用时两天，一天熟悉各个接口模块的返回内容，一天查看python的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python脚本初探 | 小宇宙 | xiaoyusilen">
+<meta property="og:url" content="http://yoursite.com/2016/11/29/11.29/index.html">
+<meta property="og:site_name" content="小宇宙 | xiaoyusilen">
+<meta property="og:description" content="背景最近因为某些测试的原因，因此leader让我去写一个脚本做回归测试，简单的说，就是开发完一个新的接口以后，顺便运行一下修改后的代码有没有影响其他接口的正确性。在此之前，没有写过脚本的我=-=突然就方了，开始是准备用shell写的，但是因为shell解析json很麻烦，且开发机上各种问题无法下载解析插件，后来决定用python来写，用时两天，一天熟悉各个接口模块的返回内容，一天查看python的">
+<meta property="og:updated_time" content="2016-11-29T14:06:52.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python脚本初探 | 小宇宙 | xiaoyusilen">
+<meta name="twitter:description" content="背景最近因为某些测试的原因，因此leader让我去写一个脚本做回归测试，简单的说，就是开发完一个新的接口以后，顺便运行一下修改后的代码有没有影响其他接口的正确性。在此之前，没有写过脚本的我=-=突然就方了，开始是准备用shell写的，但是因为shell解析json很麻烦，且开发机上各种问题无法下载解析插件，后来决定用python来写，用时两天，一天熟悉各个接口模块的返回内容，一天查看python的">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">小宇宙 | xiaoyusilen</a></h1>
+        <hr class="panel-cover__divider" />
+
+        
+        <p class="panel-cover__description">
+          A growing backend
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title="" class="">关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title="" class="">归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/xiaoyusilen" title="">
+          <i class='icon icon-social-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+      <li class="navigation__item">
+        <a href="mailto:kleineweltzhang@hotmail.com" title="">
+          <i class='icon icon-mail'></i>
+          <span class="label">Weixin</span>
+        </a>
+      </li>
+
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">Python脚本初探</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2016-11-29" class="post-meta__date date">2016-11-29</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/Python/">Python</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>最近因为某些测试的原因，因此leader让我去写一个脚本做回归测试，简单的说，就是开发完一个新的接口以后，顺便运行一下修改后的代码有没有影响其他接口的正确性。<br>在此之前，没有写过脚本的我=-=突然就方了，开始是准备用shell写的，但是因为shell解析json很麻烦，且开发机上各种问题无法下载解析插件，后来决定用python来写，用时两天，一天熟悉各个接口模块的返回内容，一天查看python的各种用法以及写脚本。<br>脚本功能主要是用于做多模块和单模块多个接口的回归测试，具体逻辑就是对比测试服务器和线上服务器两个接口的返回值。<br>仅适用于返回结果为<code>json</code>或<code>jsonp</code>的接口对比，如果需求不相同的话，代码改动可能比较大。<br>先上代码！注意：此脚本无法运行，因为只展示了例子，需要自行添加服务器以及具体解析过程。</p>
+<h1 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div></pre></td><td class="code"><pre><div class="line">import json</div><div class="line">import requests</div><div class="line">from urllib.parse import urljoin</div><div class="line">from urllib.parse import urlparse</div><div class="line">from urllib.parse import urlunparse</div><div class="line">from posixpath import normpath </div><div class="line"></div><div class="line"># 线上服务器地址</div><div class="line">server_online = &apos;http://xx.xx.xx/&apos;</div><div class="line"></div><div class="line"># 测试服务器地址</div><div class="line">server_test = &apos;http://xx.xx.xx/&apos;</div><div class="line"></div><div class="line"># url地址拼接函数</div><div class="line">def geturl(base, url):  </div><div class="line">url1 = urljoin(base, url)  </div><div class="line">arr = urlparse(url1)</div><div class="line">path = normpath(arr[2])</div><div class="line">return urlunparse((arr.scheme, arr.netloc, path, arr.params, arr.query, arr.fragment))</div><div class="line"></div><div class="line"># 匹配括号，过滤alert()</div><div class="line">def matchlp(s):</div><div class="line">spos = [];</div><div class="line">rs = &quot;&quot;;</div><div class="line">for i in range(0, len(s)):</div><div class="line">if(s[i-1] == &apos;(&apos;):</div><div class="line">spos.append(i);</div><div class="line">continue;</div><div class="line">if(s[i] == &apos;)&apos; and spos):</div><div class="line">ts = s[spos[0]: i];</div><div class="line">if(len(ts) &gt; len(rs)):</div><div class="line">rs = ts;</div><div class="line">spos.pop();</div><div class="line">return rs;</div><div class="line"></div><div class="line"># 测试接口状态码，若开头为alert()则过滤掉&apos;alert&apos;</div><div class="line">def filter(url):</div><div class="line">if requests.get(url).status_code == requests.codes.ok:</div><div class="line">r = requests.get(url)</div><div class="line">if r.text[0] == &quot;a&quot;:</div><div class="line">res = json.loads(matchlp(r.text))</div><div class="line">else:</div><div class="line">res = r.json()</div><div class="line">return res</div><div class="line">else:</div><div class="line">print(&quot;connect failed&quot;)</div><div class="line"></div><div class="line"># 测试接口是否存在问题</div><div class="line">def test(url):</div><div class="line"></div><div class="line"># 线上接口</div><div class="line">url_online = geturl(server_online, url)</div><div class="line"></div><div class="line"># 测试接口</div><div class="line">url_test = geturl(server_test, url)</div><div class="line"></div><div class="line">print(url_online)</div><div class="line">print(url_test)</div><div class="line"></div><div class="line"># 过滤alert，解析数据</div><div class="line">res_online = filter(url_online)</div><div class="line">res_test = filter(url_test)</div><div class="line"></div><div class="line">print(res_online)</div><div class="line">print(res_test)</div><div class="line"></div><div class="line"># 上面为了做对比，写出了两个服务器的操作，以下为了方便，仅展示一个服务器的操作</div><div class="line"></div><div class="line"># 返回解析后返回值中所有关键字，返回的关键字只包括最外层的关键字</div><div class="line">key_online = res_online.keys()</div><div class="line"></div><div class="line"># 如果包含某个关键字本身又有多个关键字的情况，这里假定&quot;items&quot;中包含的是多个商品信息，需要查看某个商品中的关键字可以用以下操作</div><div class="line">key_product = res_online[&quot;items&quot;][0].keys()</div><div class="line"></div><div class="line"># 如果层数非常多，根据之前这样的逻辑逐层拆解即可</div><div class="line"></div><div class="line"># 对比的时候需要判断某个字符中是否包含另一个字符，也可以查看是否存在某关键字</div><div class="line"># 方法一</div><div class="line">if product.find(&quot;xxx&quot;) == -1 # -1表示没有找到</div><div class="line"></div><div class="line"># 方法二</div><div class="line">if &apos;xxx&apos; in key_product</div><div class="line"></div><div class="line">def main():</div><div class="line"></div><div class="line">try:</div><div class="line"># 主机后拼接的地址</div><div class="line">test(&apos;xx/xx/xx/xx&apos;)</div><div class="line">except:</div><div class="line">print(&quot;please check out server&quot;)</div><div class="line"></div><div class="line">main()</div><div class="line">print(&quot;end&quot;)</div></pre></td></tr></table></figure>
+<h1 id="用到的功能函数"><a href="#用到的功能函数" class="headerlink" title="用到的功能函数"></a>用到的功能函数</h1><h2 id="url拼接函数"><a href="#url拼接函数" class="headerlink" title="url拼接函数"></a>url拼接函数</h2><p>这里需要注意，url拼接后返回的是元组类型。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">def geturl(base, url):  </div><div class="line">url1 = urljoin(base, url)  </div><div class="line">arr = urlparse(url1)</div><div class="line">path = normpath(arr[2])</div><div class="line">return urlunparse((arr.scheme, arr.netloc, path, arr.params, arr.query, arr.fragment))</div></pre></td></tr></table></figure></p>
+<h2 id="括号匹配函数"><a href="#括号匹配函数" class="headerlink" title="括号匹配函数"></a>括号匹配函数</h2><p>之所以需要用到括号匹配函数，是因为前端返回的有<code>json</code>和<code>jsonp</code>两种格式，因此必须过滤掉<code>alert()</code>，函数可以自行修改，因为<code>jsonp</code>只存在一层括号，因此我的函数只返回括号中间的所有内容，最终返回即为<code>json</code>格式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">def matchlp(s):</div><div class="line">spos = [];</div><div class="line">rs = &quot;&quot;;</div><div class="line">for i in range(0, len(s)):</div><div class="line">if(s[i-1] == &apos;(&apos;):</div><div class="line">spos.append(i);</div><div class="line">continue;</div><div class="line">if(s[i] == &apos;)&apos; and spos):</div><div class="line">ts = s[spos[0]: i];</div><div class="line">if(len(ts) &gt; len(rs)):</div><div class="line">rs = ts;</div><div class="line">spos.pop();</div><div class="line">return rs;</div></pre></td></tr></table></figure></p>
+<h1 id="解析操作"><a href="#解析操作" class="headerlink" title="解析操作"></a>解析操作</h1><p>这里只涉及到<code>json</code>格式。接口返回值为<code>list</code>类型，使用方法和数组是一样的，取出一个具体关键字中的内容后，就可以当成字符来处理。由于解析内容在代码的注释中已经说明，这里不再赘述。</p>
+<h1 id="Python-Tips"><a href="#Python-Tips" class="headerlink" title="Python Tips"></a>Python Tips</h1><h2 id="关于requests包的使用"><a href="#关于requests包的使用" class="headerlink" title="关于requests包的使用"></a>关于<code>requests</code>包的使用</h2><ol>
+<li><code>pip install requests</code> 通过pip安装<code>requests</code>包</li>
+<li>使用的时候引用<code>import requests</code></li>
+<li><code>r = requests.get(url)</code>是最基本的get请求</li>
+<li>注意：url一定要加<code>http</code>或者<code>https</code></li>
+<li><code>r.status_code</code>可以查看返回状态码</li>
+<li><code>r.text</code>可以查看返回的数据</li>
+<li>如果返回的数据是<code>json</code>格式，可以直接用<code>r.json()</code>解析</li>
+<li>在这里不需要用到<code>requests</code>的其他方法，就暂时先不介绍<code>requests</code>的其他用法，对此感兴趣的同学，可以自己去找一些教程</li>
+</ol>
+<h2 id="关于正则表达式"><a href="#关于正则表达式" class="headerlink" title="关于正则表达式"></a>关于正则表达式</h2><p>过滤<code>alert()</code>的部分本来想要用正则来写，但是后来发现正则好像不是很适合过滤这个东西，于是就用了匹配函数这种东西，但是正则表达式还是一定要好好学习的！（敲黑板）好用不说，装逼神器有木有……<br>这里贴上我学正则的教程，廖雪峰大大的blog。<br><a href="http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/00143193331387014ccd1040c814dee8b2164bb4f064cff000" target="_blank" rel="external">正则表达式-廖雪峰</a></p>
+<h2 id="关于异常处理"><a href="#关于异常处理" class="headerlink" title="关于异常处理"></a>关于异常处理</h2><p>常用写法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">try:</div><div class="line">print(&quot;try...&quot;)</div><div class="line">do xx...</div><div class="line">except error to e:</div><div class="line">print(&quot;error:&quot;, e)</div><div class="line">finally:</div><div class="line">print(&quot;finally...&quot;)</div></pre></td></tr></table></figure></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>总结(⊙v⊙)，python还是很好用的，很多第三方包，可以解决很多实际问题。By the way，请不要吐槽我的代码风格好像C！以上，欢迎观看~</p>
+
+  </section>
+
+  
+
+<section class="post-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'xiaoyusilen'; 
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+  
+</article>
+
+
+            <footer class="footer">
+
+<span class="footer__copyright">&copy; 2014-2016. | <a href="http://xiaoyusilen.com">xiaoyusilen</a> ❤  <a href="http://moressette.com">Moressette</a> | <a href="https://github.com/someus/huno">Huno</a></span>
+    <span id="busuanzi_container_site_pv" style="display: inline;">
+         This site already had <span id="busuanzi_value_site_pv"></span> Visits by
+    </span>
+    <span id="busuanzi_container_site_uv" style="display: inline;">
+    <span id="busuanzi_value_site_uv"></span> Visitors 
+    </span>
+
+</footer>
+
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>
