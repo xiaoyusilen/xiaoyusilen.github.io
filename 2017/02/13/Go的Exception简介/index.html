@@ -26,7 +26,7 @@ PanicPanic是Go内置的一个函数，用来表示不可恢复的错误（根�
 <meta property="og:description" content="Introduction因为Go语言代码的简洁性，所以Go语言中不支持类似Java中的try…catch…finally这种异常处理，Go语言中的异常处理机制是使用：defer，panic和recover。
 DeferDefer可以理解为延迟函数，是用来添加函数结束时执行的语句。
 PanicPanic是Go内置的一个函数，用来表示不可恢复的错误（根据这个描述可以知道，这个机制在代码中是不可以被频繁">
-<meta property="og:updated_time" content="2017-02-13T06:17:24.000Z">
+<meta property="og:updated_time" content="2017-02-13T08:09:13.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Go的Exception简介 | 小宇宙 | xiaoyusilen">
 <meta name="twitter:description" content="Introduction因为Go语言代码的简洁性，所以Go语言中不支持类似Java中的try…catch…finally这种异常处理，Go语言中的异常处理机制是使用：defer，panic和recover。
@@ -233,11 +233,11 @@ classes that you can use:
   </header>
 
   <section id="post-content" class="article-content post">
-    <h4 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h4><p>因为Go语言代码的简洁性，所以Go语言中不支持类似Java中的try…catch…finally这种异常处理，Go语言中的异常处理机制是使用：defer，panic和recover。</p>
-<h4 id="Defer"><a href="#Defer" class="headerlink" title="Defer"></a>Defer</h4><p>Defer可以理解为延迟函数，是用来添加函数结束时执行的语句。</p>
-<h4 id="Panic"><a href="#Panic" class="headerlink" title="Panic"></a>Panic</h4><p>Panic是Go内置的一个函数，用来表示不可恢复的错误（根据这个描述可以知道，这个机制在代码中是不可以被频繁使用的），当程序调用panic之后，就会直接停止运行，但是，当程序执行panic之后，不是立刻向上传递panic，而是先执行defer中的内容，然后再向上传递panic。</p>
-<h4 id="recover"><a href="#recover" class="headerlink" title="recover"></a>recover</h4><p>根据上文我们可以知道，当函数执行过程中遇到panic后不会立刻返回，而是先defer再向上传递panic，所以如果在defer中，我们可以捕获到panic的话，阻止panic传递，异常处理机制就完善了。Go语言中提供了recover内置函数，一旦panic，我们会执行defer中的内容，因此我们可以在defer中调用recover函数捕获panic，如果可以捕获到panic就不会向上传递了。</p>
-<h4 id="代码框架如下"><a href="#代码框架如下" class="headerlink" title="代码框架如下"></a>代码框架如下</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">if</span> err := <span class="built_in">recover</span>(); err != <span class="literal">nil</span> &#123; <span class="comment">// 调用recover捕获panic</span></div><div class="line">            <span class="comment">// 这里可以在log中记录错误信息，如果捕获到panic则可以阻止向上传递</span></div><div class="line">        &#125;</div><div class="line">    &#125;()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+    <h5 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h5><p>因为Go语言代码的简洁性，所以Go语言中不支持类似Java中的try…catch…finally这种异常处理，Go语言中的异常处理机制是使用：defer，panic和recover。</p>
+<h5 id="Defer"><a href="#Defer" class="headerlink" title="Defer"></a>Defer</h5><p>Defer可以理解为延迟函数，是用来添加函数结束时执行的语句。</p>
+<h5 id="Panic"><a href="#Panic" class="headerlink" title="Panic"></a>Panic</h5><p>Panic是Go内置的一个函数，用来表示不可恢复的错误（根据这个描述可以知道，这个机制在代码中是不可以被频繁使用的），当程序调用panic之后，就会直接停止运行，但是，当程序执行panic之后，不是立刻向上传递panic，而是先执行defer中的内容，然后再向上传递panic。</p>
+<h5 id="recover"><a href="#recover" class="headerlink" title="recover"></a>recover</h5><p>根据上文我们可以知道，当函数执行过程中遇到panic后不会立刻返回，而是先defer再向上传递panic，所以如果在defer中，我们可以捕获到panic的话，阻止panic传递，异常处理机制就完善了。Go语言中提供了recover内置函数，一旦panic，我们会执行defer中的内容，因此我们可以在defer中调用recover函数捕获panic，如果可以捕获到panic就不会向上传递了。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">if</span> err := <span class="built_in">recover</span>(); err != <span class="literal">nil</span> &#123; <span class="comment">// 调用recover捕获panic</span></div><div class="line">          log.Printtf(<span class="string">"error: %v"</span>, err)<span class="comment">// 这里可以在log中记录错误信息，如果捕获到panic则可以阻止向上传递</span></div><div class="line">        &#125;</div><div class="line">    &#125;()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 
   </section>
 
