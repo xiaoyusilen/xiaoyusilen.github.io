@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      Go的Tcp socket粘包处理 | 小宇宙 | xiaoyusilen 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="xiaoyusilen">
+    
+    
+
+    <meta name="description" content="背景最近在做的项目是涉及到go的tcp socket开发，好巧不巧的go语言里没有像Java中natty那样的完善的网络框架，所以很多东西都需要自己手撸~至此，背景介绍完毕。
+关于粘包
+什么叫做粘包。
+如上图所示，在Client和Server之间发送数据的时候，会出现三种情况：
+
+发送方将Data1和Data2两个数据包合在一起发送
+发送方将Data1拆成两个数据包发送
+发送方将Data1和Dat">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go的Tcp socket粘包处理 | 小宇宙 | xiaoyusilen">
+<meta property="og:url" content="http://yoursite.com/2017/02/16/go-tcp-socket-packet-splicing/index.html">
+<meta property="og:site_name" content="小宇宙 | xiaoyusilen">
+<meta property="og:description" content="背景最近在做的项目是涉及到go的tcp socket开发，好巧不巧的go语言里没有像Java中natty那样的完善的网络框架，所以很多东西都需要自己手撸~至此，背景介绍完毕。
+关于粘包
+什么叫做粘包。
+如上图所示，在Client和Server之间发送数据的时候，会出现三种情况：
+
+发送方将Data1和Data2两个数据包合在一起发送
+发送方将Data1拆成两个数据包发送
+发送方将Data1和Dat">
+<meta property="og:image" content="https://ww3.sinaimg.cn/large/006tNbRwly1fcs3wydm76j30t40mijt6.jpg">
+<meta property="og:image" content="https://ww1.sinaimg.cn/large/006tNbRwly1fcs4mv3bulj30cy00yt8r.jpg">
+<meta property="og:image" content="https://ww3.sinaimg.cn/large/006tNbRwly1fcs4mvhfacj30hm0880v0.jpg">
+<meta property="og:image" content="https://ww2.sinaimg.cn/large/006tNbRwly1fcs864ck1gj30cw00u0ss.jpg">
+<meta property="og:updated_time" content="2017-02-16T05:09:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Go的Tcp socket粘包处理 | 小宇宙 | xiaoyusilen">
+<meta name="twitter:description" content="背景最近在做的项目是涉及到go的tcp socket开发，好巧不巧的go语言里没有像Java中natty那样的完善的网络框架，所以很多东西都需要自己手撸~至此，背景介绍完毕。
+关于粘包
+什么叫做粘包。
+如上图所示，在Client和Server之间发送数据的时候，会出现三种情况：
+
+发送方将Data1和Data2两个数据包合在一起发送
+发送方将Data1拆成两个数据包发送
+发送方将Data1和Dat">
+<meta name="twitter:image" content="https://ww3.sinaimg.cn/large/006tNbRwly1fcs3wydm76j30t40mijt6.jpg">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">小宇宙 | xiaoyusilen</a></h1>
+        <hr class="panel-cover__divider" />
+
+        
+        <p class="panel-cover__description">
+          Life.pop(&#39;Fear&#39;)
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title="" class="">关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title="" class="">归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/xiaoyusilen" title="">
+          <i class='icon icon-social-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+      <li class="navigation__item">
+        <a href="mailto:kleineweltzhang@hotmail.com" title="">
+          <i class='icon icon-mail'></i>
+          <span class="label">Weixin</span>
+        </a>
+      </li>
+
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">Go的Tcp socket粘包处理</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2017-02-16" class="post-meta__date date">2017-02-16</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/Go/">Go</a>, <a class="tags-link" href="/tags/Tcp/">Tcp</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><p>最近在做的项目是涉及到go的tcp socket开发，好巧不巧的go语言里没有像Java中natty那样的完善的网络框架，所以很多东西都需要自己手撸~至此，背景介绍完毕。</p>
+<h4 id="关于粘包"><a href="#关于粘包" class="headerlink" title="关于粘包"></a>关于粘包</h4><ol>
+<li><p>什么叫做粘包。<img src="https://ww3.sinaimg.cn/large/006tNbRwly1fcs3wydm76j30t40mijt6.jpg" alt="WechatIMG3"></p>
+<p>如上图所示，在Client和Server之间发送数据的时候，会出现三种情况：</p>
+<ul>
+<li>发送方将Data1和Data2两个数据包合在一起发送</li>
+<li>发送方将Data1拆成两个数据包发送</li>
+<li>发送方将Data1和Data2分开发送</li>
+</ul>
+</li>
+<li><p>为什么需要做粘包处理。</p>
+<p>关于粘包处理出现的情况，我们需要先引入两个概念：</p>
+<ul>
+<li>长连接：Client和Server建立通讯连接，连接后不断开，持续进行报文的发送和接收。</li>
+<li>短连接：Client和Server只有进行报文收发时才建立通讯，收发完毕之后立即关闭连接。</li>
+</ul>
+<p>根据两种连接的定义，我们可以看出两者的区别，长连接因为持续保持连接，所以Client和Server要定期发送心跳，以确定对方是否在线，如果不在线就需要关闭掉没有用的连接；对于短连接，只要是存在的连接基本都是有用的，传输完数据之后连接就断掉了，不需要做心跳处理。</p>
+<p>关于两种连接的适用场景：</p>
+<ul>
+<li>长连接多用于点对点通讯，操作频繁但连接数不多的情况下，因为每一个连接都需要占用一定资源，如果连接数较多的时候采用长连接的方式，服务器很容易挂掉。长连接的优点是可以保证实时性，且节约握手时间。</li>
+<li>短连接多用于web网站，因为web网站并发量很大，如果每个用户都用一个长连接，不用想，服务器肯定会挂掉，所以短连接适用于连接数量较多，操作相对不频繁的情况。短连接的优点是占用资源少，可适应并发量大。</li>
+</ul>
+<p>因此，当我们使用长连接的连接方式的时候，就会需要做粘包处理。</p>
+</li>
+</ol>
+<h4 id="关于Go-net"><a href="#关于Go-net" class="headerlink" title="关于Go/net"></a>关于Go/net</h4><p>Go自带库中有一个库叫做<a href="https://golang.org/pkg/net/" target="_blank" rel="external">net</a>，支持基于IP层、TCP/UDP层及更高层面（如HTTP、FTP、SMTP）的网络操作，其中用于IP层的称为Raw Socket。</p>
+<p>net包中的<code>Dial()</code>函数用于创建网络连接，函数原型如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">Dial</span><span class="params">(net, addr <span class="keyword">string</span>)</span> <span class="params">(Conn, error)</span></span></div></pre></td></tr></table></figure>
+<p>其中参数net表示网络协议，如：<code>tcp</code>、<code>udp</code>、<code>ip</code>、<code>ip6</code>等：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">conn, err := net.Dial(<span class="string">"tcp"</span>, <span class="string">"host:port"</span>) <span class="comment">// 建立TCP连接</span></div></pre></td></tr></table></figure>
+<p><code>Dial()</code>方法常用于Client中，我们现在要写的是一个Server对于消息包的粘包处理，对于Server就需要一个监听处理，net包中的<code>Listen()</code>函数用于监听，函数原型如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">Listen</span><span class="params">(net, laddr <span class="keyword">string</span>)</span> <span class="params">(Listener, error)</span></span></div></pre></td></tr></table></figure>
+<p>其中参数net同上表示网络协议：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">l, err := net.Listen(<span class="string">"tcp"</span>, <span class="string">"host:port"</span>) <span class="comment">// 建立TCP监听</span></div></pre></td></tr></table></figure>
+<p>知道这些，我们就可以开始搭建一个Client和Server的连接了。</p>
+<h4 id="建立TCP连接"><a href="#建立TCP连接" class="headerlink" title="建立TCP连接"></a>建立TCP连接</h4><p>新建名为<code>main.go</code>的文件，Server端代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">	<span class="string">"fmt"</span></div><div class="line">	<span class="string">"log"</span></div><div class="line">	<span class="string">"net"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">handleConn</span><span class="params">(c net.Conn)</span></span> &#123;</div><div class="line">	<span class="keyword">defer</span> c.Close() <span class="comment">// 利用延迟函数进行关闭连接</span></div><div class="line">	<span class="keyword">for</span> &#123;</div><div class="line">      <span class="comment">// begin to read from connection</span></div><div class="line">      <span class="comment">// begin to write to connection</span></div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">	log.Println(<span class="string">"begin listen"</span>)</div><div class="line">	l, err := net.Listen(<span class="string">"tcp"</span>, <span class="string">":8000"</span>) <span class="comment">// 监听本机的8000端口</span></div><div class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">		fmt.Println(<span class="string">"listen error:"</span>, err)</div><div class="line">		<span class="keyword">return</span></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">for</span> &#123;</div><div class="line">		c, err := l.Accept()</div><div class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">			fmt.Println(<span class="string">"accept error:"</span>, err)</div><div class="line">			<span class="keyword">break</span></div><div class="line">		&#125;</div><div class="line">		<span class="keyword">go</span> handleConn(c)</div><div class="line">	&#125;</div><div class="line">	log.Println(<span class="string">"listen success"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>新建名为<code>client.go</code>的文件，Client端代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">	<span class="string">"fmt"</span></div><div class="line">	<span class="string">"net"</span></div><div class="line">	<span class="string">"os"</span></div><div class="line">	<span class="string">"time"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">establishConn</span><span class="params">(i <span class="keyword">int</span>)</span> <span class="title">net</span>.<span class="title">Conn</span></span> &#123;</div><div class="line">	conn, err := net.Dial(<span class="string">"tcp"</span>, <span class="string">":8000"</span>)</div><div class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">		log.Printf(<span class="string">"%d: dial error: %s"</span>, i, err)</div><div class="line">		<span class="keyword">return</span> <span class="literal">nil</span></div><div class="line">	&#125;</div><div class="line">	log.Println(i, <span class="string">":connect to server ok"</span>)</div><div class="line">	<span class="keyword">return</span> conn</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">	<span class="keyword">var</span> sl []net.Conn</div><div class="line">	<span class="keyword">for</span> i := <span class="number">1</span>; i &lt; <span class="number">11</span>; i++ &#123;</div><div class="line">		conn := establishConn(i)</div><div class="line">		<span class="keyword">if</span> conn != <span class="literal">nil</span> &#123;</div><div class="line">			sl = <span class="built_in">append</span>(sl, conn)</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	time.Sleep(time.Second * <span class="number">10000</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Go的优点之一就是代码简洁，简单的几行代码就完成了一个简单的连接，此时我们运行<code>main.go</code>，运行结果如下：</p>
+<p><img src="https://ww1.sinaimg.cn/large/006tNbRwly1fcs4mv3bulj30cy00yt8r.jpg" alt="WechatIMG4"></p>
+<p>然后打开<code>client.go</code>，运行之后，结果如下：</p>
+<p><img src="https://ww3.sinaimg.cn/large/006tNbRwly1fcs4mvhfacj30hm0880v0.jpg" alt="WechatIMG5"></p>
+<p>代码简洁度，Go简直不能更赞了~(≧▽≦)/~</p>
+<h4 id="粘包处理"><a href="#粘包处理" class="headerlink" title="粘包处理"></a>粘包处理</h4><p><strong>声明：以下代码都不可直接运行，一切都要依赖于消息格式约定来改写</strong></p>
+<ol>
+<li><p>粘包处理应该放在<code>server</code>代码中，以下代码默认Client发来的已经是有序的消息，且不存在两个包合为一个包的情况。</p>
+<p>约定中给了分包的包数以及当前处于第几个包，代码如下：</p>
+</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">handleConn</span><span class="params">(c net.Conn)</span></span> &#123;</div><div class="line">	<span class="keyword">defer</span> c.Close() <span class="comment">// 关闭连接</span></div><div class="line">  	<span class="comment">// 用于记录读取到的每一条消息</span></div><div class="line">	buffer := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">1024</span>)</div><div class="line">  	<span class="comment">// 消息缓冲区</span></div><div class="line">	message := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">1024</span>)</div><div class="line">	<span class="comment">// 定义pos记录当前处于分包的第几位</span></div><div class="line">	<span class="keyword">var</span> pos <span class="keyword">int</span> = <span class="number">0</span></div><div class="line">	<span class="comment">// 定义pkg_count记录一共多少个包</span></div><div class="line">	<span class="keyword">var</span> pkg_count <span class="keyword">int</span> = <span class="number">0</span></div><div class="line">	<span class="comment">// 记录消息ID</span></div><div class="line">	<span class="keyword">var</span> message_ID <span class="keyword">int</span> = <span class="number">0</span></div><div class="line"></div><div class="line">	<span class="keyword">for</span> &#123;</div><div class="line">		<span class="comment">// 读取消息</span></div><div class="line">		n, err := c.Read(buffer)</div><div class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">			log.Println(c.RemoteAddr().String(), <span class="string">" connection error: "</span>, err)</div><div class="line">			<span class="keyword">return</span></div><div class="line">		&#125;</div><div class="line">		log.Println(c.RemoteAddr().String(), <span class="string">"receive data length:"</span>, n)</div><div class="line">		<span class="keyword">if</span>  &#123;  <span class="comment">// 根据约定判断是否分包</span></div><div class="line">		     <span class="comment">// 如果属于不分包的情况，则做后续处理</span></div><div class="line">		&#125; <span class="keyword">else</span>  &#123; <span class="comment">// 根据约定判断是否分包</span></div><div class="line">		    <span class="comment">// 如果属于分包的情况，则做粘包处理</span></div><div class="line">			log.Println(buffer)</div><div class="line">			<span class="comment">// 当存在分包的情况优先考虑消息ID，如果消息ID为0则表示是一个新的数据包，需要初始化message_ID</span></div><div class="line">			<span class="keyword">if</span> message_ID == <span class="number">0</span> &#123;</div><div class="line">              	 message_ID = ByteToint(buffer[start_index:end_index])</div><div class="line">			&#125;</div><div class="line">			<span class="comment">// 如果消息ID与之前不符，则抛掉数据</span></div><div class="line">			<span class="keyword">if</span> message_ID != ByteToint(buffer[start_index:end_index]) &#123;</div><div class="line">				pos = <span class="number">0</span></div><div class="line">				pkg_count = <span class="number">0</span></div><div class="line">				message_ID = <span class="number">0</span></div><div class="line">				message = message[<span class="number">0</span>:<span class="number">0</span>] <span class="comment">// 初始化缓冲区</span></div><div class="line">				<span class="keyword">continue</span></div><div class="line">			&#125;</div><div class="line">			<span class="comment">// 存在分包的情况，先读取分了多少个包，与消息格式约定有关</span></div><div class="line">			pkg_count = ByteToint(buffer[start_index:end_index])</div><div class="line">			log.Println(pkg_count)</div><div class="line"></div><div class="line">			<span class="comment">// 读取当前位置，与消息格式约定有关</span></div><div class="line">			pos = ByteToint(buffer[start_index:end_index])</div><div class="line">			log.Println(pos)</div><div class="line"></div><div class="line">			<span class="comment">// 如果位置小于总包数则持续拼接</span></div><div class="line">			<span class="keyword">if</span> pos &lt;= pkg_count &#123;</div><div class="line">				message = <span class="built_in">append</span>(message, buffer...)</div><div class="line">				log.Println(<span class="string">"append message is "</span>, message)</div><div class="line">			&#125; <span class="keyword">else</span> &#123;</div><div class="line">				pos = <span class="number">0</span></div><div class="line">				pkg_count = <span class="number">0</span></div><div class="line">				message_ID = <span class="number">0</span></div><div class="line">				message = message[<span class="number">0</span>:<span class="number">0</span>]</div><div class="line">				<span class="comment">// 进行后续操作</span></div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>​    还有一种情况，约定中消息头中给定了整包的消息长度，就需要根据消息长度来进行拼包处理，这里就不放代码了，可以自己根据上面的代码改写。以上代码有一点需要声明，<code>ByteToint</code>方法是根据go内置的<code>binary.BigEndian().Uint32()</code>方法重写的，在<code>encoding/binary</code>中，可以将byte类型的数据根据大端或小端方式转换成uint16、uint32、uint64的值，其中uint32这个方法如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(bigEndian)</span> <span class="title">Uint32</span><span class="params">(b []<span class="keyword">byte</span>)</span> <span class="title">uint32</span></span> &#123;</div><div class="line">	_ = b[<span class="number">3</span>] <span class="comment">// bounds check hint to compiler; see golang.org/issue/14808</span></div><div class="line">	<span class="keyword">return</span> <span class="keyword">uint32</span>(b[<span class="number">3</span>]) | <span class="keyword">uint32</span>(b[<span class="number">2</span>])&lt;&lt;<span class="number">8</span> | <span class="keyword">uint32</span>(b[<span class="number">1</span>])&lt;&lt;<span class="number">16</span> | <span class="keyword">uint32</span>(b[<span class="number">0</span>])&lt;&lt;<span class="number">24</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>​    根据方法实现，我们可以看到传入的参数一定是4字节的，我们调用一下这个方法如果传入两字节的值，就会报错<code>out of index</code>，这种情况我对这个方法进行了重写，将方法改成了可传入两字节的参数且转换为int类型，其实可以改为更广义的n字节，根据自己的实际情况自行修改即可，修改后方法如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 重写大端方式byte数组转为int类型</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">ByteToint</span><span class="params">(b []<span class="keyword">byte</span>)</span> <span class="title">int</span></span> &#123;</div><div class="line">	_ = b[<span class="number">1</span>]</div><div class="line">	<span class="keyword">return</span> <span class="keyword">int</span>(b[<span class="number">1</span>]) | <span class="keyword">int</span>(b[<span class="number">0</span>])&lt;&lt;<span class="number">8</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>​    至此，Server端代码结束。</p>
+<ol>
+<li><p>Client端发送数据</p>
+<p>用Client向Server发送数据，代码如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span>(</div><div class="line">	<span class="string">"net"</span></div><div class="line">	<span class="string">"time"</span></div><div class="line">	<span class="string">"fmt"</span></div><div class="line">	<span class="string">"os"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">sender</span><span class="params">(conn net.Conn)</span></span> &#123;</div><div class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ &#123;</div><div class="line">      	<span class="comment">// 传入的消息</span></div><div class="line">		words := <span class="string">"&#123;\"Id\":1,\"Name\":\"golang\",\"Message\":\"message\"&#125;"</span></div><div class="line">		conn.Write([]<span class="keyword">byte</span>(words))</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">	conn, err := net.Dial(<span class="string">"tcp"</span>, <span class="string">":8000"</span>) <span class="comment">// 建立tcp连接</span></div><div class="line"></div><div class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">		fmt.Fprintf(os.Stderr, <span class="string">"Fatal error: %s"</span>, err.Error())</div><div class="line">		os.Exit(<span class="number">1</span>)</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">defer</span> conn.Close()</div><div class="line"></div><div class="line">	fmt.Println(<span class="string">"connect success"</span>)</div><div class="line"></div><div class="line">	<span class="keyword">go</span> sender(conn)</div><div class="line"></div><div class="line">	<span class="keyword">for</span> &#123;</div><div class="line">		time.Sleep(time.Second * <span class="number">10000</span>)</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>运行结果</p>
+<p>先运行Server端，结果如下：</p>
+<p><img src="https://ww2.sinaimg.cn/large/006tNbRwly1fcs864ck1gj30cw00u0ss.jpg" alt="WechatIMG9"></p>
+<p>再运行Client端，就可以看到输出的数据了，这里我设置的判断条件和具体私有协议有关就不贴运行结果了。</p>
+</li>
+</ol>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p><strong>再次声明：以上代码都不可直接运行，一切都要依赖于消息格式约定来改写</strong></p>
+<p>这次做项目的过程中，接触到了许多我很不擅长的东西，比如网络，想到要用go去写tcp的时候，我脑袋都要大了，但是分析好需求，根据文档逐步写下来再去看TCP相关文档，发现其实没有自己想象中那么难，果然协议这种东西就是要边写边学，不然直接去看书的话光定义就很绕。</p>
+<p>当前的粘包处理只考虑了最简单的情况，当我们服务真实部署在服务器上的时候，由于网络问题，即使TCP内部有包的乱序处理方式，也必然会出现包的乱序情况，这就需要我们再做后续处理，敬请期待:)</p>
+
+  </section>
+
+  
+
+<section class="post-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'xiaoyusilen'; 
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+  
+</article>
+
+
+            <footer class="footer">
+
+<span class="footer__copyright">&copy; 2016-2017. | <a href="https://xiaoyusilen.com">xiaoyusilen</a> | <a href="https://github.com/someus/huno">Huno</a></span>
+    <span id="busuanzi_container_site_pv" style="display: inline;">
+         This site already had <span id="busuanzi_value_site_pv"></span> Visits by
+    </span>
+    <span id="busuanzi_container_site_uv" style="display: inline;">
+    <span id="busuanzi_value_site_uv"></span> Visitors 
+    </span>
+
+</footer>
+
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>
