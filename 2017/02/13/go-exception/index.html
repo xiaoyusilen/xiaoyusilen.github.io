@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      Go的Exception简介 | 小宇宙 | xiaoyusilen 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="xiaoyusilen">
+    
+    
+
+    <meta name="description" content="Introduction因为Go语言代码的简洁性，所以Go语言中不支持类似Java中的try…catch…finally这种异常处理，Go语言中的异常处理机制是使用：defer，panic和recover。
+DeferDefer可以理解为延迟函数，是用来添加函数结束时执行的语句。Defer使用不多的时候是不容易被理解的，遵循后进先出的原则，在这里暂时可以被理解为类似于栈的数据结构。实际上，在用go">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go的Exception简介 | 小宇宙 | xiaoyusilen">
+<meta property="og:url" content="http://yoursite.com/2017/02/13/go-exception/index.html">
+<meta property="og:site_name" content="小宇宙 | xiaoyusilen">
+<meta property="og:description" content="Introduction因为Go语言代码的简洁性，所以Go语言中不支持类似Java中的try…catch…finally这种异常处理，Go语言中的异常处理机制是使用：defer，panic和recover。
+DeferDefer可以理解为延迟函数，是用来添加函数结束时执行的语句。Defer使用不多的时候是不容易被理解的，遵循后进先出的原则，在这里暂时可以被理解为类似于栈的数据结构。实际上，在用go">
+<meta property="og:image" content="https://ww2.sinaimg.cn/large/006tNbRwly1fcoyz6ar0fj309u060t8t.jpg">
+<meta property="og:updated_time" content="2017-02-13T11:08:48.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Go的Exception简介 | 小宇宙 | xiaoyusilen">
+<meta name="twitter:description" content="Introduction因为Go语言代码的简洁性，所以Go语言中不支持类似Java中的try…catch…finally这种异常处理，Go语言中的异常处理机制是使用：defer，panic和recover。
+DeferDefer可以理解为延迟函数，是用来添加函数结束时执行的语句。Defer使用不多的时候是不容易被理解的，遵循后进先出的原则，在这里暂时可以被理解为类似于栈的数据结构。实际上，在用go">
+<meta name="twitter:image" content="https://ww2.sinaimg.cn/large/006tNbRwly1fcoyz6ar0fj309u060t8t.jpg">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">小宇宙 | xiaoyusilen</a></h1>
+        <hr class="panel-cover__divider" />
+
+        
+        <p class="panel-cover__description">
+          Life.pop(&#39;Fear&#39;)
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title="" class="">关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title="" class="">归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/xiaoyusilen" title="">
+          <i class='icon icon-social-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+      <li class="navigation__item">
+        <a href="mailto:kleineweltzhang@hotmail.com" title="">
+          <i class='icon icon-mail'></i>
+          <span class="label">Weixin</span>
+        </a>
+      </li>
+
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">Go的Exception简介</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2017-02-13" class="post-meta__date date">2017-02-13</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/Go/">Go</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <h5 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h5><p>因为Go语言代码的简洁性，所以Go语言中不支持类似Java中的try…catch…finally这种异常处理，Go语言中的异常处理机制是使用：defer，panic和recover。</p>
+<h5 id="Defer"><a href="#Defer" class="headerlink" title="Defer"></a>Defer</h5><p>Defer可以理解为延迟函数，是用来添加函数结束时执行的语句。Defer使用不多的时候是不容易被理解的，遵循后进先出的原则，在这里暂时可以被理解为类似于栈的数据结构。实际上，在用go进行开发的过程中经常会用到defer方法，这个问题稍后研究之后再根据情况进行讨论和分析。</p>
+<h5 id="Panic"><a href="#Panic" class="headerlink" title="Panic"></a>Panic</h5><p>Panic是Go内置的一个函数，用来表示不可恢复的错误，Panic的参数可以是任意类型，传入的参数表示程序停止运行时需要输出的内容。当程序调用panic之后，就会直接停止运行，但是，当程序执行panic之后，不是立刻向上传递panic，而是先执行defer中的内容，然后再向上传递panic。</p>
+<p>通过Panic的设计，我们很容易了解到应该尽量少的使用到panic，因为不管因为什么错误而导致整个程序崩溃这样都是不能被允许的，如果只是一个小小的工具中使用到了panic，导致主程序崩溃了，估计主程序开发会恨死你的插件。</p>
+<h5 id="Recover"><a href="#Recover" class="headerlink" title="Recover"></a>Recover</h5><p>根据上文我们可以知道，当函数执行过程中遇到panic后不会立刻返回，而是先defer再向上传递panic，所以如果在defer中，我们可以捕获到panic的话，阻止panic传递，异常处理机制就完善了。Go语言中提供了recover内置函数，一旦panic，我们会执行defer中的内容，因此我们可以在defer中调用recover函数捕获panic，如果可以捕获到panic就不会向上传递了。<strong>recover当且仅当在defer中才是有用的</strong>。</p>
+<p>以下，给出一个简单的代码作为示范：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span>(</div><div class="line">	<span class="string">"fmt"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line"></div><div class="line">	<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123; <span class="comment">// 定义defer函数</span></div><div class="line">		<span class="keyword">if</span> err := <span class="built_in">recover</span>(); err != <span class="literal">nil</span> &#123; <span class="comment">// defer函数中执行recover捕获panic</span></div><div class="line">			fmt.Println(<span class="string">"err message is "</span>, err) <span class="comment">// 捕获到之后输出错误信息</span></div><div class="line">		&#125;</div><div class="line">		fmt.Println(<span class="string">"defer func is built"</span>)</div><div class="line">	&#125;()</div><div class="line"></div><div class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ &#123;</div><div class="line">		fmt.Println(i)</div><div class="line">		<span class="keyword">if</span> i == <span class="number">3</span> &#123;</div><div class="line">			fmt.Println(<span class="string">"Panic"</span>)</div><div class="line">			<span class="built_in">panic</span>(fmt.Sprintf(<span class="string">"%v"</span>, i)) <span class="comment">// 主动执行panic，且输出出问题的位置信息</span></div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>执行结果如下：从结果中可以看出来，在执行for循环循环输出的过程中，当i=3的时候，执行了panic函数，参数是输出出错时候的位置信息，当遇到panic之后，程序就不再继续执行，而是跳转到defer函数中，进行错误信息的捕获。</p>
+<p><img src="https://ww2.sinaimg.cn/large/006tNbRwly1fcoyz6ar0fj309u060t8t.jpg" alt="WechatIMG1"></p>
+
+  </section>
+
+  
+
+<section class="post-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'xiaoyusilen'; 
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+  
+</article>
+
+
+            <footer class="footer">
+
+<span class="footer__copyright">&copy; 2016-2017. | <a href="https://xiaoyusilen.com">xiaoyusilen</a> | <a href="https://github.com/someus/huno">Huno</a></span>
+    <span id="busuanzi_container_site_pv" style="display: inline;">
+         This site already had <span id="busuanzi_value_site_pv"></span> Visits by
+    </span>
+    <span id="busuanzi_container_site_uv" style="display: inline;">
+    <span id="busuanzi_value_site_uv"></span> Visitors 
+    </span>
+
+</footer>
+
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>
