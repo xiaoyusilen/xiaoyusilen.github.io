@@ -40,7 +40,7 @@
 <meta property="og:image" content="https://ww1.sinaimg.cn/large/006tNbRwly1fcs4mv3bulj30cy00yt8r.jpg">
 <meta property="og:image" content="https://ww3.sinaimg.cn/large/006tNbRwly1fcs4mvhfacj30hm0880v0.jpg">
 <meta property="og:image" content="https://ww2.sinaimg.cn/large/006tNbRwly1fcs864ck1gj30cw00u0ss.jpg">
-<meta property="og:updated_time" content="2017-02-16T05:33:54.000Z">
+<meta property="og:updated_time" content="2017-02-16T06:16:22.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Go的Tcp socket粘包处理 | 小宇宙 | xiaoyusilen">
 <meta name="twitter:description" content="背景最近在做的项目是涉及到go的tcp socket开发，好巧不巧的go语言里没有像Java中natty那样的完善的网络框架，所以很多东西都需要自己手撸~至此，背景介绍完毕。
@@ -273,7 +273,7 @@ classes that you can use:
 <p>关于两种连接的适用场景：</p>
 <ul>
 <li>长连接多用于点对点通讯，操作频繁但连接数不多的情况下，因为每一个连接都需要占用一定资源，如果连接数较多的时候采用长连接的方式，服务器很容易挂掉。长连接的优点是可以保证实时性，且节约握手时间。</li>
-<li>短连接多用于web网站，因为web网站并发量很大，如果每个用户都用一个长连接，不用想，服务器肯定会挂掉，所以短连接适用于连接数量较多，操作相对不频繁的情况。短连接的优点是占用资源少，可适应并发量大。</li>
+<li>短连接多用于web网站，因为web网站并发量很大，如果每个用户都用一个长连接，不用想，服务器肯定会挂掉，所以短连接适用于连接数量较多，操作相对不频繁的情况。短连接的优点是占用资源少，可适应并发量大的情况。</li>
 </ul>
 <p>因此，当我们使用长连接的连接方式的时候，就会需要做粘包处理。</p>
 </li>
