@@ -24,7 +24,7 @@
 <meta property="og:site_name" content="小宇宙 | xiaoyusilen">
 <meta property="og:description" content="背景吐槽几句，前几天好不容易把粘包和消息拼接写完了，然后某天收到邮件说目前没有分包的情况，此时我的内心是……&amp;amp;￥%#@，恩，日了狗🐶。吐槽完了，因为第一次独立完成项目，很多地方并不是很清楚，比如日志分级和错误处理，对于错误处理，暂时不需要做特殊的处理，因此这里暂且略过，周五的时候做了一下日志分级，这里做个总结。
 关于日志的分级日志具体分级，要看我们具体使用的插件，不同的插件对于日志有不同">
-<meta property="og:updated_time" content="2017-02-19T13:30:46.000Z">
+<meta property="og:updated_time" content="2017-02-19T13:49:41.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Go的日志分级处理 | 小宇宙 | xiaoyusilen">
 <meta name="twitter:description" content="背景吐槽几句，前几天好不容易把粘包和消息拼接写完了，然后某天收到邮件说目前没有分包的情况，此时我的内心是……&amp;amp;￥%#@，恩，日了狗🐶。吐槽完了，因为第一次独立完成项目，很多地方并不是很清楚，比如日志分级和错误处理，对于错误处理，暂时不需要做特殊的处理，因此这里暂且略过，周五的时候做了一下日志分级，这里做个总结。
@@ -237,7 +237,8 @@ classes that you can use:
 <li>Info：info信息中通常会有一些程序启动的信息项，比如”connection success…”等等，强调程序运行的过程。</li>
 <li>Warn：warn表明可能会出现潜在错误的情况。</li>
 <li>Error：error表示虽然发生错误，但不影响系统继续运行。</li>
-<li>Fatal：指每个严重的错误事件将会导致程序的退出。</li>
+<li>Fatal：指每个严重的错误事件将会导致进程的退出（相当于os.Exit(1)）。</li>
+<li>Panic：每个严重的错误将会导致程序退出（相当于panic()）。</li>
 </ul>
 <h4 id="处理方案"><a href="#处理方案" class="headerlink" title="处理方案"></a>处理方案</h4><p>关于日志分级，一般情况下我们都是设置一个bool类型的debug，作为flag在启动时读入，或者配置到config文件中，但有时候根据情况，我们还可以把它定义为string类型，根据启动时读入的参数来判定具体输出什么level及以上的日志，这些就根据代码和实际情况去写了。</p>
 <p>这里举个简单的例子，如果我们把debug配置成了bool类型的参数，那么启动命令大概是这样的：</p>
