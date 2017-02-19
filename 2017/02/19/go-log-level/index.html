@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      Go的日志分级处理 | 小宇宙 | xiaoyusilen 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="xiaoyusilen">
+    
+    
+
+    <meta name="description" content="背景吐槽几句，前几天好不容易把粘包和消息拼接写完了，然后某天收到邮件说目前没有分包的情况，此时我的内心是……&amp;amp;￥%#@，恩，日了狗🐶。吐槽完了，因为第一次独立完成项目，很多地方并不是很清楚，比如日志分级和错误处理，对于错误处理，暂时不需要做特殊的处理，因此这里暂且略过，周五的时候做了一下日志分级，这里做个总结。
+关于日志的分级日志具体分级，要看我们具体使用的插件，不同的插件对于日志有不同">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go的日志分级处理 | 小宇宙 | xiaoyusilen">
+<meta property="og:url" content="http://yoursite.com/2017/02/19/go-log-level/index.html">
+<meta property="og:site_name" content="小宇宙 | xiaoyusilen">
+<meta property="og:description" content="背景吐槽几句，前几天好不容易把粘包和消息拼接写完了，然后某天收到邮件说目前没有分包的情况，此时我的内心是……&amp;amp;￥%#@，恩，日了狗🐶。吐槽完了，因为第一次独立完成项目，很多地方并不是很清楚，比如日志分级和错误处理，对于错误处理，暂时不需要做特殊的处理，因此这里暂且略过，周五的时候做了一下日志分级，这里做个总结。
+关于日志的分级日志具体分级，要看我们具体使用的插件，不同的插件对于日志有不同">
+<meta property="og:updated_time" content="2017-02-19T13:30:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Go的日志分级处理 | 小宇宙 | xiaoyusilen">
+<meta name="twitter:description" content="背景吐槽几句，前几天好不容易把粘包和消息拼接写完了，然后某天收到邮件说目前没有分包的情况，此时我的内心是……&amp;amp;￥%#@，恩，日了狗🐶。吐槽完了，因为第一次独立完成项目，很多地方并不是很清楚，比如日志分级和错误处理，对于错误处理，暂时不需要做特殊的处理，因此这里暂且略过，周五的时候做了一下日志分级，这里做个总结。
+关于日志的分级日志具体分级，要看我们具体使用的插件，不同的插件对于日志有不同">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">小宇宙 | xiaoyusilen</a></h1>
+        <hr class="panel-cover__divider" />
+
+        
+        <p class="panel-cover__description">
+          Life.pop(&#39;Fear&#39;)
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title="" class="">关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title="" class="">归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/xiaoyusilen" title="">
+          <i class='icon icon-social-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+      <li class="navigation__item">
+        <a href="mailto:kleineweltzhang@hotmail.com" title="">
+          <i class='icon icon-mail'></i>
+          <span class="label">Weixin</span>
+        </a>
+      </li>
+
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">Go的日志分级处理</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2017-02-19" class="post-meta__date date">2017-02-19</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/Go/">Go</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><p>吐槽几句，前几天好不容易把粘包和消息拼接写完了，然后某天收到邮件说目前没有分包的情况，此时我的内心是……&amp;￥%#@，恩，日了狗🐶。吐槽完了，因为第一次独立完成项目，很多地方并不是很清楚，比如日志分级和错误处理，对于错误处理，暂时不需要做特殊的处理，因此这里暂且略过，周五的时候做了一下日志分级，这里做个总结。</p>
+<h4 id="关于日志的分级"><a href="#关于日志的分级" class="headerlink" title="关于日志的分级"></a>关于日志的分级</h4><p>日志具体分级，要看我们具体使用的插件，不同的插件对于日志有不同的分级，但通常不外乎以下几种：</p>
+<ul>
+<li>Debug：通常我们的程序中会有Debug开关，Debug模式通常都是Developer开发的时候调试程序时候输出的一些辅助信息，对于后期排查错误也很有帮助。</li>
+<li>Info：info信息中通常会有一些程序启动的信息项，比如”connection success…”等等，强调程序运行的过程。</li>
+<li>Warn：warn表明可能会出现潜在错误的情况。</li>
+<li>Error：error表示虽然发生错误，但不影响系统继续运行。</li>
+<li>Fatal：指每个严重的错误事件将会导致程序的退出。</li>
+</ul>
+<h4 id="处理方案"><a href="#处理方案" class="headerlink" title="处理方案"></a>处理方案</h4><p>关于日志分级，一般情况下我们都是设置一个bool类型的debug，作为flag在启动时读入，或者配置到config文件中，但有时候根据情况，我们还可以把它定义为string类型，根据启动时读入的参数来判定具体输出什么level及以上的日志，这些就根据代码和实际情况去写了。</p>
+<p>这里举个简单的例子，如果我们把debug配置成了bool类型的参数，那么启动命令大概是这样的：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">go</span> run main.<span class="keyword">go</span> --debug</div></pre></td></tr></table></figure>
+<p>如果把debug参数配置成了string类型的参数，那么启动命令大概是这样的：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">go</span> run main.<span class="keyword">go</span> --debug=<span class="string">"Warn"</span></div></pre></td></tr></table></figure>
+<p>然后在<code>main.go</code>中大概是这样的：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> debug == <span class="string">"Debug"</span> &#123;</div><div class="line">	log.Level = logrus.DebugLevel</div><div class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> debug == <span class="string">"Info"</span> &#123;</div><div class="line">	log.Level = logrus.InfoLevel</div><div class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> debug == <span class="string">"Warn"</span> &#123;</div><div class="line">	log.Level = logrus.WarnLevel</div><div class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> debug == <span class="string">"Error"</span> &#123;</div><div class="line">	log.Level = logrus.ErrorLevel</div><div class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> debug == <span class="string">"Fatal"</span> &#123;</div><div class="line">	log.Level = logrus.FatalLevel</div><div class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> debug == <span class="string">"Panic"</span> &#123;</div><div class="line">	log.Level = logrus.PanicLevel</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>以上代码使用了logrus这个日志插件</strong></p>
+<h4 id="吐槽-总结"><a href="#吐槽-总结" class="headerlink" title="吐槽+总结"></a>吐槽+总结</h4><p>难得周末一天还写了点东西出来，撒花~(≧▽≦)/~为自己点个赞，明天又是周一啦，新的一周~下周开始做协议解析！加油~Fighting~</p>
+
+  </section>
+
+  
+
+<section class="post-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'xiaoyusilen'; 
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+  
+</article>
+
+
+            <footer class="footer">
+
+<span class="footer__copyright">&copy; 2016-2017. | <a href="https://xiaoyusilen.com">xiaoyusilen</a> | <a href="https://github.com/someus/huno">Huno</a></span>
+    <span id="busuanzi_container_site_pv" style="display: inline;">
+         This site already had <span id="busuanzi_value_site_pv"></span> Visits by
+    </span>
+    <span id="busuanzi_container_site_uv" style="display: inline;">
+    <span id="busuanzi_value_site_uv"></span> Visitors 
+    </span>
+
+</footer>
+
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>
