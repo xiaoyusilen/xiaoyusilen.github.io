@@ -7,7 +7,7 @@
     
 
     <title>
-      Go的Tcp socket粘包处理 | 小宇宙 | xiaoyusilen 
+      Go的逻辑粘包处理 | 小宇宙 | xiaoyusilen 
     </title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -16,41 +16,53 @@
     
     
 
-    <meta name="description" content="背景最近在做的项目是涉及到go的tcp socket开发，好巧不巧的go语言里没有像Java中natty那样的完善的网络框架，所以很多东西都需要自己手撸~至此，背景介绍完毕。
+    <meta name="description" content="背景最近做开发涉及到了一个私有协议，在网络层之上还做了逻辑分包，以下是关于逻辑分包的粘包处理。
 关于粘包
 什么叫做粘包。
 如上图所示，在Client和Server之间发送数据的时候，会出现三种情况：
 
 发送方将Data1和Data2两个数据包合在一起发送
 发送方将Data1拆成两个数据包发送
-发送方将Data1和Dat">
+发送方将Data1和Data2分开发送
+
+
+为什么需要做粘包处理。
+关于粘包处理出现的情况，我们需要先引入">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Go的Tcp socket粘包处理 | 小宇宙 | xiaoyusilen">
+<meta property="og:title" content="Go的逻辑粘包处理 | 小宇宙 | xiaoyusilen">
 <meta property="og:url" content="http://yoursite.com/2017/02/16/go-tcp-socket-packet-splicing/index.html">
 <meta property="og:site_name" content="小宇宙 | xiaoyusilen">
-<meta property="og:description" content="背景最近在做的项目是涉及到go的tcp socket开发，好巧不巧的go语言里没有像Java中natty那样的完善的网络框架，所以很多东西都需要自己手撸~至此，背景介绍完毕。
+<meta property="og:description" content="背景最近做开发涉及到了一个私有协议，在网络层之上还做了逻辑分包，以下是关于逻辑分包的粘包处理。
 关于粘包
 什么叫做粘包。
 如上图所示，在Client和Server之间发送数据的时候，会出现三种情况：
 
 发送方将Data1和Data2两个数据包合在一起发送
 发送方将Data1拆成两个数据包发送
-发送方将Data1和Dat">
+发送方将Data1和Data2分开发送
+
+
+为什么需要做粘包处理。
+关于粘包处理出现的情况，我们需要先引入">
 <meta property="og:image" content="https://ww3.sinaimg.cn/large/006tNbRwly1fcs3wydm76j30t40mijt6.jpg">
 <meta property="og:image" content="https://ww1.sinaimg.cn/large/006tNbRwly1fcs4mv3bulj30cy00yt8r.jpg">
 <meta property="og:image" content="https://ww3.sinaimg.cn/large/006tNbRwly1fcs4mvhfacj30hm0880v0.jpg">
 <meta property="og:image" content="https://ww2.sinaimg.cn/large/006tNbRwly1fcs864ck1gj30cw00u0ss.jpg">
-<meta property="og:updated_time" content="2017-02-16T11:04:55.000Z">
+<meta property="og:updated_time" content="2017-02-24T06:39:50.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Go的Tcp socket粘包处理 | 小宇宙 | xiaoyusilen">
-<meta name="twitter:description" content="背景最近在做的项目是涉及到go的tcp socket开发，好巧不巧的go语言里没有像Java中natty那样的完善的网络框架，所以很多东西都需要自己手撸~至此，背景介绍完毕。
+<meta name="twitter:title" content="Go的逻辑粘包处理 | 小宇宙 | xiaoyusilen">
+<meta name="twitter:description" content="背景最近做开发涉及到了一个私有协议，在网络层之上还做了逻辑分包，以下是关于逻辑分包的粘包处理。
 关于粘包
 什么叫做粘包。
 如上图所示，在Client和Server之间发送数据的时候，会出现三种情况：
 
 发送方将Data1和Data2两个数据包合在一起发送
 发送方将Data1拆成两个数据包发送
-发送方将Data1和Dat">
+发送方将Data1和Data2分开发送
+
+
+为什么需要做粘包处理。
+关于粘包处理出现的情况，我们需要先引入">
 <meta name="twitter:image" content="https://ww3.sinaimg.cn/large/006tNbRwly1fcs3wydm76j30t40mijt6.jpg">
     
     
@@ -227,7 +239,7 @@ classes that you can use:
 
   <header class="post-header">
     
-    <h1 class="post-title">Go的Tcp socket粘包处理</h1>
+    <h1 class="post-title">Go的逻辑粘包处理</h1>
 
     
 
@@ -253,7 +265,7 @@ classes that you can use:
   </header>
 
   <section id="post-content" class="article-content post">
-    <h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><p>最近在做的项目是涉及到go的tcp socket开发，好巧不巧的go语言里没有像Java中natty那样的完善的网络框架，所以很多东西都需要自己手撸~至此，背景介绍完毕。</p>
+    <h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><p>最近做开发涉及到了一个私有协议，在网络层之上还做了逻辑分包，以下是关于逻辑分包的粘包处理。</p>
 <h4 id="关于粘包"><a href="#关于粘包" class="headerlink" title="关于粘包"></a>关于粘包</h4><ol>
 <li><p>什么叫做粘包。<img src="https://ww3.sinaimg.cn/large/006tNbRwly1fcs3wydm76j30t40mijt6.jpg" alt="WechatIMG3"></p>
 <p>如上图所示，在Client和Server之间发送数据的时候，会出现三种情况：</p>
@@ -276,6 +288,12 @@ classes that you can use:
 <li>短连接多用于web网站，因为web网站并发量很大，如果每个用户都用一个长连接，不用想，服务器肯定会挂掉，所以短连接适用于连接数量较多，操作相对不频繁的情况。短连接的优点是占用资源少，可适应并发量大的情况。</li>
 </ul>
 <p>因此，当我们使用长连接的连接方式的时候，就会需要做粘包处理。</p>
+<p>关于粘包，分为网络层的分包和逻辑分包的情况：</p>
+<ul>
+<li>网络层分包是因为TCP或者UDP协议，我们需要用<strong>循环队列</strong>或者<strong>滑动窗口</strong>进行处理，</li>
+<li>逻辑分包通常是网络层之上，私有协议自己规定的一些分包逻辑，我们称之为逻辑分包。</li>
+</ul>
+<p>以下介绍的是逻辑分包的处理。</p>
 </li>
 </ol>
 <h4 id="关于Go-net"><a href="#关于Go-net" class="headerlink" title="关于Go/net"></a>关于Go/net</h4><p>Go自带库中有一个库叫做<a href="https://golang.org/pkg/net/" target="_blank" rel="external">net</a>，支持基于IP层、TCP/UDP层及更高层面（如HTTP、FTP、SMTP）的网络操作，其中用于IP层的称为Raw Socket。</p>
@@ -314,8 +332,8 @@ classes that you can use:
 <p><img src="https://ww2.sinaimg.cn/large/006tNbRwly1fcs864ck1gj30cw00u0ss.jpg" alt="WechatIMG9"></p>
 <p>再运行Client端，就可以看到输出的数据了，这里我设置的判断条件和具体私有协议有关就不贴运行结果了。</p>
 <h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p><strong>再次声明：以上代码都不可直接运行，一切都要依赖于消息格式约定来改写</strong></p>
-<p>这次做项目的过程中，接触到了许多我很不擅长的东西，比如网络，想到要用go去写tcp的时候，我脑袋都要大了，但是分析好需求，根据文档逐步写下来再去看TCP相关文档，发现其实没有自己想象中那么难，果然协议这种东西就是要边写边学，不然直接去看书的话光定义就很绕。</p>
-<p>当前的粘包处理只考虑了最简单的情况，当我们服务真实部署在服务器上的时候，由于网络问题，即使TCP内部有包的乱序处理方式，也必然会出现包的乱序情况，这就需要我们再做后续处理，敬请期待:)</p>
+<p>事实上，我们在通过TCP进行传输的过程中也会因为TCP网络协议的问题出现粘包的情况，我们需要先用循环队列或者叫做滑动窗口来进行粘包处理，处理过网络层的消息粘包之后，再进行上述的网络层之上的逻辑分包的情况。</p>
+<p>至于由于TCP出现的分包粘包情况，我们如何处理，稍后会再做介绍。</p>
 
   </section>
 
