@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      Go位移操作 | 小宇宙 | xiaoyusilen 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="xiaoyusilen">
+    
+    
+
+    <meta name="description" content="背景今天有一个需求，是我需要拼接一个2字节的byte，且要根据要求按位拼接，这时候就需要我们用到位移操作。
+Coding Now位移操作很容易理解了，2字节我们先设置一个uint16类型的来存我们最终的值，这里我们假定两种情况，
+
+情况一：16位都没有关系需要逐位拼接
+123456789101112131415161718192021222324package mainimport(	&quot;fmt&quot;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go位移操作 | 小宇宙 | xiaoyusilen">
+<meta property="og:url" content="http://yoursite.com/2017/02/27/go-offset-operation/index.html">
+<meta property="og:site_name" content="小宇宙 | xiaoyusilen">
+<meta property="og:description" content="背景今天有一个需求，是我需要拼接一个2字节的byte，且要根据要求按位拼接，这时候就需要我们用到位移操作。
+Coding Now位移操作很容易理解了，2字节我们先设置一个uint16类型的来存我们最终的值，这里我们假定两种情况，
+
+情况一：16位都没有关系需要逐位拼接
+123456789101112131415161718192021222324package mainimport(	&quot;fmt&quot;">
+<meta property="og:image" content="https://ww1.sinaimg.cn/large/006tNc79ly1fd5anvwxr9j307w010t8p.jpg">
+<meta property="og:image" content="https://ww4.sinaimg.cn/large/006tNc79ly1fd5anv3w8tj307y00w3yi.jpg">
+<meta property="og:image" content="https://ww1.sinaimg.cn/large/006tNc79ly1fd5anwcpoyj30h401qt91.jpg">
+<meta property="og:updated_time" content="2017-02-27T12:21:44.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Go位移操作 | 小宇宙 | xiaoyusilen">
+<meta name="twitter:description" content="背景今天有一个需求，是我需要拼接一个2字节的byte，且要根据要求按位拼接，这时候就需要我们用到位移操作。
+Coding Now位移操作很容易理解了，2字节我们先设置一个uint16类型的来存我们最终的值，这里我们假定两种情况，
+
+情况一：16位都没有关系需要逐位拼接
+123456789101112131415161718192021222324package mainimport(	&quot;fmt&quot;">
+<meta name="twitter:image" content="https://ww1.sinaimg.cn/large/006tNc79ly1fd5anvwxr9j307w010t8p.jpg">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">小宇宙 | xiaoyusilen</a></h1>
+        <hr class="panel-cover__divider" />
+
+        
+        <p class="panel-cover__description">
+          Life.pop(&#39;Fear&#39;)
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title="" class="">关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title="" class="">归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/xiaoyusilen" title="">
+          <i class='icon icon-social-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+      <li class="navigation__item">
+        <a href="mailto:kleineweltzhang@hotmail.com" title="">
+          <i class='icon icon-mail'></i>
+          <span class="label">Weixin</span>
+        </a>
+      </li>
+
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">Go位移操作</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2017-02-27" class="post-meta__date date">2017-02-27</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/Go/">Go</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><p>今天有一个需求，是我需要拼接一个2字节的byte，且要根据要求按位拼接，这时候就需要我们用到位移操作。</p>
+<h4 id="Coding-Now"><a href="#Coding-Now" class="headerlink" title="Coding Now"></a>Coding Now</h4><p>位移操作很容易理解了，2字节我们先设置一个<code>uint16</code>类型的来存我们最终的值，这里我们假定两种情况，</p>
+<ul>
+<li><p>情况一：16位都没有关系需要逐位拼接</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span>(</div><div class="line">	<span class="string">"fmt"</span></div><div class="line">	<span class="string">"encoding/binary"</span></div><div class="line"></div><div class="line">	<span class="string">"github.com/imroc/biu"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">	<span class="keyword">var</span> m <span class="keyword">uint16</span> = <span class="number">0</span></div><div class="line">	m = m | <span class="number">1</span></div><div class="line">	m = m &lt;&lt; <span class="number">1</span></div><div class="line">	m = m | <span class="number">0</span></div><div class="line">	m = m &lt;&lt; <span class="number">1</span></div><div class="line">	....  <span class="comment">// 省略同上</span></div><div class="line">	m = m | <span class="number">1</span></div><div class="line">	m = m &lt;&lt; <span class="number">1</span></div><div class="line">	m = m | <span class="number">0</span></div><div class="line">	<span class="comment">//m = m &lt;&lt; 1</span></div><div class="line">	s := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">2</span>)</div><div class="line">	binary.BigEndian.PutUint16(s, m)</div><div class="line">	fmt.Println(biu.BytesToBinaryString(s)) <span class="comment">// 这个函数是引用了github中的一个库，可以将[]byte转为二进制字符串</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出如下</p>
+<p><img src="https://ww1.sinaimg.cn/large/006tNc79ly1fd5anvwxr9j307w010t8p.jpg" alt="WechatIMG43"></p>
+</li>
+<li><p>情况二：我们假定将16位分成前6位和后10位</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span>(</div><div class="line">	<span class="string">"fmt"</span></div><div class="line">	<span class="string">"encoding/binary"</span></div><div class="line"></div><div class="line">	<span class="string">"github.com/imroc/biu"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">	<span class="keyword">var</span> x <span class="keyword">uint16</span> = <span class="number">512</span> <span class="comment">// 后10位</span></div><div class="line">	<span class="keyword">var</span> m <span class="keyword">uint16</span> = <span class="number">0</span> <span class="comment">// 初始化</span></div><div class="line">	<span class="keyword">var</span> l <span class="keyword">uint16</span> = <span class="number">45</span> <span class="comment">// 前6位</span></div><div class="line">	m = m | l <span class="comment">// 先与前6位取或</span></div><div class="line">	m = m &lt;&lt; <span class="number">10</span> <span class="comment">// 然后左移10位</span></div><div class="line">	m = m | x <span class="comment">// 与后10位取或 </span></div><div class="line">	s := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">2</span>)</div><div class="line">	binary.BigEndian.PutUint16(s, m) <span class="comment">// 用大端的方式将uint16的m放入我们新建的[]byte中</span></div><div class="line">	fmt.Println(biu.BytesToBinaryString(s))</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<p><img src="https://ww4.sinaimg.cn/large/006tNc79ly1fd5anv3w8tj307y00w3yi.jpg" alt="WechatIMG44"></p>
+</li>
+<li><p>然后Golang的左移有一个坑点，左移如果溢出的话不会截断而是会报错，我们看下边这段代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span>(</div><div class="line">	<span class="string">"fmt"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">	<span class="keyword">const</span> m <span class="keyword">uint8</span> = <span class="number">255</span></div><div class="line">	fmt.Println(m &lt;&lt; <span class="number">4</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们会发现报错了，错误如下：</p>
+<p><img src="https://ww1.sinaimg.cn/large/006tNc79ly1fd5anwcpoyj30h401qt91.jpg" alt="WechatIMG45"></p>
+<p>左移溢出的时候，go默认会报错而不是截断，如果把m变成变量，我们就会发现它不报错了。</p>
+<p>为什么「变量」没有报溢出的错误呢？因为它是「变量」，编译器在编译时没能确定执行到那里的时候它一定会溢出（说不定你在什么地方改变了它的值所以不会溢出了）。</p>
+<p>编译器会保证「常量」不会变化（你不能以正常的方式对它赋值），所以编译的时候它能够把这些地方先计算了，于是它发现你在给一个 <code>uint8</code> 类型的变量赋值一个超过它的最大值的数。</p>
+</li>
+<li><p>所以，你可能需要先用不定长度的uint类型绕开溢出的限制，再用掩码(<code>&amp; 0xFF</code>)运算去约束结果的范围，加了判断溢出的处理之后，代码是这样的：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span>(</div><div class="line">	<span class="string">"fmt"</span></div><div class="line">	<span class="string">"encoding/binary"</span></div><div class="line">	</div><div class="line">	<span class="string">"github.com/imroc/biu"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">	<span class="keyword">var</span> size <span class="keyword">uint16</span> = <span class="number">512</span></div><div class="line">	<span class="keyword">var</span> m <span class="keyword">uint16</span> = <span class="number">0</span></div><div class="line">	<span class="keyword">var</span> l <span class="keyword">uint16</span> = <span class="number">45</span></div><div class="line">	m = m | l</div><div class="line">	m = <span class="keyword">uint16</span>(<span class="keyword">uint</span>(m) &lt;&lt; <span class="number">10</span> &amp; <span class="number">0xFFFF</span>)</div><div class="line">	<span class="comment">//m = m &lt;&lt; 10</span></div><div class="line">	m = m | size</div><div class="line">	s := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">2</span>)</div><div class="line">	binary.BigEndian.PutUint16(s, m)</div><div class="line">	fmt.Println(biu.BytesToBinaryString(s))</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>关于这个问题，可以参考<a href="https://segmentfault.com/q/1010000000420677" target="_blank" rel="external">左移溢出处理</a></p>
+</li>
+</ul>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>关于左移溢出错误这种情况，暂时没有找到更好的解决方案，只能用上述的方法尽量避开，Go中有一些设定很奇怪，有时候报错很难找到症结，比如binary中的方法已经设定了[]byte的字节数，如果不是固定字节数就一定会报错这种事情，也是很狗血，但这不妨碍<strong>我爱Go</strong>。就这样，Thx~</p>
+
+  </section>
+
+  
+
+<section class="post-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'xiaoyusilen'; 
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+  
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2016-2017. | <a href="http://xiaoyu.world">❤ xiaoyusilen</a> | <a href="https://github.com/someus/huno">Huno</a></span>
+    <span id="busuanzi_container_site_pv" style="display: inline;">
+         This site already had <span id="busuanzi_value_site_pv"></span> Visits by
+    </span>
+    <span id="busuanzi_container_site_uv" style="display: inline;">
+    <span id="busuanzi_value_site_uv"></span> Visitors 
+    </span>
+
+</footer>
+
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>
