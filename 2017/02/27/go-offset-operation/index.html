@@ -33,7 +33,7 @@ Coding Now位移操作很容易理解了，2字节我们先设置一个uint16类
 <meta property="og:image" content="https://ww1.sinaimg.cn/large/006tNc79ly1fd5anvwxr9j307w010t8p.jpg">
 <meta property="og:image" content="https://ww4.sinaimg.cn/large/006tNc79ly1fd5anv3w8tj307y00w3yi.jpg">
 <meta property="og:image" content="https://ww1.sinaimg.cn/large/006tNc79ly1fd5anwcpoyj30h401qt91.jpg">
-<meta property="og:updated_time" content="2017-02-27T12:34:25.000Z">
+<meta property="og:updated_time" content="2017-02-28T06:04:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Go位移操作 | 小宇宙 | xiaoyusilen">
 <meta name="twitter:description" content="背景今天有一个需求，是我需要拼接一个2字节的byte，且要根据要求按位拼接，这时候就需要我们用到位移操作。
@@ -261,8 +261,12 @@ classes that you can use:
 <p>我们会发现报错了，错误如下：</p>
 <p><img src="https://ww1.sinaimg.cn/large/006tNc79ly1fd5anwcpoyj30h401qt91.jpg" alt="WechatIMG45"></p>
 <p>左移溢出的时候，go默认会报错而不是截断，如果把m变成变量，我们就会发现它不报错了。</p>
-<p>为什么「变量」没有报溢出的错误呢？因为它是「变量」，编译器在编译时没能确定执行到那里的时候它一定会溢出（说不定你在什么地方改变了它的值所以不会溢出了）。</p>
-<p>编译器会保证「常量」不会变化（你不能以正常的方式对它赋值），所以编译的时候它能够把这些地方先计算了，于是它发现你在给一个 <code>uint8</code> 类型的变量赋值一个超过它的最大值的数。</p>
+<p>为什么<strong>变量</strong>没有报溢出的错误呢？因为它是变量，编译器是在运行期才会给变量分配存储内存的。</p>
+<p>而编译器会保证<strong>常量</strong>不变化，常量的赋值是一个编译期行为，所以常量通常会被编译器在预处理阶段直接展开，于是它发现你在给一个 <code>uint8</code> 类型的变量赋值一个超过它的最大值的数，报错是必然的结果。</p>
+<p>同理给<strong>常量</strong>赋一个编译期不可知的值也是不行的，比如：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> Home = os.GetEnv(<span class="string">"HOME"</span>)</div></pre></td></tr></table></figure>
+<p><code>os.GetEnv()</code>只有在运行期才能知道返回结果，所以也会报错。</p>
+<p>从官方文档中对于常量的描述我们也可以看出，<strong>But in Go, a constant is just a simple, unchanging value</strong>，在Go的设计中，常量只是一个简单的不可变的值，所以这样的设定大概只是为了强制你避免溢出或者超范围的情况。</p>
 </li>
 <li><p>所以，你可能需要先用不定长度的uint类型绕开溢出的限制，再用掩码(<code>&amp; 0xFFFF</code>)运算去约束结果的范围，（如果是uint8就用<code>0xFF</code>），加了判断溢出的处理之后，代码是这样的：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span>(</div><div class="line">	<span class="string">"fmt"</span></div><div class="line">	<span class="string">"encoding/binary"</span></div><div class="line">	</div><div class="line">	<span class="string">"github.com/imroc/biu"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">	<span class="keyword">var</span> size <span class="keyword">uint16</span> = <span class="number">512</span></div><div class="line">	<span class="keyword">var</span> m <span class="keyword">uint16</span> = <span class="number">0</span></div><div class="line">	<span class="keyword">var</span> l <span class="keyword">uint16</span> = <span class="number">45</span></div><div class="line">	m = m | l</div><div class="line">	m = <span class="keyword">uint16</span>(<span class="keyword">uint</span>(m) &lt;&lt; <span class="number">10</span> &amp; <span class="number">0xFFFF</span>)</div><div class="line">	<span class="comment">//m = m &lt;&lt; 10</span></div><div class="line">	m = m | size</div><div class="line">	s := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">2</span>)</div><div class="line">	binary.BigEndian.PutUint16(s, m)</div><div class="line">	fmt.Println(biu.BytesToBinaryString(s))</div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -270,7 +274,8 @@ classes that you can use:
 <li><p>关于这个问题，可以参考<a href="https://segmentfault.com/q/1010000000420677" target="_blank" rel="external">左移溢出处理</a></p>
 </li>
 </ul>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>关于左移溢出错误这种情况，暂时没有找到更好的解决方案，只能用上述的方法尽量避开，Go中有一些设定很奇怪，有时候报错很难找到症结，比如binary中的方法已经设定了[]byte的字节数，如果不是固定字节数就一定会报错这种事情，也是很狗血，但这不妨碍<strong>我爱Go</strong>。就这样，Thx~</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>关于左移溢出错误这种情况，暂时没有找到更好的解决方案，只能用上述的方法尽量避开，Go中有一些设定很奇怪，有时候报错很难找到症结，比如binary中的方法已经设定了[]byte的字节数，如果不是固定字节数就一定会报错这种事情，也是很狗血，但这不妨碍<strong>我爱Go</strong>。</p>
+<p>正是因为Go的的这些狗血的设定，所以避免了很多奇怪的错误，正如官方文档所说，C/C++的很多奇怪的bug、错误、野指针等等的问题，就是因为这些不同类型的混用而导致的，所以在Go最初的设置中才会有这些奇怪的要求，也是为了避免后边出现更难处理的错误。就这样，Thx~</p>
 
   </section>
 
