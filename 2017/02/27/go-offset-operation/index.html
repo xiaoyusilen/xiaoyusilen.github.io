@@ -34,7 +34,7 @@ Coding Now位移操作很容易理解了，2字节我们先设置一个uint16类
 <meta property="og:image" content="https://ww4.sinaimg.cn/large/006tNc79ly1fd5anv3w8tj307y00w3yi.jpg">
 <meta property="og:image" content="https://ww1.sinaimg.cn/large/006tNc79ly1fd5anwcpoyj30h401qt91.jpg">
 <meta property="og:image" content="https://ww4.sinaimg.cn/large/006tNc79ly1fd66cw7hqxj30o201uq3d.jpg">
-<meta property="og:updated_time" content="2017-02-28T06:38:42.000Z">
+<meta property="og:updated_time" content="2017-02-28T08:34:29.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Go位移操作 | 小宇宙 | xiaoyusilen">
 <meta name="twitter:description" content="背景今天有一个需求，是我需要拼接一个2字节的byte，且要根据要求按位拼接，这时候就需要我们用到位移操作。
@@ -263,7 +263,7 @@ classes that you can use:
 <p><img src="https://ww1.sinaimg.cn/large/006tNc79ly1fd5anwcpoyj30h401qt91.jpg" alt="WechatIMG45"></p>
 <p>左移溢出的时候，go默认会报错而不是截断，如果把m变成变量，我们就会发现它不报错了。</p>
 <p>为什么<strong>变量</strong>没有报溢出的错误呢？因为它是变量，编译器是在运行期才会给变量分配存储内存的。</p>
-<p>而编译器会保证<strong>常量</strong>不变化，常量的赋值是一个编译期行为，所以常量通常会被编译器在预处理阶段直接展开，于是它发现你在给一个 <code>uint8</code> 类型的变量赋值一个超过它的最大值的数，报错是必然的结果。</p>
+<p>而编译器会保证<strong>常量</strong>不变化，常量的赋值是一个编译期行为，所以常量通常会被编译器在预处理阶段直接展开，于是它发现你给<code>uint8</code>赋了一个超过它可存储最大值的数，报错是必然的结果。</p>
 <p>同理给<strong>常量</strong>赋一个编译期不可知的值也是不行的，比如：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">	<span class="string">"fmt"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">add</span><span class="params">(x, y <span class="keyword">int</span>)</span> <span class="title">uint16</span></span> &#123;</div><div class="line">	<span class="keyword">return</span> <span class="keyword">uint16</span>(x + y)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">	<span class="keyword">const</span> m <span class="keyword">uint16</span> = add(<span class="number">3</span>, <span class="number">4</span>)</div><div class="line">	fmt.Println(m)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p><code>add(x, y int)</code>只有在运行期才能知道返回结果，所以也会报错。</p>
