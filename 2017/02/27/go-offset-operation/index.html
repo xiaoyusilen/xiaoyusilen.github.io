@@ -33,7 +33,7 @@ Coding Now位移操作很容易理解了，2字节我们先设置一个uint16类
 <meta property="og:image" content="https://ww1.sinaimg.cn/large/006tNc79ly1fd5anvwxr9j307w010t8p.jpg">
 <meta property="og:image" content="https://ww4.sinaimg.cn/large/006tNc79ly1fd5anv3w8tj307y00w3yi.jpg">
 <meta property="og:image" content="https://ww1.sinaimg.cn/large/006tNc79ly1fd5anwcpoyj30h401qt91.jpg">
-<meta property="og:updated_time" content="2017-02-28T06:04:05.000Z">
+<meta property="og:updated_time" content="2017-02-28T06:25:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Go位移操作 | 小宇宙 | xiaoyusilen">
 <meta name="twitter:description" content="背景今天有一个需求，是我需要拼接一个2字节的byte，且要根据要求按位拼接，这时候就需要我们用到位移操作。
@@ -274,8 +274,9 @@ classes that you can use:
 <li><p>关于这个问题，可以参考<a href="https://segmentfault.com/q/1010000000420677" target="_blank" rel="external">左移溢出处理</a></p>
 </li>
 </ul>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>关于左移溢出错误这种情况，暂时没有找到更好的解决方案，只能用上述的方法尽量避开，Go中有一些设定很奇怪，有时候报错很难找到症结，比如binary中的方法已经设定了[]byte的字节数，如果不是固定字节数就一定会报错这种事情，也是很狗血，但这不妨碍<strong>我爱Go</strong>。</p>
-<p>正是因为Go的的这些狗血的设定，所以避免了很多奇怪的错误，正如官方文档所说，C/C++的很多奇怪的bug、错误、野指针等等的问题，就是因为这些不同类型的混用而导致的，所以在Go最初的设置中才会有这些奇怪的要求，也是为了避免后边出现更难处理的错误。就这样，Thx~</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>Go中有一些设定很奇怪，有时候报错很难找到症结，比如binary中的方法已经设定了[]byte的字节数，如果不是固定字节数就一定会报错这种事情，也是很狗血，但这不妨碍<strong>我爱Go</strong>。</p>
+<p>正是因为Go的的这些狗血的设定，所以避免了很多奇怪的错误，正如官方文档所说，C/C++的很多奇怪的bug、错误、野指针等等的问题，就是因为这些不同类型的混用而导致的，因此在Go最初的设置中才会有这些奇怪的要求，这也是为了避免后边出现更难处理的错误。关于Go狗血的要求，比如：没有用到的包必须删掉、可被外部调用的成员或方法首字母必须大写、第一个大括号不能另起一行，<code>go fmt</code>等等，可能也是为了强制代码规范，不得不说，大部分Go代码看上去都让人比较愉悦 :) </p>
+<p>就这样，Thx~</p>
 
   </section>
 
