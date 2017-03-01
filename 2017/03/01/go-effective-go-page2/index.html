@@ -28,7 +28,7 @@ What Happened早上看《Effective Go》，发现了一段很会玩的代码：
 What Happened早上看《Effective Go》，发现了一段很会玩的代码：
 123for i, j := 0, len(a)-1; i &amp;lt; j; i, j = i+1, j-1 &amp;#123;	a[i], a[j] = a[j], a[i]&amp;#125;
 突然想知道Go内置的Reverse用了什么方法，于是翻了源代码之">
-<meta property="og:updated_time" content="2017-03-01T09:50:51.000Z">
+<meta property="og:updated_time" content="2017-03-01T09:55:45.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="About Golang Sort Reverse | 小宇宙 | xiaoyusilen">
 <meta name="twitter:description" content="背景单独写一篇文章来吐槽Golang Sort Reverse。
@@ -252,7 +252,7 @@ classes that you can use:
 <p>深扒代码以后发现，Sort()里的代码是这样的：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> b-a &gt; <span class="number">1</span> &#123;</div><div class="line">		<span class="comment">// Do ShellSort pass with gap 6</span></div><div class="line">		<span class="comment">// It could be written in this simplified form cause b-a &lt;= 12</span></div><div class="line">		<span class="keyword">for</span> i := a + <span class="number">6</span>; i &lt; b; i++ &#123;</div><div class="line">			<span class="keyword">if</span> data.Less(i, i<span class="number">-6</span>) &#123;</div><div class="line">				data.Swap(i, i<span class="number">-6</span>)</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">		insertionSort(data, a, b)</div><div class="line">	&#125;</div></pre></td></tr></table></figure>
 <p>尼玛，在这里才调用了Less()？不用Sort的话，Less()就不会被调用，这里是真的心机。</p>
-<p>至今没发现这个玩意到底是做什么用的，我都要Sort了，我为毛还要Reverse….好在他还是良心的在文档里给了你一个算是简单的Reverse的方法，也就是最开始那段代码。至此，我只能对大佬打出一串666….终结，待我发现用法后再来填坑。</p>
+<p>至今没发现这个玩意到底是做什么用的，我都要Sort了，我为毛还要Reverse….既然 已经内置了Reverse，为什么只能在Sort里使用。好在他还是良心的在文档里给了你一个算是简单的Reverse的方法，也就是最开始那段代码。至此，我只能对大佬打出一串666….终结，待我发现用法后再来填坑。</p>
 <h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>这个点我必须吐槽一下才行，不然对不起我看了一下午的注释和源码。</p>
 <h4 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h4><p><a href="http://stackoverflow.com/questions/19239449/how-do-i-reverse-an-array-in-go" target="_blank" rel="external">How to reverse an array in go</a></p>
 
