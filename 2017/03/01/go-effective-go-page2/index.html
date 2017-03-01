@@ -28,15 +28,13 @@ What Happened早上看《Effective Go》，发现了一段很会玩的代码：
 What Happened早上看《Effective Go》，发现了一段很会玩的代码：
 123for i, j := 0, len(a)-1; i &amp;lt; j; i, j = i+1, j-1 &amp;#123;	a[i], a[j] = a[j], a[i]&amp;#125;
 突然想知道Go内置的Reverse用了什么方法，于是翻了源代码之">
-<meta property="og:image" content="https://ww2.sinaimg.cn/large/006tNc79ly1fd7i8fg3tgj30ke0hiwgw.jpg">
-<meta property="og:updated_time" content="2017-03-01T10:14:48.000Z">
+<meta property="og:updated_time" content="2017-03-01T10:23:04.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="About Golang Sort Reverse | 小宇宙 | xiaoyusilen">
 <meta name="twitter:description" content="背景单独写一篇文章来吐槽Golang Sort Reverse。
 What Happened早上看《Effective Go》，发现了一段很会玩的代码：
 123for i, j := 0, len(a)-1; i &amp;lt; j; i, j = i+1, j-1 &amp;#123;	a[i], a[j] = a[j], a[i]&amp;#125;
 突然想知道Go内置的Reverse用了什么方法，于是翻了源代码之">
-<meta name="twitter:image" content="https://ww2.sinaimg.cn/large/006tNc79ly1fd7i8fg3tgj30ke0hiwgw.jpg">
     
     
     
@@ -254,10 +252,8 @@ classes that you can use:
 <p>深扒代码以后发现，Sort()里的代码是这样的：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> b-a &gt; <span class="number">1</span> &#123;</div><div class="line">		<span class="comment">// Do ShellSort pass with gap 6</span></div><div class="line">		<span class="comment">// It could be written in this simplified form cause b-a &lt;= 12</span></div><div class="line">		<span class="keyword">for</span> i := a + <span class="number">6</span>; i &lt; b; i++ &#123;</div><div class="line">			<span class="keyword">if</span> data.Less(i, i<span class="number">-6</span>) &#123;</div><div class="line">				data.Swap(i, i<span class="number">-6</span>)</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">		insertionSort(data, a, b)</div><div class="line">	&#125;</div></pre></td></tr></table></figure>
 <p>尼玛，在这里才调用了Less()？不用Sort的话，Less()就不会被调用，这里是真的心机。</p>
-<p>到现在我还是不明白为什么要这样设计，直到我问了大佬之后恍然大悟，截图如下：</p>
-<p><img src="https://ww2.sinaimg.cn/large/006tNc79ly1fd7i8fg3tgj30ke0hiwgw.jpg" alt="WechatIMG48"></p>
-<p>也就是说Sort()其实是一个抽象到具体的过程，而具体如何排序取决于我们传入的interface中究竟带了一个什么样的排序算法，只是一个执行的过程。这样说来，就恍然大悟了。</p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>果然还是有很多设计，我们只看到表象而不知道为什么要这样去做，而官方的文档和注释又不够多，所以会给人以一定的误导，这时候<strong>大佬曰</strong>就显得格外重要了。就这样，Thx~</p>
+<p>到现在我还是不明白为什么要这样设计，直到我问了大佬之后恍然大悟，其实Sort()是一个抽象到具体的过程，而具体如何排序取决于我们传入的interface中究竟带了一个什么样的排序算法，只是一个执行的过程。这样说来，就恍然大悟了。讲真，这样看来这个设计还真是巧妙。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>果然还是有很多设计，我们只看到表象而不知道为什么要这样去做，而官方的文档和注释又不够多，所以会给人以一定的误导，这时候<strong>大佬曰</strong>就显得格外重要了。吐槽一下Go的文档，恩，就这样，Thx~</p>
 <h4 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h4><p><a href="http://stackoverflow.com/questions/19239449/how-do-i-reverse-an-array-in-go" target="_blank" rel="external">How to reverse an array in go</a></p>
 
   </section>
