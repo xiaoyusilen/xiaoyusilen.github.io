@@ -26,7 +26,7 @@ Container/list
 <meta property="og:description" content="Container in Go绝大部分人都知道Go里一些比较特别的关键字，比如chan、go…一直到我今天需要用到队列的时候才突然意识到，诶？Go里有没有容器这种东西。于是我们找到了container，container包括三种数据结构：list、heap、ring，其中heap是堆，ring是循环双向链表，这里暂不介绍，今天主要说list。
 Container/list
 首先需要引入包impor">
-<meta property="og:updated_time" content="2017-03-07T11:54:29.000Z">
+<meta property="og:updated_time" content="2017-03-07T12:04:13.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Go Container List | 小宇宙 | xiaoyusilen">
 <meta name="twitter:description" content="Container in Go绝大部分人都知道Go里一些比较特别的关键字，比如chan、go…一直到我今天需要用到队列的时候才突然意识到，诶？Go里有没有容器这种东西。于是我们找到了container，container包括三种数据结构：list、heap、ring，其中heap是堆，ring是循环双向链表，这里暂不介绍，今天主要说list。
@@ -262,6 +262,8 @@ classes that you can use:
 <li><p><code>PushBackList(other *List)</code>将other list插入到原始list后边，<code>PushFrontList(other *List)</code>将other list插入到原始list前边</p>
 </li>
 </ul>
+</li>
+<li><p>显而易见的，go中的list集成了<code>stack</code>和<code>queue</code>，基本满足了我们针对队列或者栈的基础操作，并且插入和删除也非常的灵活和方便。</p>
 </li>
 </ol>
 <h4 id="Code-Now"><a href="#Code-Now" class="headerlink" title="Code Now"></a>Code Now</h4><p>So easy~No code here. Just code yourself~</p>
