@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      Go Container List | 小宇宙 | xiaoyusilen 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="xiaoyusilen">
+    
+    
+
+    <meta name="description" content="Container in Go绝大部分人都知道Go里一些比较特别的关键字，比如chan、go…一直到我今天需要用到队列的时候才突然意识到，诶？Go里有没有容器这种东西。于是我们找到了container，container包括三种数据结构：list、heap、ring，其中heap是堆，ring是循环双向链表，这里暂不介绍，今天主要说list。
+Container/list
+首先需要引入包impor">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go Container List | 小宇宙 | xiaoyusilen">
+<meta property="og:url" content="http://yoursite.com/2017/03/07/go-container-list/index.html">
+<meta property="og:site_name" content="小宇宙 | xiaoyusilen">
+<meta property="og:description" content="Container in Go绝大部分人都知道Go里一些比较特别的关键字，比如chan、go…一直到我今天需要用到队列的时候才突然意识到，诶？Go里有没有容器这种东西。于是我们找到了container，container包括三种数据结构：list、heap、ring，其中heap是堆，ring是循环双向链表，这里暂不介绍，今天主要说list。
+Container/list
+首先需要引入包impor">
+<meta property="og:updated_time" content="2017-03-07T11:54:29.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Go Container List | 小宇宙 | xiaoyusilen">
+<meta name="twitter:description" content="Container in Go绝大部分人都知道Go里一些比较特别的关键字，比如chan、go…一直到我今天需要用到队列的时候才突然意识到，诶？Go里有没有容器这种东西。于是我们找到了container，container包括三种数据结构：list、heap、ring，其中heap是堆，ring是循环双向链表，这里暂不介绍，今天主要说list。
+Container/list
+首先需要引入包impor">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">小宇宙 | xiaoyusilen</a></h1>
+        <hr class="panel-cover__divider" />
+
+        
+        <p class="panel-cover__description">
+          Life.pop(&#39;Fear&#39;)
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title="" class="">关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title="" class="">归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/xiaoyusilen" title="">
+          <i class='icon icon-social-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+      <li class="navigation__item">
+        <a href="mailto:kleineweltzhang@hotmail.com" title="">
+          <i class='icon icon-mail'></i>
+          <span class="label">Weixin</span>
+        </a>
+      </li>
+
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">Go Container List</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2017-03-07" class="post-meta__date date">2017-03-07</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/Go/">Go</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <h4 id="Container-in-Go"><a href="#Container-in-Go" class="headerlink" title="Container in Go"></a>Container in Go</h4><p>绝大部分人都知道Go里一些比较特别的关键字，比如<code>chan</code>、<code>go</code>…一直到我今天需要用到队列的时候才突然意识到，诶？Go里有没有容器这种东西。于是我们找到了<code>container</code>，<code>container</code>包括三种数据结构：<code>list</code>、<code>heap</code>、<code>ring</code>，其中<code>heap</code>是堆，<code>ring</code>是循环双向链表，这里暂不介绍，今天主要说<code>list</code>。</p>
+<h4 id="Container-list"><a href="#Container-list" class="headerlink" title="Container/list"></a>Container/list</h4><ol>
+<li><p>首先需要引入包<code>import &quot;container/list&quot;</code></p>
+</li>
+<li><p>打开源码的<code>container/list/example_test.go</code>，没错，这是官方给我们的一段标准用法：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> list_test</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">	<span class="string">"container/list"</span></div><div class="line">	<span class="string">"fmt"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">Example</span><span class="params">()</span></span> &#123;</div><div class="line">	<span class="comment">// 新建一个list</span></div><div class="line">	l := list.New()</div><div class="line">	e4 := l.PushBack(<span class="number">4</span>)   <span class="comment">// 在最后插入4</span></div><div class="line">	e1 := l.PushFront(<span class="number">1</span>)  <span class="comment">// 在开始插入1</span></div><div class="line">	l.InsertBefore(<span class="number">3</span>, e4) <span class="comment">// 在4前插入3</span></div><div class="line">	l.InsertAfter(<span class="number">2</span>, e1)  <span class="comment">// 在1后插入2</span></div><div class="line">  </div><div class="line">  	<span class="comment">// ⤴️ 方法名是不是起的一目了然！ (๑•ᴗ•๑)</span></div><div class="line"></div><div class="line">	<span class="comment">// 遍历list，有点类似迭代器(iterator)</span></div><div class="line">	<span class="keyword">for</span> e := l.Front(); e != <span class="literal">nil</span>; e = e.Next() &#123;</div><div class="line">		fmt.Println(e.Value)</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// Output:</span></div><div class="line">	<span class="comment">// 1</span></div><div class="line">	<span class="comment">// 2</span></div><div class="line">	<span class="comment">// 3</span></div><div class="line">	<span class="comment">// 4</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>About Func</p>
+<ul>
+<li><p><code>Back()</code>返回最后一个元素，<code>Front()</code>返回第一个元素，可以配合<code>Value</code>、<code>Next()</code>和<code>Prev()</code>使用，<code>Value</code>返回该元素的值，<code>Next()</code>和<code>Prev()</code>返回的类型仍为元素</p>
+</li>
+<li><p><code>Remove(e *Element)</code>移除元素，可以写成这样：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 假定已经有了一个l，且其中有值</span></div><div class="line">e := l.Front()</div><div class="line">l.Remove(e)</div></pre></td></tr></table></figure>
+</li>
+<li><p><code>Len()</code>返回list的元素个数</p>
+</li>
+<li><p><code>Init()</code>初始化list，源码中是将<code>Front()</code>和<code>Back()</code>都指向<code>root</code>，<code>len</code>改为0</p>
+</li>
+<li><p><code>InsertAfter(v interface{}, mark *Element)</code>将v插入指定元素后，<code>InsertBefore(v interface{}, mark *Element)</code>将v插入指定元素之前</p>
+</li>
+<li><p><code>MoveAfter(e *Element, mark *Element)</code>将元素e移动到指定元素之后，<code>MoveBefore(e *Element, mark *Element)</code>将元素e移动到指定元素之前</p>
+</li>
+<li><p><code>MoveToBack(e *Element)</code>将元素e移动到最后，<code>MoveToFront(e *Element)</code>将元素e移动到最开始</p>
+</li>
+<li><p><code>PushBack(v interface{})</code>将v插入到list最后，<code>PushFront(v interface{})</code>将v插入到list最开始</p>
+</li>
+<li><p><code>PushBackList(other *List)</code>将other list插入到原始list后边，<code>PushFrontList(other *List)</code>将other list插入到原始list前边</p>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="Code-Now"><a href="#Code-Now" class="headerlink" title="Code Now"></a>Code Now</h4><p>So easy~No code here. Just code yourself~</p>
+<p>Have fun~</p>
+
+  </section>
+
+  
+
+<section class="post-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'xiaoyusilen'; 
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+  
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2016-2017. | <a href="http://xiaoyu.world">❤ xiaoyusilen</a> | <a href="https://github.com/someus/huno">Huno</a></span>
+    <span id="busuanzi_container_site_pv" style="display: inline;">
+         This site already had <span id="busuanzi_value_site_pv"></span> Visits by
+    </span>
+    <span id="busuanzi_container_site_uv" style="display: inline;">
+    <span id="busuanzi_value_site_uv"></span> Visitors 
+    </span>
+
+</footer>
+
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>
