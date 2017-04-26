@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      简易Go开发—实时数据处理 | 小宇宙 | xiaoyusilen 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="xiaoyusilen">
+    
+    
+
+    <meta name="description" content="In Go language, channels provide a way for two goroutines to communicate with one another and synchronize their execution. At first, I refused to use channel, because I thought it strange. But using G">
+<meta property="og:type" content="article">
+<meta property="og:title" content="简易Go开发—实时数据处理 | 小宇宙 | xiaoyusilen">
+<meta property="og:url" content="http://yoursite.com/2017/04/26/go-fetch-real-time-data/index.html">
+<meta property="og:site_name" content="小宇宙 | xiaoyusilen">
+<meta property="og:description" content="In Go language, channels provide a way for two goroutines to communicate with one another and synchronize their execution. At first, I refused to use channel, because I thought it strange. But using G">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/006tNc79ly1fez760h0frj31hu0y4q8r.jpg">
+<meta property="og:updated_time" content="2017-04-26T07:59:20.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="简易Go开发—实时数据处理 | 小宇宙 | xiaoyusilen">
+<meta name="twitter:description" content="In Go language, channels provide a way for two goroutines to communicate with one another and synchronize their execution. At first, I refused to use channel, because I thought it strange. But using G">
+<meta name="twitter:image" content="http://ww2.sinaimg.cn/large/006tNc79ly1fez760h0frj31hu0y4q8r.jpg">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">小宇宙 | xiaoyusilen</a></h1>
+        <hr class="panel-cover__divider" />
+
+        
+        <p class="panel-cover__description">
+          Life.pop(&#39;Fear&#39;)
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title="" class="">关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title="" class="">归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/xiaoyusilen" title="">
+          <i class='icon icon-social-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+      <li class="navigation__item">
+        <a href="mailto:kleineweltzhang@hotmail.com" title="">
+          <i class='icon icon-mail'></i>
+          <span class="label">Weixin</span>
+        </a>
+      </li>
+
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">简易Go开发—实时数据处理</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2017-04-26" class="post-meta__date date">2017-04-26</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/Channel/">Channel</a>, <a class="tags-link" href="/tags/Go/">Go</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <p>In Go language, channels provide a way for two goroutines to communicate with one another and synchronize their execution. At first, I refused to use channel, because I thought it strange. But using Go without channel just like using C++ without Class. Channel is easy to learn, maybe you don’t think at first. I will code a simple project about channel.</p>
+<p>This is a simple project of fetching real-time data and write to channel then send to one Restful API. 🤔</p>
+<p>Now, I complete fetching real-time data and write to channel, I will send data to one Restful API and add time judge later.</p>
+<h4 id="How-to-begin"><a href="#How-to-begin" class="headerlink" title="How to begin"></a>How to begin</h4><p>First, please make sure you are under macOS system. </p>
+<p><strong>Tools:</strong></p>
+<ul>
+<li><a href="https://www.jetbrains.com/go/" target="_blank" rel="external">Gogland</a> — Gogland is the codename for a new commercial IDE by JetBrains aimed at providing an ergonomic environment for Go development.</li>
+<li>Go1.8 — Get with <code>brew install go</code></li>
+<li><a href="http://tile38.com/" target="_blank" rel="external">Tile38</a> — Tile38 is an open source (MIT licensed), in-memory geolocation data store, spatial index, and realtime geofence. It supports a variety of object types including lat/lon points, bounding boxes, XYZ tiles, Geohashes, and GeoJSON.<ul>
+<li>Get with <code>brew install tile38</code></li>
+</ul>
+</li>
+<li><a href="https://www.rethinkdb.com/" target="_blank" rel="external">RethinkDB</a> — RethinkDB pushes JSON to your apps <strong>in realtime</strong>.<ul>
+<li>Get with <code>brew install rethinkdb</code></li>
+</ul>
+</li>
+</ul>
+<p>Everything is done. Let’s begin~</p>
+<h4 id="Architecture"><a href="#Architecture" class="headerlink" title="Architecture"></a>Architecture</h4><p>RethinkDB saves your real-time data and will change all the time. <code>Fetch goroutine</code> create a goroutine every ten seconds, then fetch the real-time data from rethinkdb, and judge the update time, if the data changed, add the data to channel.Then one goroutine check the channel is null or not all the time, it is created when you run your demo. Then when the channel get data, it will send the data to <code>SendToAPI</code>, and it will send a request to API. So easy, right?</p>
+<h4 id="Environment"><a href="#Environment" class="headerlink" title="Environment"></a>Environment</h4><ul>
+<li><code>glide init</code></li>
+<li><code>glide update</code></li>
+</ul>
+<p>Please make sure you can over the <strong>wall</strong>.</p>
+<ul>
+<li><code>rethinkdb</code></li>
+</ul>
+<p>Enter <code>localhost:8080</code> in your browser, you will see,</p>
+<p><img src="http://ww2.sinaimg.cn/large/006tNc79ly1fez760h0frj31hu0y4q8r.jpg" alt="WechatIMG150"></p>
+<p>RethinkDB have a client driver itself, you can see the real-time read/write data on the board. Want more? <a href="https://www.rethinkdb.com/" target="_blank" rel="external">RethinkDB</a>⬅️</p>
+<p>Click <code>Data Explorer</code> then execute sql as below,</p>
+<ul>
+<li><code>r.db(&quot;test&quot;).tableCreate(&quot;test&quot;)</code></li>
+<li><code>r.db(&quot;test&quot;).table(&quot;test&quot;).insert({&quot;name&quot;: &quot;xiaoyusilen&quot;})</code></li>
+</ul>
+<h4 id="Begin-with-main-go"><a href="#Begin-with-main-go" class="headerlink" title="Begin with main.go"></a>Begin with <code>main.go</code></h4><p>What should we do? Of course connect to your database, or how to get the real-time data. RethinkDB driver in Go is <a href="https://github.com/GoRethink/gorethink" target="_blank" rel="external">GoRethink</a>, connect rethink with code like below,</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">session, err := r.Connect(r.ConnectOpts&#123;</div><div class="line">		Address:    <span class="string">"localhost:28015"</span>,</div><div class="line">		InitialCap: <span class="number">10</span>,</div><div class="line">		MaxOpen:    <span class="number">10</span>,</div><div class="line">&#125;)</div><div class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">  log.Fatalln(err.Error())</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>As you know, you should close the connection when the program is done, so how about <code>defer</code>? A usage of <a href="http://xiaoyu.world/2017/02/13/go-exception/" target="_blank" rel="external">defer</a>.</p>
+<p><code>main.go</code> will be like below,</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// author by @xiaoyusilen</span></div><div class="line"></div><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">	<span class="string">"time"</span></div><div class="line"></div><div class="line">	<span class="string">"github.com/xiaoyusilen/realtime-fetch/model"</span></div><div class="line">	<span class="string">"github.com/xiaoyusilen/realtime-fetch/route"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line"></div><div class="line">	<span class="comment">// Start RethinkDB</span></div><div class="line">	c := session, err := r.Connect(r.ConnectOpts&#123;</div><div class="line">		Address:    <span class="string">"localhost:28015"</span>,</div><div class="line">		InitialCap: <span class="number">10</span>,</div><div class="line">		MaxOpen:    <span class="number">10</span>,</div><div class="line">    &#125;)</div><div class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">      log.Fatalln(err.Error())</div><div class="line">    &#125;</div><div class="line"></div><div class="line">	<span class="comment">// Close RethinkDB</span></div><div class="line">	<span class="keyword">defer</span> c.Close()</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Now, we connect to rethinkdb. Then, we should create a channel to storage  data, how to?</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">10000</span>)</div></pre></td></tr></table></figure>
+<p>Now, you create a channel. So easy, right? This means you assign a channel named ch, it can storage 10000 integers. But the data we storage will not be integer, so we should definite our data struct. The data struct of mine like this,</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// author by @xiaoyusilen</span></div><div class="line"></div><div class="line"><span class="keyword">package</span> model</div><div class="line"></div><div class="line"><span class="keyword">type</span> Test <span class="keyword">struct</span> &#123;</div><div class="line">	ID   <span class="keyword">string</span></div><div class="line">	Name <span class="keyword">string</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Please new a folder named model, then new a go file named model, then add your data struct. So your channel can be definited as below,</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ch := <span class="built_in">make</span>(<span class="keyword">chan</span> model.Test, <span class="number">10000</span>)</div></pre></td></tr></table></figure>
+<h4 id="Code-about-FetchRealData"><a href="#Code-about-FetchRealData" class="headerlink" title="Code about FetchRealData"></a>Code about <code>FetchRealData</code></h4><p>New a folder named route, then new a go file named <code>fetch_real_data</code>, code like below,</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// author by @xiaoyusilen</span></div><div class="line"></div><div class="line"><span class="keyword">package</span> route</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">	log <span class="string">"github.com/Sirupsen/logrus"</span></div><div class="line">	r <span class="string">"gopkg.in/dancannon/gorethink.v2"</span></div><div class="line"></div><div class="line">	<span class="string">"github.com/xiaoyusilen/realtime-fetch/model"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">FetchRealData</span><span class="params">(c *r.Session, ch <span class="keyword">chan</span> model.Test)</span></span> &#123;</div><div class="line"></div><div class="line">	<span class="comment">// Fetch realtime data from rethinkdb</span></div><div class="line">	resp, err := r.DB(<span class="string">"test"</span>).Table(<span class="string">"test"</span>).Map(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;</div><div class="line">		<span class="string">"id"</span>: r.Row.Field(<span class="string">"id"</span>),</div><div class="line">	&#125;).Run(c)</div><div class="line"></div><div class="line">	<span class="comment">// Close the query</span></div><div class="line">	<span class="keyword">defer</span> resp.Close()</div><div class="line"></div><div class="line">	<span class="comment">// Deal with error, exit the goroutine</span></div><div class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">		<span class="keyword">if</span> resp.IsNil() &#123;</div><div class="line">			log.Errorf(<span class="string">"Have no data like this, err is: %s."</span>, err)</div><div class="line">			<span class="keyword">return</span></div><div class="line">		&#125;</div><div class="line">		log.Errorf(<span class="string">"Query error: %s."</span>, err)</div><div class="line">		<span class="keyword">return</span></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// Change data struct from database to you need</span></div><div class="line">	<span class="keyword">var</span> res <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span></div><div class="line"></div><div class="line">	err = resp.One(&amp;res)</div><div class="line"></div><div class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">		log.Errorf(<span class="string">"Change data struct err: %s."</span>, err)</div><div class="line">		<span class="keyword">return</span></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	test := model.Test&#123;</div><div class="line">		ID:   res[<span class="string">"id"</span>],</div><div class="line">		Name: res[<span class="string">"name"</span>],</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// Write data to channel</span></div><div class="line">	ch &lt;- test</div><div class="line"></div><div class="line">	<span class="comment">// return to stop the goroutine</span></div><div class="line">	<span class="keyword">return</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Parameters you send to this func are c and ch. <code>c</code> is the connection of database, <code>ch</code> is the channel you will use.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Fetch realtime data from rethinkdb</span></div><div class="line">	resp, err := r.DB(<span class="string">"test"</span>).Table(<span class="string">"test"</span>).Map(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;</div><div class="line">		<span class="string">"id"</span>: r.Row.Field(<span class="string">"id"</span>),</div><div class="line">	&#125;).Run(c)</div></pre></td></tr></table></figure>
+<p>This part of code, you query the data which has “id” field. Then deal with the error and write to channel.</p>
+<h4 id="Code-about-check-channel"><a href="#Code-about-check-channel" class="headerlink" title="Code about check_channel"></a>Code about <code>check_channel</code></h4><p>New a go file named <code>check_channel</code> in <code>route</code> folder, then code like below,</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// author by @xiaoyusilen</span></div><div class="line"></div><div class="line"><span class="keyword">package</span> route</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">	<span class="string">"github.com/xiaoyusilen/realtime-fetch/model"</span></div><div class="line"></div><div class="line">	log <span class="string">"github.com/Sirupsen/logrus"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">CheckChannel</span><span class="params">(ch <span class="keyword">chan</span> model.Test)</span></span> &#123;</div><div class="line">	ok := <span class="literal">true</span></div><div class="line">	<span class="keyword">var</span> msg model.Test</div><div class="line">	<span class="keyword">for</span> ok &#123;</div><div class="line">		<span class="keyword">if</span> msg, ok = &lt;-ch; ok &#123;</div><div class="line">			<span class="comment">// You can do what you want to the realtime data.</span></div><div class="line">			log.Println(msg)</div><div class="line"></div><div class="line">			<span class="comment">// todo: send msg to Restful API</span></div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Read data from channel then do what you want. I will do later.</p>
+<h4 id="Turn-to-main-go-again"><a href="#Turn-to-main-go-again" class="headerlink" title="Turn to main.go again"></a>Turn to <code>main.go</code> again</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// author by @xiaoyusilen</span></div><div class="line"></div><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">	<span class="string">"time"</span></div><div class="line"></div><div class="line">	<span class="string">"github.com/xiaoyusilen/realtime-fetch/model"</span></div><div class="line">	<span class="string">"github.com/xiaoyusilen/realtime-fetch/route"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line"></div><div class="line">	<span class="comment">// Start RethinkDB</span></div><div class="line">	c := route.NewRethinkdb()</div><div class="line"></div><div class="line">	<span class="comment">// Close RethinkDB</span></div><div class="line">	<span class="keyword">defer</span> c.Close()</div><div class="line"></div><div class="line">	<span class="comment">// New a channel to save the realtime data</span></div><div class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> model.Test, <span class="number">10000</span>)</div><div class="line"></div><div class="line">	<span class="comment">// One goroutine: read from channel</span></div><div class="line">	<span class="keyword">go</span> route.CheckChannel(ch)</div><div class="line"></div><div class="line">	<span class="keyword">for</span> &#123;</div><div class="line">		<span class="comment">// Another goroutine: fetch realtime data</span></div><div class="line">		<span class="keyword">go</span> route.FetchRealData(c, ch)</div><div class="line"></div><div class="line">		<span class="comment">// Time sleep control the fetch time, I set it as 10 seconds</span></div><div class="line">		time.Sleep(time.Second * <span class="number">10</span>)</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Complete your main.go, then it will be like this.</p>
+<h4 id="End"><a href="#End" class="headerlink" title="End"></a>End</h4><p>The whole code of this project, <a href="https://github.com/xiaoyusilen/realtime-fetch" target="_blank" rel="external">click here</a>⬅️. I will update later if I’m not busy~</p>
+
+  </section>
+
+  
+
+<section class="post-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'xiaoyusilen'; 
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+  
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2016-2017. | <a href="http://xiaoyu.world">❤ xiaoyusilen</a> | <a href="https://github.com/someus/huno">Huno</a></span>
+    <span id="busuanzi_container_site_pv" style="display: inline;">
+         This site already had <span id="busuanzi_value_site_pv"></span> Visits by
+    </span>
+    <span id="busuanzi_container_site_uv" style="display: inline;">
+    <span id="busuanzi_value_site_uv"></span> Visitors 
+    </span>
+
+</footer>
+
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>
