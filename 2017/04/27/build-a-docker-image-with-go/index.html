@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      Build a docker image with Go | 小宇宙 | xiaoyusilen 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="xiaoyusilen">
+    
+    
+
+    <meta name="description" content="Docker ⬅️ Want more about docker, click.
+Look what Dockerfile like,
+123456789101112FROM golang:1.8.1MAINTAINER xiaoyusilen &amp;lt;debug@xiaoyu.fail&amp;gt;# Create directoryRUN mkdir -p /usr/go/src/realtime-">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Build a docker image with Go | 小宇宙 | xiaoyusilen">
+<meta property="og:url" content="http://yoursite.com/2017/04/27/build-a-docker-image-with-go/index.html">
+<meta property="og:site_name" content="小宇宙 | xiaoyusilen">
+<meta property="og:description" content="Docker ⬅️ Want more about docker, click.
+Look what Dockerfile like,
+123456789101112FROM golang:1.8.1MAINTAINER xiaoyusilen &amp;lt;debug@xiaoyu.fail&amp;gt;# Create directoryRUN mkdir -p /usr/go/src/realtime-">
+<meta property="og:image" content="http://ww3.sinaimg.cn/large/006tNc79ly1ff1cfg3buvj30yg034dgb.jpg">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/006tNc79ly1ff1cfewfmnj30vk05sjt3.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/006tNc79ly1ff1cffly5fj30yi030my2.jpg">
+<meta property="og:updated_time" content="2017-04-27T09:01:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Build a docker image with Go | 小宇宙 | xiaoyusilen">
+<meta name="twitter:description" content="Docker ⬅️ Want more about docker, click.
+Look what Dockerfile like,
+123456789101112FROM golang:1.8.1MAINTAINER xiaoyusilen &amp;lt;debug@xiaoyu.fail&amp;gt;# Create directoryRUN mkdir -p /usr/go/src/realtime-">
+<meta name="twitter:image" content="http://ww3.sinaimg.cn/large/006tNc79ly1ff1cfg3buvj30yg034dgb.jpg">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">小宇宙 | xiaoyusilen</a></h1>
+        <hr class="panel-cover__divider" />
+
+        
+        <p class="panel-cover__description">
+          Life.pop(&#39;Fear&#39;)
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title="" class="">关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title="" class="">归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/xiaoyusilen" title="">
+          <i class='icon icon-social-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+      <li class="navigation__item">
+        <a href="mailto:kleineweltzhang@hotmail.com" title="">
+          <i class='icon icon-mail'></i>
+          <span class="label">Weixin</span>
+        </a>
+      </li>
+
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">Build a docker image with Go</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2017-04-27" class="post-meta__date date">2017-04-27</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/Docker/">Docker</a>, <a class="tags-link" href="/tags/Go/">Go</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <p><a href="https://www.docker.com/" target="_blank" rel="external">Docker</a> ⬅️ Want more about docker, click.</p>
+<p>Look what Dockerfile like,</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">FROM</span> golang:<span class="number">1.8</span>.<span class="number">1</span></div><div class="line"></div><div class="line"><span class="keyword">MAINTAINER</span> xiaoyusilen &lt;debug@xiaoyu.fail&gt;</div><div class="line"></div><div class="line"><span class="comment"># Create directory</span></div><div class="line"><span class="keyword">RUN</span> mkdir -p /usr/go/src/realtime-fetch</div><div class="line"><span class="keyword">WORKDIR</span> /usr/go/src/realtime-fetch</div><div class="line"></div><div class="line"><span class="comment"># Copy to directory</span></div><div class="line"><span class="keyword">COPY</span> main /usr/go/src/realtime-fetch</div><div class="line"></div><div class="line"><span class="keyword">CMD</span> ["./main"]</div></pre></td></tr></table></figure>
+<p>First line means the basis image you use.</p>
+<p><strong>Basis image</strong> is like centOS or … I use golang as my basis image, the version I used is 1.8.1. This depends on my development environment.</p>
+<p>Pull golang image with command <code>docker pull golang:1.8.1</code>, then <code>docker images</code>, you can get,</p>
+<p><img src="http://ww3.sinaimg.cn/large/006tNc79ly1ff1cfg3buvj30yg034dgb.jpg" alt="WechatIMG164"></p>
+<p>Then <code>docker run -it golang</code>,</p>
+<p><img src="http://ww2.sinaimg.cn/large/006tNc79ly1ff1cfewfmnj30vk05sjt3.jpg" alt="WechatIMG165"></p>
+<p>Then, command with <code>go version</code>, you can get message as below,</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">go version go1.8.1 linux/amd64</div></pre></td></tr></table></figure>
+<p>This means golang:1.8.1 was based on linux/amd64, so you should compile to linux/amd64.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">GOOS=linux GOARCH=amd64 go build main.go</div></pre></td></tr></table></figure>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Create directory</span></div><div class="line"><span class="keyword">RUN</span> mkdir -p /usr/go/src/realtime-fetch</div><div class="line"><span class="keyword">WORKDIR</span> /usr/go/src/realtime-fetch</div></pre></td></tr></table></figure>
+<p>This part of code is to create a new folder named realtime-fetch in /usr/go/src, and your work path will be /usr/go/src/realtime-fetch.</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Copy to directory</span></div><div class="line"><span class="keyword">COPY</span> main /usr/go/src/realtime-fetch</div></pre></td></tr></table></figure>
+<p>This part of code is to copy compiled file <code>main</code> to docker image you created.</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">CMD</span> ["./main"]</div></pre></td></tr></table></figure>
+<p>Finally, command with <code>./main</code> to start your service. At the root directory of your project, and command with,</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker build -t realtime-fetch .</div></pre></td></tr></table></figure>
+<p><code>realtime-fetch</code> means your image’s name. You will see,</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">➜  realtime-fetch git:(develop) docker build -t realtime-fetch .</div><div class="line">Sending build context to Docker daemon 30.01 MB</div><div class="line">Step 1/7 : FROM golang:1.8.1</div><div class="line"> ---&gt; 6d0bfafa0452</div><div class="line">Step 2/7 : MAINTAINER xiaoyusilen &lt;debug@xiaoyu.fail&gt;</div><div class="line"> ---&gt; Running in 354a32ee0d00</div><div class="line"> ---&gt; 0588c53fbdd8</div><div class="line">Removing intermediate container 354a32ee0d00</div><div class="line">Step 3/7 : RUN mkdir -p /usr/go/src/realtime-fetch</div><div class="line"> ---&gt; Running in a9c173ab5f48</div><div class="line"> ---&gt; d0d82fcb761a</div><div class="line">Removing intermediate container a9c173ab5f48</div><div class="line">Step 4/7 : RUN mkdir -p /usr/go/src/realtime-fetch/log</div><div class="line"> ---&gt; Running in 89517cb82e97</div><div class="line"> ---&gt; 18bca88f2478</div><div class="line">Removing intermediate container 89517cb82e97</div><div class="line">Step 5/7 : WORKDIR /usr/go/src/realtime-fetch</div><div class="line"> ---&gt; 60e4bf349512</div><div class="line">Removing intermediate container 83d91884eb20</div><div class="line">Step 6/7 : COPY main /usr/go/src/realtime-fetch</div><div class="line"> ---&gt; acc4f3845d87</div><div class="line">Removing intermediate container b9dac1eaba66</div><div class="line">Step 7/7 : CMD ./main</div><div class="line"> ---&gt; Running in 8f00d817b6ff</div><div class="line"> ---&gt; da232cb1ba12</div><div class="line">Removing intermediate container 8f00d817b6ff</div><div class="line">Successfully built da232cb1ba12</div></pre></td></tr></table></figure>
+<p>Then, <code>docker images</code>, you can get,</p>
+<p><img src="http://ww1.sinaimg.cn/large/006tNc79ly1ff1cffly5fj30yi030my2.jpg" alt="WechatIMG166"></p>
+<p>Just <code>docker run realtime-fetch</code>.</p>
+<p>Sleepy today, update later.</p>
+
+  </section>
+
+  
+
+<section class="post-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'xiaoyusilen'; 
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+  
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2016-2017. | <a href="http://xiaoyu.world">❤ xiaoyusilen</a> | <a href="https://github.com/someus/huno">Huno</a></span>
+    <span id="busuanzi_container_site_pv" style="display: inline;">
+         This site already had <span id="busuanzi_value_site_pv"></span> Visits by
+    </span>
+    <span id="busuanzi_container_site_uv" style="display: inline;">
+    <span id="busuanzi_value_site_uv"></span> Visitors 
+    </span>
+
+</footer>
+
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>
