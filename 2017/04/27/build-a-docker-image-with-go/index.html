@@ -30,7 +30,7 @@ Look what Dockerfile like,
 <meta property="og:image" content="http://ww2.sinaimg.cn/large/006tNc79ly1ff1cfewfmnj30vk05sjt3.jpg">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/006tNc79ly1ff1cffly5fj30yi030my2.jpg">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/006tNbRwly1ffctl3vumbj30hf01haa7.jpg">
-<meta property="og:updated_time" content="2017-05-07T07:16:05.000Z">
+<meta property="og:updated_time" content="2017-05-10T10:58:50.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Build a docker image with Go | 小宇宙 | xiaoyusilen">
 <meta name="twitter:description" content="Docker ⬅️ Want more about docker, click.
@@ -264,9 +264,9 @@ classes that you can use:
 <p><img src="http://ww1.sinaimg.cn/large/006tNc79ly1ff1cffly5fj30yi030my2.jpg" alt="WechatIMG166"></p>
 <p>Just <code>docker run realtime-fetch</code>.</p>
 <p>Sleepy today, update later.</p>
-<h4 id="5-7-Update"><a href="#5-7-Update" class="headerlink" title="5.7 Update"></a>5.7 Update</h4><p>When you use golang as basis image, the image you built will be heavy. But we don’t need all of the basis image, so we always choose a light image as far as possible. I recommend you to use <code>alpine</code> as your basis image here. This image is only 3.99MB.</p>
-<p>The new image I used <code>alpine</code> built like below.</p>
-<p><img src="http://ww1.sinaimg.cn/large/006tNbRwly1ffctl3vumbj30hf01haa7.jpg" alt="WechatIMG210"></p>
+<h4 id="Update"><a href="#Update" class="headerlink" title="Update"></a>Update</h4><p>When you use golang as basis image, the image you built will be heavy. But we don’t need all of the basis image, so we always choose a light image as far as possible. I recommend you to use <code>alpine</code> as your basis image here. This image is only 3.99MB.</p>
+<p>The new image I used <code>alpine</code> built like below.<img src="http://ww1.sinaimg.cn/large/006tNbRwly1ffctl3vumbj30hf01haa7.jpg" alt="WechatIMG210"></p>
+<p>When you use alpine, you should change command <code>bin/bash</code> to <code>bin/sh</code>, and docker run command should be <code>docker run -it realtime-fetch /bin/sh</code>. If you want to exposure port, please use <code>docker run -p 9000:9000 -it realtime-fetch /bin/sh</code>, the first 9000 is the port of host, the second 9000 is the port of image.</p>
 
   </section>
 
