@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
 
     
@@ -22,23 +22,24 @@
 <meta property="og:url" content="http://yoursite.com/tags/Docker/index.html">
 <meta property="og:site_name" content="小宇宙 | xiaoyusilen">
 <meta property="og:description" content="xiaoyusilen&apos;s playground">
+<meta property="og:locale" content="zh-CN">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="标签: Docker">
 <meta name="twitter:description" content="xiaoyusilen&apos;s playground">
     
     
     
-      <link rel="icon" type="image/x-icon" href="/king.ico">
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
     
     <link rel="stylesheet" href="/css/uno.css">
     <link rel="stylesheet" href="/css/highlight.css">
     <link rel="stylesheet" href="/css/archive.css">
-    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 </head>
 <body>
 
-    <span class="mobile btn-mobile-menu">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><span class="mobile btn-mobile-menu">
         <i class="icon icon-list btn-mobile-menu__icon"></i>
         <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
     </span>
@@ -141,7 +142,7 @@ classes that you can use:
     
       <!-- Github -->
       <li class="navigation__item">
-        <a href="https://github.com/xiaoyusilen" title="">
+        <a href="https://github.com/xiaoyusilen" title="Huno on GitHub">
           <i class='icon icon-social-github'></i>
           <span class="label">GitHub</span>
         </a>
@@ -167,18 +168,16 @@ classes that you can use:
 
     -->
 
-      <li class="navigation__item">
-        <a href="mailto:kleineweltzhang@hotmail.com" title="">
-          <i class='icon icon-mail'></i>
-          <span class="label">Weixin</span>
-        </a>
-      </li>
-
-
-
+    <li class="navigation__item">
+      <a href="mailto:debug@xiaoyu.fail" title="">
+        <i class='icon icon-mail'></i>
+        <span class="label">Weixin</span>
+      </a>
+    </li>
 
   </ul>
 </nav>
+
 
 
 
@@ -208,7 +207,7 @@ classes that you can use:
     <li>
 
       <h2 class="post-list__post-title post-title">
-        <a href="/2017/04/27/build-a-docker-image-with-go/" title="link to Build a docker image with Go">Build a docker image with Go</a>
+        <a href="/Go/build-a-docker-image-with-go/" title="link to Build a docker image with Go">Build a docker image with Go</a>
       </h2>
 
       <div class="post-list__meta">
@@ -240,6 +239,7 @@ classes that you can use:
             <footer class="footer">
 
     <span class="footer__copyright">&copy; 2016-2017. | ❤ <a href="http://xiaoyu.world">xiaoyusilen</a> | <a href="https://github.com/someus/huno">Huno</a></span>
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
     <span id="busuanzi_container_site_pv" style="display: inline;">
          This site already had <span id="busuanzi_value_site_pv"></span> Visits by
     </span>
@@ -256,12 +256,9 @@ classes that you can use:
     <script src="/js/jquery.min.js"></script>
     <script src="/js/main.js"></script>
     <script src="/js/scale.fix.js"></script>
-    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
     
 
-    
-
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript"> 
         $(document).ready(function(){
             MathJax.Hub.Config({ 
@@ -279,5 +276,37 @@ classes that you can use:
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
 <![endif]-->
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
 </body>
 </html>

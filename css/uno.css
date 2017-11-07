@@ -1196,7 +1196,7 @@ hr {
   width: 100%;
   max-width: none;
   height: 100%;
-  background: url(../images/back6.jpg) top left no-repeat #666666;
+  background: url(../images/background-cover.jpg) top left no-repeat #666666;
   background-size: cover; }
 
 .panel-cover--collapsed {
@@ -1228,7 +1228,7 @@ hr {
   border-top: 1px solid rgba(255, 255, 255, 0.14); }
 
 .panel-cover__divider--secondary {
-  width: 30%; }
+  width: 15%; }
 
 .panel-main {
   display: table;

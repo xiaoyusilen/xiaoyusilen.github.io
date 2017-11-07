@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      Linear Regression | 小宇宙 | xiaoyusilen 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="xiaoyusilen">
+    
+    
+
+    <meta name="description" content="概述线性回归通常是学习预测模型时首选的技术之一，其中因变量是连续的，自变量可以是连续的，也可以是离散的，回归线的性质是线性的。现行回归使用最佳的拟合直线，也就是回归线，在因变量 y 和一个或多个自变量 x 之间建立一种关系。 模型$y = a + bx + e$，其中 $a$ 表示截距，$b$ 表示斜率，$e$ 表示误差项，这里，我们希望求得一个 $e$ 无限接近于 $0$，并且 $y$ 和真实值">
+<meta name="keywords" content="Machine Learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linear Regression | 小宇宙 | xiaoyusilen">
+<meta property="og:url" content="http://yoursite.com/ML/linear-regression/index.html">
+<meta property="og:site_name" content="小宇宙 | xiaoyusilen">
+<meta property="og:description" content="概述线性回归通常是学习预测模型时首选的技术之一，其中因变量是连续的，自变量可以是连续的，也可以是离散的，回归线的性质是线性的。现行回归使用最佳的拟合直线，也就是回归线，在因变量 y 和一个或多个自变量 x 之间建立一种关系。 模型$y = a + bx + e$，其中 $a$ 表示截距，$b$ 表示斜率，$e$ 表示误差项，这里，我们希望求得一个 $e$ 无限接近于 $0$，并且 $y$ 和真实值">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1fl19jsl8zgj30d807vglt.jpg">
+<meta property="og:updated_time" content="2017-11-07T17:13:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linear Regression | 小宇宙 | xiaoyusilen">
+<meta name="twitter:description" content="概述线性回归通常是学习预测模型时首选的技术之一，其中因变量是连续的，自变量可以是连续的，也可以是离散的，回归线的性质是线性的。现行回归使用最佳的拟合直线，也就是回归线，在因变量 y 和一个或多个自变量 x 之间建立一种关系。 模型$y = a + bx + e$，其中 $a$ 表示截距，$b$ 表示斜率，$e$ 表示误差项，这里，我们希望求得一个 $e$ 无限接近于 $0$，并且 $y$ 和真实值">
+<meta name="twitter:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1fl19jsl8zgj30d807vglt.jpg">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</head>
+<body>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">小宇宙 | xiaoyusilen</a></h1>
+        <hr class="panel-cover__divider" />
+
+        
+        <p class="panel-cover__description">
+          Life.pop(&#39;Fear&#39;)
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title="" class="">关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title="" class="">归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/xiaoyusilen" title="Huno on GitHub">
+          <i class='icon icon-social-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+    <li class="navigation__item">
+      <a href="mailto:debug@xiaoyu.fail" title="">
+        <i class='icon icon-mail'></i>
+        <span class="label">Weixin</span>
+      </a>
+    </li>
+
+  </ul>
+</nav>
+
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">Linear Regression</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2017-11-05" class="post-meta__date date">2017-11-05</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+            <font class="categories">
+            &#8226; 分类:
+            <a class="categories-link" href="/categories/ML/">ML</a>
+            </font>
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/Machine-Learning/">Machine Learning</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>线性回归通常是学习预测模型时首选的技术之一，其中因变量是连续的，自变量可以是连续的，也可以是离散的，回归线的性质是线性的。现行回归使用最佳的拟合直线，也就是回归线，在因变量 y 和一个或多个自变量 x 之间建立一种关系。</p>
+<h3 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h3><p>$y = a + bx + e$，其中 $a$ 表示截距，$b$ 表示斜率，$e$ 表示误差项，这里，我们希望求得一个 $e$ 无限接近于 $0$，并且 $y$ 和真实值偏差最小的 $a$ 和 $b$。</p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fl19jsl8zgj30d807vglt.jpg" alt="55d3f5dc33dc3"></p>
+<p>一元线性回归和多元线性回归的区别在于，多元线性回归有 &gt; 1 个自变量，而一元线性回归通常只有 1 个自变量。</p>
+<h3 id="如何获得最佳拟合线？"><a href="#如何获得最佳拟合线？" class="headerlink" title="如何获得最佳拟合线？"></a>如何获得最佳拟合线？</h3><h4 id="最小二乘法"><a href="#最小二乘法" class="headerlink" title="最小二乘法"></a>最小二乘法</h4><p>最小二乘法的核心是保证所有数据偏差的平方和最小。</p>
+<h4 id="推导过程如下"><a href="#推导过程如下" class="headerlink" title="推导过程如下"></a>推导过程如下</h4><ul>
+<li><p>由于 $y = a + bx$ 是一个二元方程，我们现在想要求得该方程中的两个参数，因此应该求 $y$ 关于 $a$ 以及 $y$ 关于 $b$ 的偏导，偏导即将所求参数视作变量，其他参数视作常量，然后求导。</p>
+</li>
+<li><p>$M$ 表示预测值与实际值差值平方和，我们现在希望找到 $M$ 最小情况下的 $a$ 和 $b$，这里的 $M$ 就是上边公式的 $e$。</p>
+<p>$M = \sum_{i = 1}^n[y_i - (ax_i + b)]^{2}$</p>
+<p>$\frac{\partial M}{\partial a} = -2 \sum_{i = 1}^n x_i[y_i - (ax_i + b)] = -2 \sum_{i = 1}^n(x_iy_i - ax_i^{2} - bx_i) = 2(a\sum_{i = 1}^nx_i^{2} + b\sum_{i = 1}^nx_i - \sum_{i = 1}^nx_iy_i)$</p>
+<p>$\frac{\partial M}{\partial b} = -2\sum_{i = 1}^n[y_i - (ax_i + b)] = 2(\sum_{i = 1}^ny_i - a\sum_{i = 1}^nx_i - nb)$</p>
+<p>我们的目的是要求极值，所以令 $\frac{\partial M}{\partial a} = 0$，$\frac{\partial M}{\partial b} = 0$，令 $n\bar x = \sum_{i = 1}^nx_i$，$n\bar y = \sum_{i = 1}^ny_i$</p>
+<p>$\frac{\partial M}{\partial b} = -2(n\bar y - an\bar x - nb) = 0$</p>
+<p>$∴ b = \bar y - a\bar x$</p>
+<p>$a\sum_{i = 1}^nx_i^{2} + \bar y\sum_{i = 1}^nx_i - a\bar x\sum_{i = 1}^nx_i - \sum_{i = 1}^nx_iy_i = 0$</p>
+<p>$a\sum_{i = 1}^n x_i^{2} - a\bar x\sum_{i = 1}^nx_i = \sum_{i = 1}^nx_iy_i - \bar y\sum_{i = 1}^nx_i$</p>
+<p>$\sum_{i = 1}^nx_i^{2} - \bar x\sum{i = 1}^nx_i = \frac{\sum_{i = 1}^nx_iy_i - \bar y\sum_{i = 1}^nx_i)}{a}$</p>
+<p>$a = \frac{\sum_{i = 1}^nx_iy_i - \bar y\sum_{i = 1}^nx_i}{\sum_{i = 1}^nx_i^{2} - \bar x\sum_{i = 1}^nx_i}$</p>
+<p>$a = \frac{\sum_{i = 1}^n(x_i - \bar x)(y_i - \bar y)}{\sum_{i = 1}^n(x_i - \bar x)^{2}}$</p>
+</li>
+</ul>
+<ul>
+<li><p>化简后可得：</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+
+a = \frac{\sum\_{i = 1}^n(x\_i - \bar x)(y\_i - \bar y)}{\sum\_{i = 1}^n(x\_i - \bar x)^{2}}\\
+b = \bar y - a\bar x
+
+\end{cases}</script></li>
+</ul>
+<h4 id="Question"><a href="#Question" class="headerlink" title="Question"></a>Question</h4><p><strong>为什么最小二乘法中用模型预测数据与实际数据差的平方和最小而不是绝对值和最小？</strong></p>
+<p><a href="http://blog.sciencenet.cn/blog-430956-621997.html，其实本质是因为我们需要预测值和实际值的误差符合正态分布，符合客观的统计规律。" target="_blank" rel="external">http://blog.sciencenet.cn/blog-430956-621997.html，其实本质是因为我们需要预测值和实际值的误差符合正态分布，符合客观的统计规律。</a></p>
+<h3 id="线性回归的缺陷"><a href="#线性回归的缺陷" class="headerlink" title="线性回归的缺陷"></a>线性回归的缺陷</h3><ul>
+<li>自变量和因变量一定要是线性</li>
+<li>线性回归对异常值非常敏感，会严重影响回归线，最终影响预测</li>
+<li>从公式中可以看出，随着 n 的增加，计算量会越来越大</li>
+</ul>
+<h3 id="线性回归的损失函数"><a href="#线性回归的损失函数" class="headerlink" title="线性回归的损失函数"></a>线性回归的损失函数</h3><p>指数损失函数</p>
+
+  </section>
+
+  <section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2016-2017. | ❤ <a href="http://xiaoyu.world">xiaoyusilen</a> | <a href="https://github.com/someus/huno">Huno</a></span>
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv" style="display: inline;">
+         This site already had <span id="busuanzi_value_site_pv"></span> Visits by
+    </span>
+    <span id="busuanzi_container_site_uv" style="display: inline;">
+    <span id="busuanzi_value_site_uv"></span> Visitors 
+    </span>
+
+</footer>
+
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+    
+
+        <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>
