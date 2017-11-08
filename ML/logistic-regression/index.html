@@ -25,7 +25,7 @@
 <meta property="og:description" content="概述线性回归和逻辑回归虽然名字中都有回归，但是线性回归是一种回归算法，而逻辑回归是一种分类算法，逻辑回归的预测结果是分类变量。比如，判断一封邮件是不是垃圾邮件。 模型逻辑回归的模型是 Sigmoid 函数 $ y = \frac{1}{1+e^{-z}}$。我们假设一种情况，当 $y = ax + b$ 左侧的 y 变成一个二分类，那么$y \in (0, 1)$，但是此时右侧的 $ax + b">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1fl1ioq4n63j30ik0cdwex.jpg">
-<meta property="og:updated_time" content="2017-11-08T05:42:38.000Z">
+<meta property="og:updated_time" content="2017-11-08T05:48:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Logistic Regression | 小宇宙 | xiaoyusilen">
 <meta name="twitter:description" content="概述线性回归和逻辑回归虽然名字中都有回归，但是线性回归是一种回归算法，而逻辑回归是一种分类算法，逻辑回归的预测结果是分类变量。比如，判断一封邮件是不是垃圾邮件。 模型逻辑回归的模型是 Sigmoid 函数 $ y = \frac{1}{1+e^{-z}}$。我们假设一种情况，当 $y = ax + b$ 左侧的 y 变成一个二分类，那么$y \in (0, 1)$，但是此时右侧的 $ax + b">
@@ -263,7 +263,7 @@ classes that you can use:
 <p>这里的 $l(\theta)$ 就是 Logistic Regression 的损失函数。这里 $l(\theta)$ 对每个 $\theta$ 求导，得，</p>
 <p>$\frac{\partial}{\partial \theta_j}l(\theta) = (y\frac{1}{g(\theta^Tx)} - (1 - y)\frac{1}{1 - g(\theta^Tx)})\frac{\partial}{\partial \theta_j}g(\theta^Tx)$</p>
 <p>其中对于 $\frac{1}{1 + e^{-z}}$ 求导，将 $y = \frac{1}{1 + e^{-z}}$ 转换为 $e^{-z} = \frac{1 - y}{y}$，</p>
-<p>$\frac{\partial}{\partial \theta_j} \frac{1}{1 + e^{-z}} = \frac{e^{-x}}{(1 + e^{-x})^{2}}$，此时将 $e^{-z}$ 带入，</p>
+<p>$\frac{\partial}{\partial \theta_j} \frac{1}{1 + e^{-z}} = \frac{e^{-x}}{(1 + e^{-x})^{2}}$，此时将 $e^{-z}$ 代入，</p>
 <p>$\frac{\partial}{\partial \theta_j} \frac{1}{1 + e^{-z}} = \frac{e^{-x}}{(1 + e^{-x})^{2}} = y (1 - y)$</p>
 <p>所以，$\frac{\partial}{\partial \theta_j}l(\theta) = (y\frac{1}{g(\theta^Tx)} - (1 - y)\frac{1}{1 - g(\theta^Tx)})\frac{\partial}{\partial \theta_j}g(\theta^Tx) = (y \frac{1}{g(\theta^Tx)} - (1 - y)\frac{1}{1 - g(\theta^Tx)})g(\theta^Tx)(1 - g(\theta^Tx))\frac{\partial}{\partial \theta_j}\theta^Tx = (y -h_\theta(x))x_j$</p>
 <p>如上式，如果特征较多，且数据量较大，那么直接对 $\theta$ 求偏导，需要联立一组个数为 $n + 1$ 的方程组，这种方法比较麻烦，并不能直接求出 $\theta$ 的值。</p>
