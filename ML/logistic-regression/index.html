@@ -25,7 +25,7 @@
 <meta property="og:description" content="概述线性回归和逻辑回归虽然名字中都有回归，但是线性回归是一种回归算法，而逻辑回归是一种分类算法，逻辑回归的预测结果是分类变量。比如，判断一封邮件是不是垃圾邮件。 模型逻辑回归的模型是 Sigmoid 函数 $ y = \frac{1}{1+e^{-z}}$。我们假设一种情况，当 $y = ax + b$ 左侧的 y 变成一个二分类，那么$y \in (0, 1)$，但是此时右侧的 $ax + b">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1fl1ioq4n63j30ik0cdwex.jpg">
-<meta property="og:updated_time" content="2017-11-08T05:39:44.000Z">
+<meta property="og:updated_time" content="2017-11-08T05:42:38.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Logistic Regression | 小宇宙 | xiaoyusilen">
 <meta name="twitter:description" content="概述线性回归和逻辑回归虽然名字中都有回归，但是线性回归是一种回归算法，而逻辑回归是一种分类算法，逻辑回归的预测结果是分类变量。比如，判断一封邮件是不是垃圾邮件。 模型逻辑回归的模型是 Sigmoid 函数 $ y = \frac{1}{1+e^{-z}}$。我们假设一种情况，当 $y = ax + b$ 左侧的 y 变成一个二分类，那么$y \in (0, 1)$，但是此时右侧的 $ax + b">
@@ -255,18 +255,18 @@ classes that you can use:
 <p>另一个层面来解释，$\frac{P}{1-P}$ 中，若一件事发生的概率越大，那么分子越大，分母越小，这个比值比也会越大，若一件事发生的概率越小，那么分子越小，分母越大，这个比值比也会越小，更显著的体现了这个 $y$ 值的意义。</p>
 <p><strong>总结：在线性回归中 $\theta^TX$ 为预测值的拟合函数，是对 $f(x)$ 的输出变量 $y$ 的拟合，在逻辑回归中 $\theta^TX = 0$ 为决策边界，是对 1 类的样本的概率的拟合。</strong></p>
 <h2 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h2><p>LR 的损失函数是对数似然函数。</p>
-<h2 id="参数的计算"><a href="#参数的计算" class="headerlink" title="参数的计算"></a>参数的计算</h2><p>$P(y = 1 | x;\theta) = h<em>\theta(x)$<br>$P(y = 0 | x;\theta) = 1 - h</em>\theta(x)$<br>上述两个公式可以得出，<br>$P(y | x;\theta) = (h<em>\theta(x))^{y}(1 - h</em>\theta(x))^{1-y}$</p>
+<h2 id="参数的计算"><a href="#参数的计算" class="headerlink" title="参数的计算"></a>参数的计算</h2><p>$P(y = 1 | x;\theta) = h_\theta(x)$<br>$P(y = 0 | x;\theta) = 1 - h_\theta(x)$<br>上述两个公式可以得出，<br>$P(y | x;\theta) = (h_\theta(x))^{y}(1 - h_\theta(x))^{1-y}$</p>
 <p>当样本独立同分布时，可得</p>
-<p>$L(\theta) = \prod_{i=1}^n P(y_i | x<em>i;\theta) = \prod</em>{i=1}^n(h_\theta(x_i))^{y<em>i}(1 - h</em>\theta(x_i))^{1 - y_i}$</p>
+<p>$L(\theta) = \prod_{i=1}^n P(y_i | x_i;\theta) = \prod_{i=1}^n(h_\theta(x_i))^{y_i}(1 - h_\theta(x_i))^{1 - y_i}$</p>
 <p>我们的目的是求出使得这一似然函数值最大的参数估计，最大的似然估计就是求出参数 $\theta_0, \theta_1,…,\theta_n$，使得 $L(\theta)$ 最大，对 $L(\theta)$ 取对数得，</p>
-<p>$l(\theta) = \ln L(\theta) = \sum_{i = 1}^n(y<em>i\ln h</em>\theta(x_i) + (1 - y<em>i)\ln (1 - h</em>\theta(x_i)))$</p>
+<p>$l(\theta) = \ln L(\theta) = \sum_{i = 1}^n(y_i\ln h_\theta(x_i) + (1 - y_i)\ln (1 - h_\theta(x_i)))$</p>
 <p>这里的 $l(\theta)$ 就是 Logistic Regression 的损失函数。这里 $l(\theta)$ 对每个 $\theta$ 求导，得，</p>
 <p>$\frac{\partial}{\partial \theta_j}l(\theta) = (y\frac{1}{g(\theta^Tx)} - (1 - y)\frac{1}{1 - g(\theta^Tx)})\frac{\partial}{\partial \theta_j}g(\theta^Tx)$</p>
 <p>其中对于 $\frac{1}{1 + e^{-z}}$ 求导，将 $y = \frac{1}{1 + e^{-z}}$ 转换为 $e^{-z} = \frac{1 - y}{y}$，</p>
 <p>$\frac{\partial}{\partial \theta_j} \frac{1}{1 + e^{-z}} = \frac{e^{-x}}{(1 + e^{-x})^{2}}$，此时将 $e^{-z}$ 带入，</p>
 <p>$\frac{\partial}{\partial \theta_j} \frac{1}{1 + e^{-z}} = \frac{e^{-x}}{(1 + e^{-x})^{2}} = y (1 - y)$</p>
-<p>所以，$\frac{\partial}{\partial \theta_j}l(\theta) = (y\frac{1}{g(\theta^Tx)} - (1 - y)\frac{1}{1 - g(\theta^Tx)})\frac{\partial}{\partial \theta_j}g(\theta^Tx) = (y \frac{1}{g(\theta^Tx)} - (1 - y)\frac{1}{1 - g(\theta^Tx)})g(\theta^Tx)(1 - g(\theta^Tx))\frac{\partial}{\partial \theta<em>j}\theta^Tx = (y -h</em>\theta(x))x_j$</p>
-<p>如上式，如果特征较多，且数据量较大，那么直接对 $\theta$ 求偏导，需要联立一组个数为 $n + 1$ 的方程组，这种方法比较麻烦，并不能直接求出 $\theta$ 的值。</p>
+<p>所以，$\frac{\partial}{\partial \theta_j}l(\theta) = (y\frac{1}{g(\theta^Tx)} - (1 - y)\frac{1}{1 - g(\theta^Tx)})\frac{\partial}{\partial \theta_j}g(\theta^Tx) = (y \frac{1}{g(\theta^Tx)} - (1 - y)\frac{1}{1 - g(\theta^Tx)})g(\theta^Tx)(1 - g(\theta^Tx))\frac{\partial}{\partial \theta_j}\theta^Tx = (y -h_\theta(x))x_j$</p>
+<p>如上式，如果特征较多，且数据量较大，那么直接对 $\theta$ 求偏导，需要联立一组个数为 $n + 1$ 的方程组，这种方法比较麻烦，并不能直接求出 $\theta$ 的值。</p>
 <h2 id="如何求-theta-的值"><a href="#如何求-theta-的值" class="headerlink" title="如何求 $\theta$ 的值"></a>如何求 $\theta$ 的值</h2><p>通常情况下，求得 $\theta$ 的值有两种常用的方法，<strong>梯度下降法</strong>与<strong>牛顿法与拟牛顿法</strong>。这里不做太多说明，下一次再详细介绍用这两种方法如何求 $\theta$ 的值。 </p>
 <h2 id="关于-LR"><a href="#关于-LR" class="headerlink" title="关于 LR"></a>关于 LR</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
 <li>广泛用于分类问题</li>
