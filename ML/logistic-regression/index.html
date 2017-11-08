@@ -16,19 +16,19 @@
     
     
 
-    <meta name="description" content="概述线性回归和逻辑回归虽然名字中都有回归，但是线性回归是一种回归算法，而逻辑回归是一种分类算法，逻辑回归的预测结果是分类变量。比如，判断一封邮件是不是垃圾邮件。 模型逻辑回归的模型是 Sigmoid 函数 $$ y = \frac{1}{1+e^{-z}} $$。我们假设一种情况，当 $$y = ax + b$$ 左侧的 y 变成一个二分类，那么$$y \in (0, 1)$$，但是此时右侧的 $">
+    <meta name="description" content="概述线性回归和逻辑回归虽然名字中都有回归，但是线性回归是一种回归算法，而逻辑回归是一种分类算法，逻辑回归的预测结果是分类变量。比如，判断一封邮件是不是垃圾邮件。 模型逻辑回归的模型是 Sigmoid 函数 $$y = \frac{1}{1+e^{-z}}$$。我们假设一种情况，当 $$y = ax + b$$ 左侧的 y 变成一个二分类，那么$$y \in (0, 1)$$，但是此时右侧的 $$a">
 <meta name="keywords" content="Machine Learning">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Logistic Regression | 小宇宙 | xiaoyusilen">
 <meta property="og:url" content="http://yoursite.com/ML/logistic-regression/index.html">
 <meta property="og:site_name" content="小宇宙 | xiaoyusilen">
-<meta property="og:description" content="概述线性回归和逻辑回归虽然名字中都有回归，但是线性回归是一种回归算法，而逻辑回归是一种分类算法，逻辑回归的预测结果是分类变量。比如，判断一封邮件是不是垃圾邮件。 模型逻辑回归的模型是 Sigmoid 函数 $$ y = \frac{1}{1+e^{-z}} $$。我们假设一种情况，当 $$y = ax + b$$ 左侧的 y 变成一个二分类，那么$$y \in (0, 1)$$，但是此时右侧的 $">
+<meta property="og:description" content="概述线性回归和逻辑回归虽然名字中都有回归，但是线性回归是一种回归算法，而逻辑回归是一种分类算法，逻辑回归的预测结果是分类变量。比如，判断一封邮件是不是垃圾邮件。 模型逻辑回归的模型是 Sigmoid 函数 $$y = \frac{1}{1+e^{-z}}$$。我们假设一种情况，当 $$y = ax + b$$ 左侧的 y 变成一个二分类，那么$$y \in (0, 1)$$，但是此时右侧的 $$a">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1fl1ioq4n63j30ik0cdwex.jpg">
-<meta property="og:updated_time" content="2017-11-08T02:39:02.000Z">
+<meta property="og:updated_time" content="2017-11-08T02:40:15.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Logistic Regression | 小宇宙 | xiaoyusilen">
-<meta name="twitter:description" content="概述线性回归和逻辑回归虽然名字中都有回归，但是线性回归是一种回归算法，而逻辑回归是一种分类算法，逻辑回归的预测结果是分类变量。比如，判断一封邮件是不是垃圾邮件。 模型逻辑回归的模型是 Sigmoid 函数 $$ y = \frac{1}{1+e^{-z}} $$。我们假设一种情况，当 $$y = ax + b$$ 左侧的 y 变成一个二分类，那么$$y \in (0, 1)$$，但是此时右侧的 $">
+<meta name="twitter:description" content="概述线性回归和逻辑回归虽然名字中都有回归，但是线性回归是一种回归算法，而逻辑回归是一种分类算法，逻辑回归的预测结果是分类变量。比如，判断一封邮件是不是垃圾邮件。 模型逻辑回归的模型是 Sigmoid 函数 $$y = \frac{1}{1+e^{-z}}$$。我们假设一种情况，当 $$y = ax + b$$ 左侧的 y 变成一个二分类，那么$$y \in (0, 1)$$，但是此时右侧的 $$a">
 <meta name="twitter:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1fl1ioq4n63j30ik0cdwex.jpg">
     
     
@@ -235,7 +235,7 @@ classes that you can use:
 
   <section id="post-content" class="article-content post">
     <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>线性回归和逻辑回归虽然名字中都有回归，但是线性回归是一种回归算法，而逻辑回归是一种分类算法，逻辑回归的预测结果是分类变量。比如，判断一封邮件是不是垃圾邮件。</p>
-<h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><p>逻辑回归的模型是 Sigmoid 函数 $$ y = \frac{1}{1+e^{-z}} $$。我们假设一种情况，当 $$y = ax + b$$ 左侧的 y 变成一个二分类，那么$$y \in (0, 1)$$，但是此时右侧的 $$ax + b \in (-\infty, +\infty)$$，很明显两侧关系不对等。为了继续使用线性回归的思想，我们需要把右侧的 $$ ax + b$$ 也压缩到 $$(0, 1)$$ 区间。</p>
+<h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><p>逻辑回归的模型是 Sigmoid 函数 $$y = \frac{1}{1+e^{-z}}$$。我们假设一种情况，当 $$y = ax + b$$ 左侧的 y 变成一个二分类，那么$$y \in (0, 1)$$，但是此时右侧的 $$ax + b \in (-\infty, +\infty)$$，很明显两侧关系不对等。为了继续使用线性回归的思想，我们需要把右侧的 $$ ax + b$$ 也压缩到 $$(0, 1)$$ 区间。</p>
 <h3 id="为什么使用-Sigmoid-函数"><a href="#为什么使用-Sigmoid-函数" class="headerlink" title="为什么使用 Sigmoid 函数"></a>为什么使用 Sigmoid 函数</h3><p>在推导之前，我们先引入一个概念叫做比值比（优势比）$$Odds = \frac{P}{1-P}$$，从比值比的公式我们可以看出来，比值比的含义就是事件发生的概率比事件不发生的概率。我们在逻辑回归模型中，$$y$$ 就优势比，所以这里 $$y = \frac{P}{1-P}$$，但是我们线性回归的方程是 $$ax + b$$，怎样用一个公式可以把 $$ax + b$$ 转换为 $$(0, 1)$$ 区间并且和 $$Odds$$ 关联起来呢，这里就要引入 Logit 变换。</p>
 <p>假设 $$z = \theta^{T}x$$，</p>
 <p>$$P(y = 1 | x) = \frac{1}{1 + e^{-z}}$$</p>
@@ -267,7 +267,7 @@ classes that you can use:
 <p>$$\frac{\partial}{\partial \theta_j} \frac{1}{1 + e^{-z}} = \frac{e^{-x}}{(1 + e^{-x})^{2}} = y (1 - y)$$</p>
 <p>所以，$$\frac{\partial}{\partial \theta_j}l(\theta) = (y\frac{1}{g(\theta^Tx)} - (1 - y)\frac{1}{1 - g(\theta^Tx)})\frac{\partial}{\partial \theta_j}g(\theta^Tx) = (y \frac{1}{g(\theta^Tx)} - (1 - y)\frac{1}{1 - g(\theta^Tx)})g(\theta^Tx)(1 - g(\theta^Tx))\frac{\partial}{\partial \theta_j}\theta^Tx = (y -h_\theta(x))x_j$$</p>
 <p>如上式，如果特征较多，且数据量较大，那么直接对 $$\theta$$ 求偏导，需要联立一组个数为 $$n + 1$$ 的方程组，这种方法比较麻烦，并不能直接求出 $$\theta$$ 的值。</p>
-<h2 id="如何求-theta-的值"><a href="#如何求-theta-的值" class="headerlink" title="如何求 $$\theta$$ 的值"></a>如何求 $$\theta$$ 的值</h2><p>通常情况下，求得 $$\theta$$ 的值有两种常用的方法，<strong>梯度下降法</strong>与<strong>牛顿法与拟牛顿法</strong>。这里不做太多说明，下一次再详细介绍用这两种方法如何求 $$\theta$$ 的值。 </p>
+<h2 id="如何求-theta-的值"><a href="#如何求-theta-的值" class="headerlink" title="如何求 $\theta$ 的值"></a>如何求 $\theta$ 的值</h2><p>通常情况下，求得 $$\theta$$ 的值有两种常用的方法，<strong>梯度下降法</strong>与<strong>牛顿法与拟牛顿法</strong>。这里不做太多说明，下一次再详细介绍用这两种方法如何求 $$\theta$$ 的值。 </p>
 <h2 id="关于-LR"><a href="#关于-LR" class="headerlink" title="关于 LR"></a>关于 LR</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
 <li>广泛用于分类问题</li>
 <li>不要求自变量和因变量是线性关系，可以处理各种类型的关系</li>
