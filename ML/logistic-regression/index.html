@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      Logistic Regression | 小宇宙 | xiaoyusilen 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="xiaoyusilen">
+    
+    
+
+    <meta name="description" content="概述线性回归和逻辑回归虽然名字中都有回归，但是线性回归是一种回归算法，而逻辑回归是一种分类算法，逻辑回归的预测结果是分类变量。比如，判断一封邮件是不是垃圾邮件。 模型逻辑回归的模型是 Sigmoid 函数$$y = \frac{1}{1+e^{-z}}$$我们假设一种情况，当 ​$$y = ax + b$$ 左侧的 y 变成一个二分类，那么​$$y \in (0, 1)$$，但是此时右侧的 ​$$">
+<meta name="keywords" content="Machine Learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Logistic Regression | 小宇宙 | xiaoyusilen">
+<meta property="og:url" content="http://yoursite.com/ML/logistic-regression/index.html">
+<meta property="og:site_name" content="小宇宙 | xiaoyusilen">
+<meta property="og:description" content="概述线性回归和逻辑回归虽然名字中都有回归，但是线性回归是一种回归算法，而逻辑回归是一种分类算法，逻辑回归的预测结果是分类变量。比如，判断一封邮件是不是垃圾邮件。 模型逻辑回归的模型是 Sigmoid 函数$$y = \frac{1}{1+e^{-z}}$$我们假设一种情况，当 ​$$y = ax + b$$ 左侧的 y 变成一个二分类，那么​$$y \in (0, 1)$$，但是此时右侧的 ​$$">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1fl1ioq4n63j30ik0cdwex.jpg">
+<meta property="og:updated_time" content="2017-11-08T03:36:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Logistic Regression | 小宇宙 | xiaoyusilen">
+<meta name="twitter:description" content="概述线性回归和逻辑回归虽然名字中都有回归，但是线性回归是一种回归算法，而逻辑回归是一种分类算法，逻辑回归的预测结果是分类变量。比如，判断一封邮件是不是垃圾邮件。 模型逻辑回归的模型是 Sigmoid 函数$$y = \frac{1}{1+e^{-z}}$$我们假设一种情况，当 ​$$y = ax + b$$ 左侧的 y 变成一个二分类，那么​$$y \in (0, 1)$$，但是此时右侧的 ​$$">
+<meta name="twitter:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1fl1ioq4n63j30ik0cdwex.jpg">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</head>
+<body>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">小宇宙 | xiaoyusilen</a></h1>
+        <hr class="panel-cover__divider" />
+
+        
+        <p class="panel-cover__description">
+          Life.pop(&#39;Fear&#39;)
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title="" class="">关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title="" class="">归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/xiaoyusilen" title="Huno on GitHub">
+          <i class='icon icon-social-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+    <li class="navigation__item">
+      <a href="mailto:debug@xiaoyu.fail" title="">
+        <i class='icon icon-mail'></i>
+        <span class="label">Weixin</span>
+      </a>
+    </li>
+
+  </ul>
+</nav>
+
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">Logistic Regression</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2017-11-06" class="post-meta__date date">2017-11-06</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+            <font class="categories">
+            &#8226; 分类:
+            <a class="categories-link" href="/categories/ML/">ML</a>
+            </font>
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/Machine-Learning/">Machine Learning</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>线性回归和逻辑回归虽然名字中都有回归，但是线性回归是一种回归算法，而逻辑回归是一种分类算法，逻辑回归的预测结果是分类变量。比如，判断一封邮件是不是垃圾邮件。</p>
+<h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><p>逻辑回归的模型是 Sigmoid 函数<br>$$<br>y = \frac{1}{1+e^{-z}}<br>$$<br>我们假设一种情况，当 ​$$y = ax + b$$ 左侧的 y 变成一个二分类，那么​$$y \in (0, 1)$$，但是此时右侧的 ​$$ax + b \in (-\infty, +\infty)$$，很明显两侧关系不对等。为了继续使用线性回归的思想，我们需要把右侧的 ​$$ ax + b$$ 也压缩到 ​$$(0, 1)$$ 区间。</p>
+<h3 id="为什么使用-Sigmoid-函数"><a href="#为什么使用-Sigmoid-函数" class="headerlink" title="为什么使用 Sigmoid 函数"></a>为什么使用 Sigmoid 函数</h3><p>在推导之前，我们先引入一个概念叫做比值比（优势比）$$Odds = \frac{P}{1-P}$$，从比值比的公式我们可以看出来，比值比的含义就是事件发生的概率比事件不发生的概率。我们在逻辑回归模型中，$$y$$ 就优势比，所以这里 $$y = \frac{P}{1-P}$$，但是我们线性回归的方程是 $$ax + b$$，怎样用一个公式可以把 $$ax + b$$ 转换为 $$(0, 1)$$ 区间并且和 $$Odds$$ 关联起来呢，这里就要引入 Logit 变换。</p>
+<p>假设 $$z = \theta^{T}x$$，</p>
+<p>$$P(y = 1 | x) = \frac{1}{1 + e^{-z}}$$</p>
+<p>$$P(y = 0 | x)= 1 - P(y = 1 | x) = 1- \frac{1}{1 + e^{-z}} = \frac{e^{z}}{e^{z}} - \frac{1}{1 + e^{-z}} = \frac{e^{z}(1 + e^{-z}) - e^{z}}{e^{z}(1 + e^{-z})} = \frac{1}{1 + e^{z}}$$</p>
+<p>$$Odds = \frac{P(y  = 1 | x)}{P(y = 0 | x)} = \frac{P(y = 1 | x)}{1 - P(y = 1 | x)} = \frac{1 + e^{z}}{1 + e^{-z}} = \frac{e^{z}(1 + e^{z})}{e^{z}(1 + e^{-z})} = \frac{e^{z}(1 + e^{z})}{1 + e^{z}} = e^{z}$$</p>
+<p>$$\ln\frac{P(y = 1 | x)}{P(y = 0 | x)} = g(x) = z = \theta^Tx$$</p>
+<p>以上就是 Logistic 到线性方程的推导。</p>
+<h3 id="Question"><a href="#Question" class="headerlink" title="Question"></a>Question</h3><p><strong>为什么使用 $$ y = \frac{P}{1-P}$$，而不是用 $$y = P$$ ？</strong></p>
+<p>首先我们分析一下线性回归和逻辑回归的数据，线性回归的样本输出都是连续值 $$ y \in (-\infty, +\infty)$$，而逻辑回归的样本输出是 $$y \in (0, 1)$$，只能取 0 和 1。如果要直接通过回归的方法去预测二分类问题，最好的函数是单位阶跃函数，但是单位阶跃函数是一个不连续的函数，而 Sigmoid 的函数图像和单位阶跃函数的函数图像非常像，且连续，所以我们使用 Sigmoid 函数。</p>
+<p>其实我们所求的 $$y$$ 并不是一个具体的事件发生的概率，而是要具体到 0 或者 1。我们思考一下，针对事件 $$E$$，如果 $$P(E) = P(E’)$$，那么 $$Odds(E) = \frac {P(E)}{P(E’)} = 1$$，此时 $$P(E) = P(E’) = 0.5$$，</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fl1ioq4n63j30ik0cdwex.jpg" alt="sigmoid"></p>
+<p>上图为 Sigmoid 函数图，已知 $$z = ax + b = \theta ^ TX$$，我们可以看出，</p>
+<p>当 $$z &gt; 0$$ 时，$$y &gt; 0.5$$，若 $$z → +\infty$$，则 $$y → 1$$，即 $$y$$ 为 1 类，即会发生；</p>
+<p>当 $$z &lt; 0$$ 时，$$y &lt; 0.5$$，若 $$z → -\infty$$，则 $$y → 0$$，即 $$y$$ 为 0 类，即不会发生。</p>
+<p>至此就可以看出，我们已经将线性公式转换成了 $$(0, 1)$$ 的二分类。</p>
+<p>所以 $$\frac{P}{1-P}$$ 其实是一条决策边界，我们是用比值比让 $$y$$ 值无线逼近于决策边界来判断这个 $y$ 值到底属于哪个区域。</p>
+<p>另一个层面来解释，$$\frac{P}{1-P}$$ 中，若一件事发生的概率越大，那么分子越大，分母越小，这个比值比也会越大，若一件事发生的概率越小，那么分子越小，分母越大，这个比值比也会越小，更显著的体现了这个 $$y$$ 值的意义。</p>
+<p><strong>总结：在线性回归中 $$\theta^TX$$ 为预测值的拟合函数，是对 $$f(x)$$ 的输出变量 $$y$$ 的拟合，在逻辑回归中 $$\theta^TX = 0$$ 为决策边界，是对 1 类的样本的概率的拟合。</strong></p>
+<h2 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h2><p>LR 的损失函数是对数似然函数。</p>
+<h2 id="参数的计算"><a href="#参数的计算" class="headerlink" title="参数的计算"></a>参数的计算</h2><p>$$P(y = 1 | x;\theta) = h_\theta(x)$$<br>$$P(y = 0 | x;\theta) = 1 - h_\theta(x)$$<br>上述两个公式可以得出，<br>$$P(y | x;\theta) = (h_\theta(x))^{y}(1 - h_\theta(x))^{1-y}$$</p>
+<p>当样本独立同分布时，可得</p>
+<p>$$L(\theta) = \prod_{i=1}^n P(y_i | x_i;\theta) = \prod_{i=1}^n(h_\theta(x_i))^{y_i}(1 - h_\theta(x_i))^{1 - y_i}$$</p>
+<p>我们的目的是求出使得这一似然函数值最大的参数估计，最大的似然估计就是求出参数 $$\theta_0, \theta_1,…,\theta_n$$，使得 $$L(\theta)$$ 最大，对 $$L(\theta)$$ 取对数得，</p>
+<p>$$l(\theta) = \ln L(\theta) = \sum_{i = 1}^n(y_i\ln h_\theta(x_i) + (1 - y_i)\ln (1 - h_\theta(x_i)))$$</p>
+<p>这里的 $$l(\theta)$$ 就是 Logistic Regression 的损失函数。这里 $$l(\theta)$$ 对每个 $$\theta$$ 求导，得，</p>
+<p>$$\frac{\partial}{\partial \theta_j}l(\theta) = (y\frac{1}{g(\theta^Tx)} - (1 - y)\frac{1}{1 - g(\theta^Tx)})\frac{\partial}{\partial \theta_j}g(\theta^Tx)$$</p>
+<p>其中对于 $$\frac{1}{1 + e^{-z}}$$ 求导，将 $$y = \frac{1}{1 + e^{-z}}$$ 转换为 $$e^{-z} = \frac{1 - y}{y}$$，</p>
+<p>$$\frac{\partial}{\partial \theta_j} \frac{1}{1 + e^{-z}} = \frac{e^{-x}}{(1 + e^{-x})^{2}}$$，此时将 $$e^{-z}$$ 带入，</p>
+<p>$$\frac{\partial}{\partial \theta_j} \frac{1}{1 + e^{-z}} = \frac{e^{-x}}{(1 + e^{-x})^{2}} = y (1 - y)$$</p>
+<p>所以，$$\frac{\partial}{\partial \theta_j}l(\theta) = (y\frac{1}{g(\theta^Tx)} - (1 - y)\frac{1}{1 - g(\theta^Tx)})\frac{\partial}{\partial \theta_j}g(\theta^Tx) = (y \frac{1}{g(\theta^Tx)} - (1 - y)\frac{1}{1 - g(\theta^Tx)})g(\theta^Tx)(1 - g(\theta^Tx))\frac{\partial}{\partial \theta_j}\theta^Tx = (y -h_\theta(x))x_j$$</p>
+<p>如上式，如果特征较多，且数据量较大，那么直接对 $$\theta$$ 求偏导，需要联立一组个数为 $$n + 1$$ 的方程组，这种方法比较麻烦，并不能直接求出 $$\theta$$ 的值。</p>
+<h2 id="如何求-theta-的值"><a href="#如何求-theta-的值" class="headerlink" title="如何求 $\theta$ 的值"></a>如何求 $\theta$ 的值</h2><p>通常情况下，求得 $$\theta$$ 的值有两种常用的方法，<strong>梯度下降法</strong>与<strong>牛顿法与拟牛顿法</strong>。这里不做太多说明，下一次再详细介绍用这两种方法如何求 $$\theta$$ 的值。 </p>
+<h2 id="关于-LR"><a href="#关于-LR" class="headerlink" title="关于 LR"></a>关于 LR</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>广泛用于分类问题</li>
+<li>不要求自变量和因变量是线性关系，可以处理各种类型的关系</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>需要大量样本</li>
+<li>自变量之间不应该相互关联，即不具有多重共线性，因为似然要求样本独立</li>
+</ol>
+<h4 id="多重共线性"><a href="#多重共线性" class="headerlink" title="多重共线性"></a>多重共线性</h4><p>多重共线性（Multicollinearity）是指线性回归模型中的解释变量之间由于存在精确相关关系或高度相关关系而使模型估计失真或难以估计准确。</p>
+<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><ol>
+<li>排除引起共线性的变量：找出引起多重共线性的解释变量，将它排除出去，比如逐步回归法</li>
+<li>差分法：时间序列数据、线性模型，将原模型变换为差分模型</li>
+<li>减小参数估计量的方差：岭回归法</li>
+</ol>
+<h3 id="与线性回归的关系"><a href="#与线性回归的关系" class="headerlink" title="与线性回归的关系"></a>与线性回归的关系</h3><ol>
+<li>前边已经说到了，将线性回归的值域映射到了 $$(0, 1)$$ 之间</li>
+<li>减少了离群点对预测值的影响</li>
+</ol>
+<h2 id="多分类问题"><a href="#多分类问题" class="headerlink" title="多分类问题"></a>多分类问题</h2><p>通常采用 <strong>One-vs-All</strong> 的方法来实现多分类，本质是将多分类问题转化为了多次二分类问题。</p>
+<p>假定有 $n$ 个特征</p>
+<ol>
+<li>随机选择一个特征作为正样本，即视为“1”分类，其他全部视作负样本</li>
+<li>用数据集进行训练后可以得到这个特征的决策边界</li>
+</ol>
+<p>给定输入后，为确定分类，需要分别计算，越趋近于 1，越接近这个分类。</p>
+
+  </section>
+
+  <section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2016-2017. | ❤ <a href="http://xiaoyu.world">xiaoyusilen</a> | <a href="https://github.com/someus/huno">Huno</a></span>
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv" style="display: inline;">
+         This site already had <span id="busuanzi_value_site_pv"></span> Visits by
+    </span>
+    <span id="busuanzi_container_site_uv" style="display: inline;">
+    <span id="busuanzi_value_site_uv"></span> Visitors 
+    </span>
+
+</footer>
+
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+    
+
+        <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['$','$'],['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

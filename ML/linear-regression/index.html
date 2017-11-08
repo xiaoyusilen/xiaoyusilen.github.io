@@ -25,7 +25,7 @@
 <meta property="og:description" content="概述线性回归通常是学习预测模型时首选的技术之一，其中因变量是连续的，自变量可以是连续的，也可以是离散的，回归线的性质是线性的。现行回归使用最佳的拟合直线，也就是回归线，在因变量 y 和一个或多个自变量 x 之间建立一种关系。 模型$y = a + bx + e$，其中 ​$a$ 表示截距，​$b$ 表示斜率，​$e$ 表示误差项，这里，我们希望求得一个 ​$e$ 无限接近于 ​$0$，并且 ​$y">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1fl19jsl8zgj30d807vglt.jpg">
-<meta property="og:updated_time" content="2017-11-08T05:28:36.000Z">
+<meta property="og:updated_time" content="2017-11-08T05:37:49.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linear Regression | 小宇宙 | xiaoyusilen">
 <meta name="twitter:description" content="概述线性回归通常是学习预测模型时首选的技术之一，其中因变量是连续的，自变量可以是连续的，也可以是离散的，回归线的性质是线性的。现行回归使用最佳的拟合直线，也就是回归线，在因变量 y 和一个或多个自变量 x 之间建立一种关系。 模型$y = a + bx + e$，其中 ​$a$ 表示截距，​$b$ 表示斜率，​$e$ 表示误差项，这里，我们希望求得一个 ​$e$ 无限接近于 ​$0$，并且 ​$y">
@@ -235,7 +235,7 @@ classes that you can use:
 
   <section id="post-content" class="article-content post">
     <h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>线性回归通常是学习预测模型时首选的技术之一，其中因变量是连续的，自变量可以是连续的，也可以是离散的，回归线的性质是线性的。现行回归使用最佳的拟合直线，也就是回归线，在因变量 y 和一个或多个自变量 x 之间建立一种关系。</p>
-<h3 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h3><p><span>$y = a + bx + e$</span><!-- Has MathJax -->，其中 ​$a$ 表示截距，​$b$ 表示斜率，​$e$ 表示误差项，这里，我们希望求得一个 ​$e$ 无限接近于 ​$0$，并且 ​$y$ 和真实值偏差最小的 ​$a$ 和 ​$b$。</p>
+<h3 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h3><p>$y = a + bx + e$，其中 ​$a$ 表示截距，​$b$ 表示斜率，​$e$ 表示误差项，这里，我们希望求得一个 ​$e$ 无限接近于 ​$0$，并且 ​$y$ 和真实值偏差最小的 ​$a$ 和 ​$b$。</p>
 <p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fl19jsl8zgj30d807vglt.jpg" alt="55d3f5dc33dc3"></p>
 <p>一元线性回归和多元线性回归的区别在于，多元线性回归有 &gt; 1 个自变量，而一元线性回归通常只有 1 个自变量。</p>
 <h3 id="如何获得最佳拟合线？"><a href="#如何获得最佳拟合线？" class="headerlink" title="如何获得最佳拟合线？"></a>如何获得最佳拟合线？</h3><h4 id="最小二乘法"><a href="#最小二乘法" class="headerlink" title="最小二乘法"></a>最小二乘法</h4><p>最小二乘法的核心是保证所有数据偏差的平方和最小。</p>
@@ -257,7 +257,7 @@ classes that you can use:
 </li>
 </ul>
 <ul>
-<li>化简后可得：<br>$$\begin{cases}a &amp;= \frac{\sum_{i = 1}^n(x_i - \bar x)(y_i - \bar y)}{\sum_{i = 1}^n(x_i - \bar x)^{2}}\\b &amp;= \bar y - a\bar x\end{cases}$$</li>
+<li>化简后可得：<br>$$\begin{cases}a &amp;= \frac{\sum_{i = 1}^n(x_i - \bar x)(y_i - \bar y)}{\sum_{i = 1}^n(x_i - \bar x)^{2}}\\b &amp;= \bar y - a\bar x\end{cases}​$$</li>
 </ul>
 <h4 id="Question"><a href="#Question" class="headerlink" title="Question"></a>Question</h4><p><strong>为什么最小二乘法中用模型预测数据与实际数据差的平方和最小而不是绝对值和最小？</strong></p>
 <p><a href="http://blog.sciencenet.cn/blog-430956-621997.html，其实本质是因为我们需要预测值和实际值的误差符合正态分布，符合客观的统计规律。" target="_blank" rel="external">http://blog.sciencenet.cn/blog-430956-621997.html，其实本质是因为我们需要预测值和实际值的误差符合正态分布，符合客观的统计规律。</a></p>
