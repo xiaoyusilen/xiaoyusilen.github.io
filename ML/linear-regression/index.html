@@ -25,7 +25,7 @@
 <meta property="og:description" content="概述线性回归通常是学习预测模型时首选的技术之一，其中因变量是连续的，自变量可以是连续的，也可以是离散的，回归线的性质是线性的。现行回归使用最佳的拟合直线，也就是回归线，在因变量 y 和一个或多个自变量 x 之间建立一种关系。 模型$y = a + bx + e$，其中 ​$a$ 表示截距，​$b$ 表示斜率，​$e$ 表示误差项，这里，我们希望求得一个 ​$e$ 无限接近于 ​$0$，并且 ​$y">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1fl19jsl8zgj30d807vglt.jpg">
-<meta property="og:updated_time" content="2017-11-08T05:37:49.000Z">
+<meta property="og:updated_time" content="2017-11-17T03:12:42.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linear Regression | 小宇宙 | xiaoyusilen">
 <meta name="twitter:description" content="概述线性回归通常是学习预测模型时首选的技术之一，其中因变量是连续的，自变量可以是连续的，也可以是离散的，回归线的性质是线性的。现行回归使用最佳的拟合直线，也就是回归线，在因变量 y 和一个或多个自变量 x 之间建立一种关系。 模型$y = a + bx + e$，其中 ​$a$ 表示截距，​$b$ 表示斜率，​$e$ 表示误差项，这里，我们希望求得一个 ​$e$ 无限接近于 ​$0$，并且 ​$y">
@@ -257,10 +257,11 @@ classes that you can use:
 </li>
 </ul>
 <ul>
-<li>化简后可得：<br>$$\begin{cases}a &amp;= \frac{\sum_{i = 1}^n(x_i - \bar x)(y_i - \bar y)}{\sum_{i = 1}^n(x_i - \bar x)^{2}}\\b &amp;= \bar y - a\bar x\end{cases}​$$</li>
+<li>化简后可得：<script type="math/tex; mode=display">\begin{cases}a &= \frac{\sum\_{i = 1}^n(x\_i - \bar x)(y\_i - \bar y)}{\sum\_{i = 1}^n(x\_i - \bar x)^{2}}\\\b &= \bar y - a\bar x\end{cases}​</script></li>
 </ul>
 <h4 id="Question"><a href="#Question" class="headerlink" title="Question"></a>Question</h4><p><strong>为什么最小二乘法中用模型预测数据与实际数据差的平方和最小而不是绝对值和最小？</strong></p>
-<p><a href="http://blog.sciencenet.cn/blog-430956-621997.html，其实本质是因为我们需要预测值和实际值的误差符合正态分布，符合客观的统计规律。" target="_blank" rel="external">http://blog.sciencenet.cn/blog-430956-621997.html，其实本质是因为我们需要预测值和实际值的误差符合正态分布，符合客观的统计规律。</a></p>
+<p><a href="http://blog.sciencenet.cn/blog-430956-621997.html" target="_blank" rel="external">http://blog.sciencenet.cn/blog-430956-621997.html</a></p>
+<p>其实本质是因为我们需要预测值和实际值的误差符合正态分布，符合客观的统计规律。</p>
 <h3 id="线性回归的缺陷"><a href="#线性回归的缺陷" class="headerlink" title="线性回归的缺陷"></a>线性回归的缺陷</h3><ul>
 <li>自变量和因变量一定要是线性</li>
 <li>线性回归对异常值非常敏感，会严重影响回归线，最终影响预测</li>
