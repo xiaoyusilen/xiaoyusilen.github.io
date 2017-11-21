@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      Factorization Machine | 小宇宙 | xiaoyusilen 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="xiaoyusilen">
+    
+    
+
+    <meta name="description" content="概述在很多情况下样本数据经过 One-Hot 编码后，大部分样本数据特征是比较稀疏的。通过观察大量样本数据我们发现，某些特征经过关联之后，与 label 之间的相关性会提高。表示特征之间的关联，最直接的方法是构造组合特征。样本中特征之间的关联信息在 One-Hot 编码和浅层学习模型（如 LR、SVM）是做不到的，目前常用的两种得到组合特征的手段是：  人工特征工程（数据分析 + 人工构造） 通过">
+<meta name="keywords" content="Machine Learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Factorization Machine | 小宇宙 | xiaoyusilen">
+<meta property="og:url" content="http://yoursite.com/ML/factorization-machine/index.html">
+<meta property="og:site_name" content="小宇宙 | xiaoyusilen">
+<meta property="og:description" content="概述在很多情况下样本数据经过 One-Hot 编码后，大部分样本数据特征是比较稀疏的。通过观察大量样本数据我们发现，某些特征经过关联之后，与 label 之间的相关性会提高。表示特征之间的关联，最直接的方法是构造组合特征。样本中特征之间的关联信息在 One-Hot 编码和浅层学习模型（如 LR、SVM）是做不到的，目前常用的两种得到组合特征的手段是：  人工特征工程（数据分析 + 人工构造） 通过">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1flhno3d37oj30ny0domy9.jpg">
+<meta property="og:updated_time" content="2017-11-21T03:21:04.828Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Factorization Machine | 小宇宙 | xiaoyusilen">
+<meta name="twitter:description" content="概述在很多情况下样本数据经过 One-Hot 编码后，大部分样本数据特征是比较稀疏的。通过观察大量样本数据我们发现，某些特征经过关联之后，与 label 之间的相关性会提高。表示特征之间的关联，最直接的方法是构造组合特征。样本中特征之间的关联信息在 One-Hot 编码和浅层学习模型（如 LR、SVM）是做不到的，目前常用的两种得到组合特征的手段是：  人工特征工程（数据分析 + 人工构造） 通过">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1flhno3d37oj30ny0domy9.jpg">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</head>
+<body>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">小宇宙 | xiaoyusilen</a></h1>
+        <hr class="panel-cover__divider" />
+
+        
+        <p class="panel-cover__description">
+          Life.pop(&#39;Fear&#39;)
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title="" class="">关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title="" class="">归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/xiaoyusilen" title="Huno on GitHub">
+          <i class='icon icon-social-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+    <li class="navigation__item">
+      <a href="mailto:debug@xiaoyu.fail" title="">
+        <i class='icon icon-mail'></i>
+        <span class="label">Weixin</span>
+      </a>
+    </li>
+
+  </ul>
+</nav>
+
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">Factorization Machine</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2017-11-21" class="post-meta__date date">2017-11-21</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+            <font class="categories">
+            &#8226; 分类:
+            <a class="categories-link" href="/categories/ML/">ML</a>
+            </font>
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/Machine-Learning/">Machine Learning</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>在很多情况下样本数据经过 One-Hot 编码后，大部分样本数据特征是比较稀疏的。通过观察大量样本数据我们发现，某些特征经过关联之后，与 label 之间的相关性会提高。表示特征之间的关联，最直接的方法是构造组合特征。样本中特征之间的关联信息在 One-Hot 编码和浅层学习模型（如 LR、SVM）是做不到的，目前常用的两种得到组合特征的手段是：</p>
+<ul>
+<li>人工特征工程（数据分析 + 人工构造）</li>
+<li>通过模型做组合特征的学习（FM/FFM、深度学习等）</li>
+</ul>
+<p>事实上决策树也可以用作特征组合，决策树可以很方便的对特征做高阶组合，一颗决策树的每个叶子节点其实都对应一条特征规则。Facebook 就使用 $GBDT$ 学习特征的自动组合。但是决策树和二项式模型有一个共同的问题，就是无法学习到数据中不存在的模式。例如，如果某种特征组合的数据不存在或者很少是无法做训练的，如果数据不是高度稀疏的情况下，基本特征组合都可以找到足够的样本，但是数据高度稀疏，二项组合就足以让大多数模式找不到样本训练，更高阶组合就更不必说了。所以，引入 FM/FFM 做特征组合是非常有必要的。</p>
+<h3 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h3><p>要真正理解 FM 的模型，首先要从线性回归和多项式回归说起。对于特征集合 $x = (x_1, x_2, \cdots, x_n)$ 和标签 $y$，我们希望得到 $y$ 与 $x$ 的关系，最简单是建立线性回归模型，表示如下，<br>$$<br>\begin{equation}<br>\tag{1} y(x) = w_0 + \sum_{i = 1}^nw_ix_i<br>\end{equation}<br>$$<br>但是，一般线性模型无法学习到高阶组合特征，所以会将特征进行高阶组合，多项式模型是包含特征组合的最直观的模型。在多项式模型中，特征 $x_i$ 和 $x_j$ 的组合采用 $x_ix_j$ 表示，即 $x_i$ 和 $x_j$ 都非零时，组合特征 $x_ix_j$ 才有意义。我们这里只讨论二阶多项式模型，理论上 FM 可以组合任意高阶，但是实际情况中多用二阶，模型如下：<br>$$<br>\begin{equation}<br>\tag{2} y(x) = w_0 + \sum_{i = 1}^nw_ix_i + \sum_{i = 1}^n\sum_{j = i + 1}^nw_{ij}x_ix_j<br>\end{equation}<br>$$<br>其中，$n$ 表示样本的特征数量，$x_i$ 是第 $i$ 个特征的值，$w_0$、$w_i$、$w_{ij}$ 是模型参数。</p>
+<p>公式 $(2)$ 比公式 $(1)$ 多了 $\frac{n(n-1)}{2}$ 个组合特征的参数，其中任意两个参数是独立的。如概述中所述，数据稀疏的情况下，每个参数 $w_{ij}$ 的训练都需要大量不为零的 $x_i$ 和 $x_j$ 样本，样本数据本来就稀疏，满足 $x_i$ 和 $x_j$ 同时非零条件的样本很少，训练样本不足会导致 $w_{ij}$ 不准确，影响模型的效果。为了求出参数 $w_{ij}$，我们可以将所有 $w_{ij}$ 组成一个矩阵，<br>$$<br>\begin{equation}<br>W = \begin{pmatrix}<br>w_{11} &amp; w_{12} &amp; \cdots &amp; w_{1n} \\<br>w_{21} &amp; w_{22} &amp; \cdots &amp; w_{2n} \\<br>\vdots&amp;\vdots&amp; &amp; \vdots \\<br>w_{n1} &amp; w_{n2} &amp; \cdots &amp; w_{nn} \\<br>\end{pmatrix}<br>\end{equation}<br>$$<br>很显然矩阵 $W$ 是一个对称矩阵，根据正定矩阵的定义，图示 $W$ 至少是一个半正定矩阵，我们假定 $W$ 是一个正定矩阵，根据矩阵的性质，正定矩阵可以进行分解。<img src="https://ws1.sinaimg.cn/large/006tNc79ly1flhno3d37oj30ny0domy9.jpg" alt="ffm_mf"></p>
+<p>先举一个简单的矩阵分解的例子，上图是用户针对电影的评分，这里我们可以把 $rating$ 矩阵分解成 $user$ 矩阵和 $movie$ 矩阵，每个 $user$ 和 每个 $movie$ 我们都可以用一个二维向量表示（这里的维数是自定义的），以上两个向量的点积就是矩阵中 $user$ 对 $movie$ 的打分，以上就是一个 $rating$ 矩阵的分解过程。</p>
+<p>接下来我们来思考我们的 $W$ 矩阵如何分解，正定矩阵分解如公式 $(3)$。<br>$$<br>\begin{equation}<br>\tag{3} W = Q\Lambda Q^T<br>\end{equation}<br>$$<br>说起 $FM$ 中 $W$ 矩阵如何分解，首先要讲一下 $SVD$ 变换。</p>
+<h4 id="SVD-变换"><a href="#SVD-变换" class="headerlink" title="SVD 变换"></a>SVD 变换</h4><p>对任意 $n\times m$ 的矩阵，能否找到一组正交基使得经过它变换后还是正交基？现在假设存在 $n\times m$ 矩阵A，事实上，A矩阵将n维空间中的向量映射到 $k$ 维空间中，其中 $k\ll n$，现在的目标就是，在 $n$ 维空间中找到一组正交基，使得经过 $A$ 变换后还是正交的。</p>
+<p>假设已经找到了这样一组正交基，<br>$$<br>{v_1, v_2, \cdots, v_n}<br>$$<br>则 $A$ 矩阵将这组基映射为，<br>$$<br>{Av_1, Av_2, \cdots, Av_n}<br>$$<br>已知映射后的矩阵仍为正交矩阵，则其中两两正交，即，<br>$$<br>(Av_i, Av_j) = (Av_i)^TAv_j = {v_i}^TA^TAv_j ={v_i}^Tv_j = (v_i, v_j) = 0<br>$$<br>如果正交基 $v$ 选择 $A^TA$ 作为特征向量的话，因为 $A^TA$ 为对称阵，$v$ 之间两两正交，那么，<br>$$<br>{v_i}^TA^TAv_j = {v_i}^T\lambda_jv_j = \lambda_j{v_i}^Tv_j = \lambda_j(v_i, v_j) = 0<br>$$<br>这时候就找到了映射后的正交基，现在将映射后的正交基单位化，<br>$$<br>Av_i\cdot Av_i = \lambda_i(v_i, v_i) = \lambda_i<br>$$<br>所以有，<br>$$<br>|Av_i|^2 = \lambda_i\geq0<br>$$<br>所以取单位向量<br>$$<br>u_i = \frac{Av_i}{|Av_i|} = \frac{1}{\sqrt{\lambda_i}}Av_i<br>$$<br>由此可得，<br>$$<br>Av_i = \sigma_iu_i<br>$$<br>$\sigma_i = \sqrt{\lambda_i}$，其中 $\sigma_i$ 就是奇异值，$0\leq i \leq k$，$k = Rank(A)$。</p>
+<p>上边说到，我们把 $A^TA$ 视作特征值，其实，公式 $(3)$ 中的 $\Lambda$ 就是上述变换中的 $A$，所以分解后的奇异值为 $\sqrt{\Lambda^\Lambda}$，那么，令 $V = Q\sqrt{\Lambda}$，<br>$$<br>\begin{align}<br>W &amp;= Q\sqrt{\Lambda\Lambda^T}Q^T\\<br>&amp;= Q\sqrt{\Lambda}\sqrt{\Lambda^T}Q^T\\<br>&amp;= VV^T<br>\end{align}<br>$$<br>上面的过程以及基于我们已有的数据可以看出，隐向量的维度 $k$ 应该远小于特征数量 $n$，所以分解后需要学习的参数数量为 $nk$ 个，分解前需要学习的参数数量为 $\frac{n(n-1)}{2}$，因此时间复杂度从 $O(n^2)$ 降低到了 $kO(n)$ 级别。对于 $k$ 值的限定，就反映了 FM 模型的表达能力。</p>
+<p>同时，参数因子化使得 $x_hx_i$ 的参数不再是互相独立的，因此我们可以在样本稀疏的情况下相对合理的估计 FM 的二次项参数。比如，$x_hx_i$ 和 $x_ix_j$ 的系数分别是 $\left \langle v_h，v_i \right \rangle$ 和 $ \left \langle v_i，v_j \right \rangle$，它们之间有共同项 $v_i$。也就是说，所有包含 $x_i$ 的非零组合特征，即存在某个 $j\neq i$，使得 $x_ix_j \neq 0$ 的样本都可以用来学习隐向量 $v_i$，这很大程度上避免了数据稀疏造成的影响。而在多项式模型中，$w_{hi}$ 和 $w_{ij}$ 是相互独立的。</p>
+<h3 id="计算交叉项"><a href="#计算交叉项" class="headerlink" title="计算交叉项"></a>计算交叉项</h3><p>仔细观察我们需要求的 $W$ 矩阵会发现，其实我们所需要求的应该是 $W$ 矩阵的上三角部分，因为在 $W$ 矩阵中的 $w_{12}$ 和 $w_{21}$ 其实对我们来说是同一种特征组合，所以我们只需要求出一半的 $w_{ij}$ 即可。交叉项计算的算法是类似 $(a + b + c)^2 - a^2 - b^2 - c^2$ 求出交叉项，具体过程如下，<br>$$<br>\begin{align}<br>\sum_{i = 1}^n\sum_{j = i + 1}^n (v_i, v_j)x_ix_j &amp;= \frac{1}{2} \sum_{i = 1}^n\sum_{j = 1}^n (v_i, v_j)x_ix_j - \frac{1}{2} \sum_{i = 1}^n(v_i, v_i)x_ix_i\\<br>&amp;= \frac{1}{2}(\sum_{i = 1}^n\sum_{j = 1}^n\sum_{f = 1}^k(v_{i,f}, v_{j,f})x_ix_j - \sum_{i = 1}^n\sum_{f = 1}^k(v_i, v_i)x_{i,f}x_{i,f}\\<br>&amp;= \frac{1}{2}\sum_{i = 1}^k((\sum_{i = 1}^nv_{i,f}x_i)(\sum_{i = 1}^nv_{j,f}x_j) - \sum_{i = 1}^nv_{i,f}x_i\\<br>&amp;= \frac{1}{2}\sum_{f = 1}^k((\sum_{i = 1}^nv_{i,f}x_i)^2 - \sum_{i = 1}^n{v_{i,f}}^2x_i)<br>\end{align}<br>$$</p>
+<h3 id="在回归和分类上的应用"><a href="#在回归和分类上的应用" class="headerlink" title="在回归和分类上的应用"></a>在回归和分类上的应用</h3><p>最优化一般需要加上正规化项，避免参数过拟合，FM 添加 L2 正规化。</p>
+<h4 id="回归问题"><a href="#回归问题" class="headerlink" title="回归问题"></a>回归问题</h4><ul>
+<li>平方损失，$\frac{1}{2}(y - y(x))^2，y\in R，y(x)\in R$</li>
+<li>损失函数，$E = \frac{1}{2m}\sum_{h = 1}^m(w_0 + \sum_{i = 1}^nw_i{x_i}^{h} + \sum_{i = 1}^n\sum_{j = i + 1}^nv_i{v_j}^T{x_i}^h{x_j}^h - y^h)^2 + \frac{\lambda_0}{m}{w_0}^2 + \frac{\lambda_1}{m}\sum_{i = 1}^n{w_i}^2 + \frac{\lambda_2}{m}\sum_{i = 1}^n{v_i}^Tv_i$</li>
+</ul>
+<h4 id="二元分类问题"><a href="#二元分类问题" class="headerlink" title="二元分类问题"></a>二元分类问题</h4><ul>
+<li><p>Logit Loss，也称 Cross-Entropy Error，$\ln(1 + e^{-yy(x)})，y\in(-1, 1), y(x)\in R$</p>
+</li>
+<li><p>损失函数，</p>
+<p>$E = \frac{1}{m}\sum_{h = 1}^m\ln(1 + e^{-y^h(w_0 + \sum_{i = 1}^nw_ix_i + \sum_{i = 1}^n\sum_{j = i+1}^n{v_i}^Tv_jx_ix_j)}+\frac{\lambda_0}{m}{w_0}^2 + \frac{\lambda_1}{m}\sum_{i = 1}^n{w_i}^2 + \frac{\lambda_2}{m}\sum_{i = 1}^n{v_i}^Tv_i)$</p>
+</li>
+</ul>
+<h3 id="FYI"><a href="#FYI" class="headerlink" title="FYI"></a>FYI</h3><p><a href="https://tech.meituan.com/deep-understanding-of-ffm-principles-and-practices.html" target="_blank" rel="external">https://tech.meituan.com/deep-understanding-of-ffm-principles-and-practices.html</a></p>
+<p><a href="http://blog.csdn.net/zhongkejingwang/article/details/43053513" target="_blank" rel="external">http://blog.csdn.net/zhongkejingwang/article/details/43053513</a></p>
+<p><a href="http://blog.csdn.net/google19890102/article/details/45532745" target="_blank" rel="external">http://blog.csdn.net/google19890102/article/details/45532745</a></p>
+
+  </section>
+
+  <section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2016-2017. | ❤ <a href="http://xiaoyu.world">xiaoyusilen</a> | <a href="https://github.com/someus/huno">Huno</a></span>
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv" style="display: inline;">
+         This site already had <span id="busuanzi_value_site_pv"></span> Visits by
+    </span>
+    <span id="busuanzi_container_site_uv" style="display: inline;">
+    <span id="busuanzi_value_site_uv"></span> Visitors 
+    </span>
+
+</footer>
+
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+    
+
+        <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['$','$'],['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>
