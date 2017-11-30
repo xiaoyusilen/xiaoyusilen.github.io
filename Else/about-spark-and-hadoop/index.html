@@ -7,7 +7,7 @@
     
 
     <title>
-      about Spark and Hadoop | 小宇宙 | xiaoyusilen 
+      About Spark and Hadoop | 小宇宙 | xiaoyusilen 
     </title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -16,18 +16,18 @@
     
     
 
-    <meta name="description" content="筒子们，所以说，像 spark、Hadoop 这种东西想学的话，直接去写个东西跑就好了！原理这种东西，其实跑过之后大概更能理解，不然直接去看原理这种玩意，怕是一团糟。 最近一直在写 Spark，随便说说对 Spark、Hadoop 的理解吧。 我的理解是，Hadoop 其实是解决了数据量大的问题，用了 MapReduce，也就是把一个很大的数据集需要做的操作分成了很多小的任务，一共分两种，一种是带">
+    <meta name="description" content="筒子们，所以说，像 spark、Hadoop 这种东西想学的话，直接去写个东西跑就好了！原理这种东西，其实跑过之后大概更能理解，不然直接去看原理这种玩意，怕是一团糟。 最近一直在写 Spark，随便说说对 Spark、Hadoop 的理解吧，简单分成几个问题。  Hadoop 解决了什么问题？ Hadoop 其实是解决了数据量大的问题，用了 MapReduce，也就是把一个很大的数据集需要做的操作">
 <meta name="keywords" content="Spark,Hadoop">
 <meta property="og:type" content="article">
-<meta property="og:title" content="about Spark and Hadoop | 小宇宙 | xiaoyusilen">
+<meta property="og:title" content="About Spark and Hadoop | 小宇宙 | xiaoyusilen">
 <meta property="og:url" content="http://yoursite.com/Else/about-spark-and-hadoop/index.html">
 <meta property="og:site_name" content="小宇宙 | xiaoyusilen">
-<meta property="og:description" content="筒子们，所以说，像 spark、Hadoop 这种东西想学的话，直接去写个东西跑就好了！原理这种东西，其实跑过之后大概更能理解，不然直接去看原理这种玩意，怕是一团糟。 最近一直在写 Spark，随便说说对 Spark、Hadoop 的理解吧。 我的理解是，Hadoop 其实是解决了数据量大的问题，用了 MapReduce，也就是把一个很大的数据集需要做的操作分成了很多小的任务，一共分两种，一种是带">
+<meta property="og:description" content="筒子们，所以说，像 spark、Hadoop 这种东西想学的话，直接去写个东西跑就好了！原理这种东西，其实跑过之后大概更能理解，不然直接去看原理这种玩意，怕是一团糟。 最近一直在写 Spark，随便说说对 Spark、Hadoop 的理解吧，简单分成几个问题。  Hadoop 解决了什么问题？ Hadoop 其实是解决了数据量大的问题，用了 MapReduce，也就是把一个很大的数据集需要做的操作">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2017-11-30T11:57:32.774Z">
+<meta property="og:updated_time" content="2017-11-30T12:13:08.204Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="about Spark and Hadoop | 小宇宙 | xiaoyusilen">
-<meta name="twitter:description" content="筒子们，所以说，像 spark、Hadoop 这种东西想学的话，直接去写个东西跑就好了！原理这种东西，其实跑过之后大概更能理解，不然直接去看原理这种玩意，怕是一团糟。 最近一直在写 Spark，随便说说对 Spark、Hadoop 的理解吧。 我的理解是，Hadoop 其实是解决了数据量大的问题，用了 MapReduce，也就是把一个很大的数据集需要做的操作分成了很多小的任务，一共分两种，一种是带">
+<meta name="twitter:title" content="About Spark and Hadoop | 小宇宙 | xiaoyusilen">
+<meta name="twitter:description" content="筒子们，所以说，像 spark、Hadoop 这种东西想学的话，直接去写个东西跑就好了！原理这种东西，其实跑过之后大概更能理解，不然直接去看原理这种玩意，怕是一团糟。 最近一直在写 Spark，随便说说对 Spark、Hadoop 的理解吧，简单分成几个问题。  Hadoop 解决了什么问题？ Hadoop 其实是解决了数据量大的问题，用了 MapReduce，也就是把一个很大的数据集需要做的操作">
     
     
     
@@ -201,7 +201,7 @@ classes that you can use:
 
   <header class="post-header">
     
-    <h1 class="post-title">about Spark and Hadoop</h1>
+    <h1 class="post-title">About Spark and Hadoop</h1>
 
     
 
@@ -233,8 +233,20 @@ classes that you can use:
 
   <section id="post-content" class="article-content post">
     <p>筒子们，所以说，像 spark、Hadoop 这种东西想学的话，直接去写个东西跑就好了！原理这种东西，其实跑过之后大概更能理解，不然直接去看原理这种玩意，怕是一团糟。</p>
-<p>最近一直在写 Spark，随便说说对 Spark、Hadoop 的理解吧。</p>
-<p>我的理解是，Hadoop 其实是解决了数据量大的问题，用了 MapReduce，也就是把一个很大的数据集需要做的操作分成了很多小的任务，一共分两种，一种是带有先后顺序的，这种是不可以并行的，因为需要处理后的结果才可以进行下一个操作，一种是没有先后顺序的，这种是可以并行的。然后用了分布式的原理，丢给了一堆性能一般的机器一个去做一点点，然后就可以再整合到一起，就可以比较快的完成。但是 Hadoop 只有 Map 和 Reduce 操作，写起来不那么易于上手，所以 Spark 出现了。Spark 呢，引入了 RDD，就是把一些常用的操作，然后用 Map 和 Reduce 实现好了之后，封装成了一堆 API，直接给我们调用，基于 RDD 这样一个数据集合进行操作，这样用起来就方便多了是不是，但是为啥 Spark 比 Hadoop 快那么多，这里说到 storm，因为 Hadoop 其实是磁盘级的计算，所以即使是中间结果也需要写入 HDFS，再读 HDFS，磁盘 IO 的性能，你懂的，Spark 呢，借鉴了 storm，中间结果是写入内存了，所以，比 Hadoop 快了不是一星半点啊，既可以处理实时流，又可以处理离线作业。</p>
+<p>最近一直在写 Spark，随便说说对 Spark、Hadoop 的理解吧，简单分成几个问题。</p>
+<ul>
+<li><p>Hadoop 解决了什么问题？</p>
+<p>Hadoop 其实是解决了数据量大的问题，用了 MapReduce，也就是把一个很大的数据集需要做的操作分成了很多小的任务，一共分两种，一种是带有先后顺序的，这种是不可以并行的，因为需要处理后的结果才可以进行下一个操作，一种是没有先后顺序的，这种是可以并行的。然后用了分布式的原理，丢给了一堆性能一般的机器一个去做一点点，然后就可以再整合到一起，就可以比较快的完成。至于 MapReduce 的原理，网上随便搜一下就有很多图示的原理，非常容易理解。</p>
+</li>
+<li><p>Hadoop 存在什么问题？<br>Hadoop 只有 Map 和 Reduce 操作，写起来不那么易于上手，而且一个 Job 只有 Map 和 Reduce 两个阶段，复杂的计算需要大量 Job，但是 Job 之间的依赖关系需要开发者自己管理，以及延时高等。PS.问题还有很多，这里说的只是为了引入下面的问题。</p>
+</li>
+<li><p>Spark 和 Hadoop 的区别是什么？</p>
+<p>Spark 呢，引入了 RDD，就是把一些常用的操作，然后用 Map 和 Reduce 实现好了之后，封装成了一堆 API，直接给我们调用，基于 RDD 这样一个数据集合进行操作，抽象程度更高，这样用起来就方便多了是不是，但是为什么 Spark 比 Hadoop 快那么多，这里说到 storm，因为 Hadoop 其实是磁盘级的计算，所以即使是中间结果也需要写入 HDFS，再读 HDFS，磁盘 IO 的性能，你懂的，Spark 呢，借鉴了 storm，中间结果是写入内存了，所以，比 Hadoop 快了不是一星半点啊，既可以处理实时流，又可以处理离线作业。</p>
+</li>
+<li><p>Spark 和 Storm 对比？</p>
+<p>Spark 其实是跟 Hadoop 的理念一样，是对已有的大量数据进行批处理操作，Storm 呢，更多的是对大量实时数据的操作。因为 Spark 对比 Hadoop 来讲，是尽量避免了磁盘的读写，但是依然可以做离线作业调度，同时也支持流处理，这里虽然实现方式和 Storm 不同，但是达到的效果是差不多的。所以说 Spark 的支持会更广泛一些，Storm 在动态处理大量生成的小数据块上要好一些，而 Spark 是基于已有的全量数据集进行批处理操作更好一些。Spark流模块先汇聚批量数据然后进行数据块分发，而Storm是只要接收到数据就实时处理并分发。 </p>
+</li>
+</ul>
 <p>好了，来自开完分享会后的吐槽。</p>
 
   </section>
