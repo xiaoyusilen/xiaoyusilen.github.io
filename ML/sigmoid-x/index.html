@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      Sigmoid - x | 小宇宙 | xiaoyusilen 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="xiaoyusilen">
+    
+    
+
+    <meta name="description" content="背景最近需要用到 Sigmoid 将某个值的区间压缩至(0, 1)，但是标准的 Sigmoid 在 x = 37 时就已经为 1 了，这时候就需要对 x 进行处理，调整 Sigmoid 中的 x 范围以使得区分度最大。 Sigmoid 的取值首先，我们看一下 -50, 50 范围内的 Sigmoid，我这里只选取了 -20, 20 作为输出，精度和区分度基本已经符合我们的需求。 123456789">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sigmoid - x | 小宇宙 | xiaoyusilen">
+<meta property="og:url" content="http://yoursite.com/ML/sigmoid-x/index.html">
+<meta property="og:site_name" content="小宇宙 | xiaoyusilen">
+<meta property="og:description" content="背景最近需要用到 Sigmoid 将某个值的区间压缩至(0, 1)，但是标准的 Sigmoid 在 x = 37 时就已经为 1 了，这时候就需要对 x 进行处理，调整 Sigmoid 中的 x 范围以使得区分度最大。 Sigmoid 的取值首先，我们看一下 -50, 50 范围内的 Sigmoid，我这里只选取了 -20, 20 作为输出，精度和区分度基本已经符合我们的需求。 123456789">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2017-12-05T04:20:49.573Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Sigmoid - x | 小宇宙 | xiaoyusilen">
+<meta name="twitter:description" content="背景最近需要用到 Sigmoid 将某个值的区间压缩至(0, 1)，但是标准的 Sigmoid 在 x = 37 时就已经为 1 了，这时候就需要对 x 进行处理，调整 Sigmoid 中的 x 范围以使得区分度最大。 Sigmoid 的取值首先，我们看一下 -50, 50 范围内的 Sigmoid，我这里只选取了 -20, 20 作为输出，精度和区分度基本已经符合我们的需求。 123456789">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</head>
+<body>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">小宇宙 | xiaoyusilen</a></h1>
+        <hr class="panel-cover__divider" />
+
+        
+        <p class="panel-cover__description">
+          Life.pop(&#39;Fear&#39;)
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title="" class="">关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title="" class="">归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/xiaoyusilen" title="Huno on GitHub">
+          <i class='icon icon-social-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+    <li class="navigation__item">
+      <a href="mailto:debug@xiaoyu.fail" title="">
+        <i class='icon icon-mail'></i>
+        <span class="label">Weixin</span>
+      </a>
+    </li>
+
+  </ul>
+</nav>
+
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">Sigmoid - x</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2017-12-05" class="post-meta__date date">2017-12-05</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+            <font class="categories">
+            &#8226; 分类:
+            <a class="categories-link" href="/categories/ML/">ML</a>
+            </font>
+          
+
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>最近需要用到 Sigmoid 将某个值的区间压缩至(0, 1)，但是标准的 Sigmoid 在 x = 37 时就已经为 1 了，这时候就需要对 x 进行处理，调整 Sigmoid 中的 x 范围以使得区分度最大。</p>
+<h2 id="Sigmoid-的取值"><a href="#Sigmoid-的取值" class="headerlink" title="Sigmoid 的取值"></a>Sigmoid 的取值</h2><p>首先，我们看一下 -50, 50 范围内的 Sigmoid，我这里只选取了 -20, 20 作为输出，精度和区分度基本已经符合我们的需求。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 计算 -50, 50 区间范围内的 sigmoid 值，选取区分度较高的区间</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">for</span>(Integer i = -<span class="number">50</span>; i &lt;= <span class="number">50</span>; i++) &#123;</div><div class="line">    String s = String.format(<span class="string">"%d %.20f"</span>,i , <span class="number">1.0</span> / (Math.exp(i * -<span class="number">1.0</span>) + <span class="number">1.0</span>));</div><div class="line">    System.out.println(s);</div><div class="line">&#125;</div><div class="line"><span class="comment">/** Sample Output</span></div><div class="line"><span class="comment"> -20 0.00000000206115361819</span></div><div class="line"><span class="comment"> -19 0.00000000560279640615</span></div><div class="line"><span class="comment"> -18 0.00000001522997951276</span></div><div class="line"><span class="comment"> -17 0.00000004139937547394</span></div><div class="line"><span class="comment"> -16 0.00000011253516205510</span></div><div class="line"><span class="comment"> -15 0.00000030590222692562</span></div><div class="line"><span class="comment"> -14 0.00000083152802766413</span></div><div class="line"><span class="comment"> -13 0.00000226032429790357</span></div><div class="line"><span class="comment"> -12 0.00000614417460221472</span></div><div class="line"><span class="comment"> -11 0.00001670142184809518</span></div><div class="line"><span class="comment"> -10 0.00004539786870243440</span></div><div class="line"><span class="comment"> -9 0.00012339457598623172</span></div><div class="line"><span class="comment"> -8 0.00033535013046647810</span></div><div class="line"><span class="comment"> -7 0.00091105119440064540</span></div><div class="line"><span class="comment"> -6 0.00247262315663477430</span></div><div class="line"><span class="comment"> -5 0.00669285092428485540</span></div><div class="line"><span class="comment"> -4 0.01798620996209156000</span></div><div class="line"><span class="comment"> -3 0.04742587317756678000</span></div><div class="line"><span class="comment"> -2 0.11920292202211755000</span></div><div class="line"><span class="comment"> -1 0.26894142136999510000</span></div><div class="line"><span class="comment"> 0 0.50000000000000000000</span></div><div class="line"><span class="comment"> 1 0.73105857863000490000</span></div><div class="line"><span class="comment"> 2 0.88079707797788230000</span></div><div class="line"><span class="comment"> 3 0.95257412682243340000</span></div><div class="line"><span class="comment"> 4 0.98201379003790850000</span></div><div class="line"><span class="comment"> 5 0.99330714907571530000</span></div><div class="line"><span class="comment"> 6 0.99752737684336530000</span></div><div class="line"><span class="comment"> 7 0.99908894880559940000</span></div><div class="line"><span class="comment"> 8 0.99966464986953360000</span></div><div class="line"><span class="comment"> 9 0.99987660542401370000</span></div><div class="line"><span class="comment"> 10 0.99995460213129760000</span></div><div class="line"><span class="comment"> 11 0.99998329857815200000</span></div><div class="line"><span class="comment"> 12 0.99999385582539780000</span></div><div class="line"><span class="comment"> 13 0.99999773967570200000</span></div><div class="line"><span class="comment"> 14 0.99999916847197220000</span></div><div class="line"><span class="comment"> 15 0.99999969409777300000</span></div><div class="line"><span class="comment"> 16 0.99999988746483790000</span></div><div class="line"><span class="comment"> 17 0.99999995860062440000</span></div><div class="line"><span class="comment"> 18 0.99999998477002050000</span></div><div class="line"><span class="comment"> 19 0.99999999439720360000</span></div><div class="line"><span class="comment"> 20 0.99999999793884630000</span></div><div class="line"><span class="comment"> */</span></div></pre></td></tr></table></figure>
+<h2 id="Sigmoid-区间内-1-20-为底数的范围"><a href="#Sigmoid-区间内-1-20-为底数的范围" class="headerlink" title="Sigmoid 区间内 1 - 20 为底数的范围"></a>Sigmoid 区间内 1 - 20 为底数的范围</h2><p>可以看出来，大概到 4 的范围就已经很大了，我们根据目前数据所处的数量级选取合适的底数进行处理，然后再求得 Sigmoid 即可。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 这里选取了 1, 20 范围内, 区间为 0.1 的 sigmoid 范围为 -12, 12 的取值范围</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">for</span>(Double i = <span class="number">1.0</span>; i &lt;= <span class="number">20.0</span>; i+=<span class="number">0.1</span>) &#123;</div><div class="line">    Double a = Math.pow(<span class="number">10</span>, Math.log10(i)*(-<span class="number">12</span>));</div><div class="line">    Double b = Math.pow(<span class="number">10</span>, Math.log10(i)*(<span class="number">12</span>));</div><div class="line">    String s = String.format(<span class="string">"%.2f %.2f %.2f"</span>, i, a, b);</div><div class="line">    System.out.println(s);</div><div class="line">&#125;</div><div class="line"><span class="comment">/** Sample Output</span></div><div class="line"><span class="comment"> 1.00 1.00 1.00</span></div><div class="line"><span class="comment"> 1.10 0.32 3.14</span></div><div class="line"><span class="comment"> 1.20 0.11 8.92</span></div><div class="line"><span class="comment"> 1.30 0.04 23.30</span></div><div class="line"><span class="comment"> 1.40 0.02 56.69</span></div><div class="line"><span class="comment"> 1.50 0.01 129.75</span></div><div class="line"><span class="comment"> 1.60 0.00 281.47</span></div><div class="line"><span class="comment"> 1.70 0.00 582.62</span></div><div class="line"><span class="comment"> 1.80 0.00 1156.83</span></div><div class="line"><span class="comment"> 1.90 0.00 2213.31</span></div><div class="line"><span class="comment"> 2.00 0.00 4096.00</span></div><div class="line"><span class="comment"> 2.10 0.00 7355.83</span></div><div class="line"><span class="comment"> 2.20 0.00 12855.00</span></div><div class="line"><span class="comment"> 2.30 0.00 21914.62</span></div><div class="line"><span class="comment"> 2.40 0.00 36520.35</span></div><div class="line"><span class="comment"> 2.50 0.00 59604.64</span></div><div class="line"><span class="comment"> 2.60 0.00 95428.96</span></div><div class="line"><span class="comment"> 2.70 0.00 150094.64</span></div><div class="line"><span class="comment"> 2.80 0.00 232218.27</span></div><div class="line"><span class="comment"> 2.90 0.00 353814.78</span></div><div class="line"><span class="comment"> 3.00 0.00 531441.00</span></div><div class="line"><span class="comment"> 3.10 0.00 787662.78</span></div><div class="line"><span class="comment"> 3.20 0.00 1152921.50</span></div><div class="line"><span class="comment"> 3.30 0.00 1667889.51</span></div><div class="line"><span class="comment"> 3.40 0.00 2386420.68</span></div><div class="line"><span class="comment"> 3.50 0.00 3379220.51</span></div><div class="line"><span class="comment"> 3.60 0.00 4738381.34</span></div><div class="line"><span class="comment"> 3.70 0.00 6582952.01</span></div><div class="line"><span class="comment"> 3.80 0.00 9065737.91</span></div><div class="line"><span class="comment"> 3.90 0.00 12381557.66</span></div><div class="line"><span class="comment"> 4.00 0.00 16777216.00</span></div><div class="line"><span class="comment"> */</span></div></pre></td></tr></table></figure>
+
+  </section>
+
+  <section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2016-2017. | ❤ <a href="http://xiaoyu.world">xiaoyusilen</a> | <a href="https://github.com/someus/huno">Huno</a></span>
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv" style="display: inline;">
+         This site already had <span id="busuanzi_value_site_pv"></span> Visits by
+    </span>
+    <span id="busuanzi_container_site_uv" style="display: inline;">
+    <span id="busuanzi_value_site_uv"></span> Visitors 
+    </span>
+
+</footer>
+
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+    
+
+        <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['$','$'],['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>
