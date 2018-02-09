@@ -25,7 +25,7 @@
 <meta property="og:description" content="Transformation &amp;amp; Action说到 Transformation 和 Action，就必须得提一下 RDD，RDD 的中文名字叫做弹性分布式数据集，我刚开始接触 Spark 的时候也非常纠结 RDD 到底是个什么东西，后来发现，RDD 其实就是一个 Spark 的很抽象的数据结构。 Spark 中 RDD 提供了两种类型的操作：Transformation 和 Action">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1fmbqhkuguzj30lt0ddtaf.jpg">
-<meta property="og:updated_time" content="2018-02-05T03:48:01.989Z">
+<meta property="og:updated_time" content="2018-02-09T04:06:03.525Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark 性能调优 | 小宇宙 | xiaoyusilen">
 <meta name="twitter:description" content="Transformation &amp;amp; Action说到 Transformation 和 Action，就必须得提一下 RDD，RDD 的中文名字叫做弹性分布式数据集，我刚开始接触 Spark 的时候也非常纠结 RDD 到底是个什么东西，后来发现，RDD 其实就是一个 Spark 的很抽象的数据结构。 Spark 中 RDD 提供了两种类型的操作：Transformation 和 Action">
@@ -301,7 +301,7 @@ classes that you can use:
 <li>综上，如果需要减少分区的时候，比如数据量较小，但是存储时候希望存储到同一个 partition 中，可以用 coalesce 减少分区数量，会避免 shuffle 操作，但是如果数据量较大但数据相对均匀的情况下，可以使用 repartition 增加并行度。</li>
 </ul>
 <h3 id="countByKey"><a href="#countByKey" class="headerlink" title="countByKey"></a>countByKey</h3><ul>
-<li>countByKey，现在单个 Executor 上进行 count，然后聚合到 driver 上进行 count</li>
+<li>countByKey，先在单个 Executor 上进行 count，然后聚合到 driver 上进行 count</li>
 </ul>
 <h2 id="配置优化"><a href="#配置优化" class="headerlink" title="配置优化"></a>配置优化</h2><h3 id="shuffle-配置"><a href="#shuffle-配置" class="headerlink" title="shuffle 配置"></a>shuffle 配置</h3><ul>
 <li>spark.shuffle.io.maxRetries，最大重试次数，当做聚合操作时，shuffle read 和 shuffle write 操作所在节点会拉取属于自己的数据，但有时候因为网络问题会导致拉取失败，适当增加重试次数的时候可以增加稳定性，避免由于 GC 或者网络等原因导致任务失败。</li>
@@ -322,6 +322,7 @@ classes that you can use:
 <h4 id="大部分-stage-执行时间较短，单个-stage-执行时间很长"><a href="#大部分-stage-执行时间较短，单个-stage-执行时间很长" class="headerlink" title="大部分 stage 执行时间较短，单个 stage 执行时间很长"></a>大部分 stage 执行时间较短，单个 stage 执行时间很长</h4><p>这种情况一般是因为数据倾斜，建议是首先观察一下耗时最久的 stage 是第几个 stage，然后观察自己的代码不管是 SQL 还是 RDD 操作，根据上面提到的 shuffle 操作进行一下划分，确定一下耗时最久的 stage 出现的位置，然后将数据集 countByKey 输出一下，查看一下数据集分布情况，然后有几种解决方案：</p>
 <ol>
 <li>根据多个 key 组合后再重新分区，这样会有效减少单个 partition 中的数据量</li>
+<li>用key+随机数作为新的key，这样会避免单个key数据太大的情况，但是如果单个key数据很大在后续shuffle操作中依然会很消耗性能，如果后续只有map操作是可以这样来避免倾斜的</li>
 <li>根据倾斜情况，进行数据预处理</li>
 </ol>
 
