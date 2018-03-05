@@ -257,7 +257,7 @@ classes that you can use:
 </li>
 </ul>
 <ul>
-<li>化简后可得：<script type="math/tex; mode=display">\begin{cases}a &= \frac{\sum\_{i = 1}^n(x\_i - \bar x)(y\_i - \bar y)}{\sum\_{i = 1}^n(x\_i - \bar x)^{2}}\\\b &= \bar y - a\bar x\end{cases}</script></li>
+<li>化简后可得：<br>$$\begin{cases}a &amp;= \frac{\sum_{i = 1}^n(x_i - \bar x)(y_i - \bar y)}{\sum_{i = 1}^n(x_i - \bar x)^{2}}\\b &amp;= \bar y - a\bar x\end{cases}$$</li>
 </ul>
 <h4 id="Question"><a href="#Question" class="headerlink" title="Question"></a>Question</h4><p><strong>为什么最小二乘法中用模型预测数据与实际数据差的平方和最小而不是绝对值和最小？</strong></p>
 <p><a href="http://blog.sciencenet.cn/blog-430956-621997.html" target="_blank" rel="external">http://blog.sciencenet.cn/blog-430956-621997.html</a></p>
@@ -331,23 +331,7 @@ classes that you can use:
     <!--kill ie6 -->
 <!--[if IE 6]>
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
-<![endif]-->
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        tex2jax: {
-            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
-            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-            processEscapes: true
-        }
-    });
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax();
-        for (var i = 0; i < all.length; ++i)
-            all[i].SourceElement().parentNode.className += ' has-jax';
-    });
-</script>
-<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<![endif]--><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config("");
 </script>
@@ -365,5 +349,6 @@ classes that you can use:
 </script>
 <!-- End: Injected MathJax -->
 <!-- hexo-inject:end -->
+
 </body>
 </html>
