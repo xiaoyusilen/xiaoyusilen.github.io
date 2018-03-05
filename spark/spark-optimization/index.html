@@ -25,7 +25,7 @@
 <meta property="og:description" content="Transformation &amp;amp; Action说到 Transformation 和 Action，就必须得提一下 RDD，RDD 的中文名字叫做弹性分布式数据集，我刚开始接触 Spark 的时候也非常纠结 RDD 到底是个什么东西，后来发现，RDD 其实就是一个 Spark 的很抽象的数据结构。 Spark 中 RDD 提供了两种类型的操作：Transformation 和 Action">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1fmbqhkuguzj30lt0ddtaf.jpg">
-<meta property="og:updated_time" content="2018-02-09T04:06:03.525Z">
+<meta property="og:updated_time" content="2018-03-05T07:07:53.750Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark 性能调优 | 小宇宙 | xiaoyusilen">
 <meta name="twitter:description" content="Transformation &amp;amp; Action说到 Transformation 和 Action，就必须得提一下 RDD，RDD 的中文名字叫做弹性分布式数据集，我刚开始接触 Spark 的时候也非常纠结 RDD 到底是个什么东西，后来发现，RDD 其实就是一个 Spark 的很抽象的数据结构。 Spark 中 RDD 提供了两种类型的操作：Transformation 和 Action">
@@ -325,6 +325,12 @@ classes that you can use:
 <li>用key+随机数作为新的key，这样会避免单个key数据太大的情况，但是如果单个key数据很大在后续shuffle操作中依然会很消耗性能，如果后续只有map操作是可以这样来避免倾斜的</li>
 <li>根据倾斜情况，进行数据预处理</li>
 </ol>
+<h4 id="由于-join-导致-Executor-OOM"><a href="#由于-join-导致-Executor-OOM" class="headerlink" title="由于 join 导致 Executor OOM"></a>由于 join 导致 Executor OOM</h4><p>join 操作会导致 shuffle 操作，会将两个数据集聚合在同一个 Executor 上然后进行 join 操作，如果两个数据集比较大可能就会导致 Executor OOM。报错如下，org.apache.spark.SparkException: Job aborted due to stage failure: Task 1678 in stage 9.0 failed 4 times, most recent failure，虽然表面看上去报错是因为某个 Executor 超时并且重试失败，但是在作业进行的过程中观察 stage 失败原因会发现是由于 Executor OOM 导致的。这时候可以用 broadcast 代替 join 操作。具体步骤如下：</p>
+<ol>
+<li>选择较小的数据集进行广播</li>
+<li>遍历较大的数据集进行 map 或者 mapToPair 操作，两个数据集的 key 相同则进行 join 操作</li>
+</ol>
+<p>这两种操作的区别非常明显，就是 join 操作需要聚合到一个 Executor 上，很容易导致 OOM，而广播只需要将较小的数据集广播到各个 Executor，然后较大的数据集依然是根据 key 的分布在不同的 Executor 上，相当于是在各个 Executor 上分别进行 join 操作。我遇到的实际场景，用广播代替了 join 之后，时间缩短了 81.25%。</p>
 
   </section>
 
