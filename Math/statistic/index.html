@@ -386,6 +386,7 @@ classes that you can use:
 </ul>
 </li>
 </ul>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -416,6 +417,7 @@ classes that you can use:
 </tr>
 </tbody>
 </table>
+</div>
 <ul>
 <li>根据样本求出的z值与对应α level查找z-table得出的z值做比较，可得是否在临界区域内，如果在临界区域内，则可拒绝零假设，若不在临界区域内，则接受零假设</li>
 </ul>
@@ -512,7 +514,23 @@ classes that you can use:
     <!--kill ie6 -->
 <!--[if IE 6]>
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
-<![endif]--><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config("");
 </script>
@@ -530,6 +548,5 @@ classes that you can use:
 </script>
 <!-- End: Injected MathJax -->
 <!-- hexo-inject:end -->
-
 </body>
 </html>

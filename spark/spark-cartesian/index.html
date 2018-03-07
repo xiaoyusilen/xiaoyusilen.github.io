@@ -7,7 +7,7 @@
     
 
     <title>
-      Linear Regression | 小宇宙 | xiaoyusilen 
+      Spark cartesian 优化 | 小宇宙 | xiaoyusilen 
     </title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -16,20 +16,18 @@
     
     
 
-    <meta name="description" content="概述线性回归通常是学习预测模型时首选的技术之一，其中因变量是连续的，自变量可以是连续的，也可以是离散的，回归线的性质是线性的。现行回归使用最佳的拟合直线，也就是回归线，在因变量 y 和一个或多个自变量 x 之间建立一种关系。 模型$y = a + bx + e$，其中 ​$a$ 表示截距，​$b$ 表示斜率，​$e$ 表示误差项，这里，我们希望求得一个 ​$e$ 无限接近于 ​$0$，并且 ​$y">
-<meta name="keywords" content="Machine Learning">
+    <meta name="description" content="背景目前我们的使用场景需要进行离线预测，这时候就需要拼接离线预测数据，很明显需要对 user 数据集和 cate 数据集进行笛卡尔积，但是 user 集合是全量数据，数据量大约为 1.8 亿，spark 中提供了 cartesian 操作，但是 cartesian 操作会迅速消耗大量的内存，并且数据集比较大的时候耗时是指数级增长，其实大部分时候耗时长就算了，=_=我们的数据量级是完全没办法跑出来，">
+<meta name="keywords" content="Spark">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linear Regression | 小宇宙 | xiaoyusilen">
-<meta property="og:url" content="http://yoursite.com/ML/linear-regression/index.html">
+<meta property="og:title" content="Spark cartesian 优化 | 小宇宙 | xiaoyusilen">
+<meta property="og:url" content="http://yoursite.com/Spark/spark-cartesian/index.html">
 <meta property="og:site_name" content="小宇宙 | xiaoyusilen">
-<meta property="og:description" content="概述线性回归通常是学习预测模型时首选的技术之一，其中因变量是连续的，自变量可以是连续的，也可以是离散的，回归线的性质是线性的。现行回归使用最佳的拟合直线，也就是回归线，在因变量 y 和一个或多个自变量 x 之间建立一种关系。 模型$y = a + bx + e$，其中 ​$a$ 表示截距，​$b$ 表示斜率，​$e$ 表示误差项，这里，我们希望求得一个 ​$e$ 无限接近于 ​$0$，并且 ​$y">
+<meta property="og:description" content="背景目前我们的使用场景需要进行离线预测，这时候就需要拼接离线预测数据，很明显需要对 user 数据集和 cate 数据集进行笛卡尔积，但是 user 集合是全量数据，数据量大约为 1.8 亿，spark 中提供了 cartesian 操作，但是 cartesian 操作会迅速消耗大量的内存，并且数据集比较大的时候耗时是指数级增长，其实大部分时候耗时长就算了，=_=我们的数据量级是完全没办法跑出来，">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1fl19jsl8zgj30d807vglt.jpg">
-<meta property="og:updated_time" content="2017-11-17T03:16:10.000Z">
+<meta property="og:updated_time" content="2018-03-07T08:15:06.048Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Linear Regression | 小宇宙 | xiaoyusilen">
-<meta name="twitter:description" content="概述线性回归通常是学习预测模型时首选的技术之一，其中因变量是连续的，自变量可以是连续的，也可以是离散的，回归线的性质是线性的。现行回归使用最佳的拟合直线，也就是回归线，在因变量 y 和一个或多个自变量 x 之间建立一种关系。 模型$y = a + bx + e$，其中 ​$a$ 表示截距，​$b$ 表示斜率，​$e$ 表示误差项，这里，我们希望求得一个 ​$e$ 无限接近于 ​$0$，并且 ​$y">
-<meta name="twitter:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1fl19jsl8zgj30d807vglt.jpg">
+<meta name="twitter:title" content="Spark cartesian 优化 | 小宇宙 | xiaoyusilen">
+<meta name="twitter:description" content="背景目前我们的使用场景需要进行离线预测，这时候就需要拼接离线预测数据，很明显需要对 user 数据集和 cate 数据集进行笛卡尔积，但是 user 集合是全量数据，数据量大约为 1.8 亿，spark 中提供了 cartesian 操作，但是 cartesian 操作会迅速消耗大量的内存，并且数据集比较大的时候耗时是指数级增长，其实大部分时候耗时长就算了，=_=我们的数据量级是完全没办法跑出来，">
     
     
     
@@ -203,26 +201,26 @@ classes that you can use:
 
   <header class="post-header">
     
-    <h1 class="post-title">Linear Regression</h1>
+    <h1 class="post-title">Spark cartesian 优化</h1>
 
     
 
     <div class="post-meta">
-      <time datetime="2017-11-05" class="post-meta__date date">2017-11-05</time> 
+      <time datetime="2018-03-07" class="post-meta__date date">2018-03-07</time> 
 
       <span class="post-meta__tags tags">
 
           
             <font class="categories">
             &#8226; 分类:
-            <a class="categories-link" href="/categories/ML/">ML</a>
+            <a class="categories-link" href="/categories/Spark/">Spark</a>
             </font>
           
 
           
              &#8226; 标签:
             <font class="tags">
-              <a class="tags-link" href="/tags/Machine-Learning/">Machine Learning</a>
+              <a class="tags-link" href="/tags/Spark/">Spark</a>
             </font>
           
 
@@ -234,40 +232,11 @@ classes that you can use:
   </header>
 
   <section id="post-content" class="article-content post">
-    <h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>线性回归通常是学习预测模型时首选的技术之一，其中因变量是连续的，自变量可以是连续的，也可以是离散的，回归线的性质是线性的。现行回归使用最佳的拟合直线，也就是回归线，在因变量 y 和一个或多个自变量 x 之间建立一种关系。</p>
-<h3 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h3><p>$y = a + bx + e$，其中 ​$a$ 表示截距，​$b$ 表示斜率，​$e$ 表示误差项，这里，我们希望求得一个 ​$e$ 无限接近于 ​$0$，并且 ​$y$ 和真实值偏差最小的 ​$a$ 和 ​$b$。</p>
-<p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fl19jsl8zgj30d807vglt.jpg" alt="55d3f5dc33dc3"></p>
-<p>一元线性回归和多元线性回归的区别在于，多元线性回归有 &gt; 1 个自变量，而一元线性回归通常只有 1 个自变量。</p>
-<h3 id="如何获得最佳拟合线？"><a href="#如何获得最佳拟合线？" class="headerlink" title="如何获得最佳拟合线？"></a>如何获得最佳拟合线？</h3><h4 id="最小二乘法"><a href="#最小二乘法" class="headerlink" title="最小二乘法"></a>最小二乘法</h4><p>最小二乘法的核心是保证所有数据偏差的平方和最小。</p>
-<h4 id="推导过程如下"><a href="#推导过程如下" class="headerlink" title="推导过程如下"></a>推导过程如下</h4><ul>
-<li><p>由于 $y = a + bx$ 是一个二元方程，我们现在想要求得该方程中的两个参数，因此应该求 $y$ 关于 $a$ 以及 $y$ 关于 $b$ 的偏导，偏导即将所求参数视作变量，其他参数视作常量，然后求导。</p>
-</li>
-<li><p>$M$ 表示预测值与实际值差值平方和，我们现在希望找到 $M$ 最小情况下的 $a$ 和 $b$，这里的 $M$ 就是上边公式的 $e$。</p>
-<p>$M = \sum_{i = 1}^n[y_i - (ax_i + b)]^{2}$</p>
-<p>$\frac{\partial M}{\partial a} = -2 \sum_{i = 1}^n x_i[y_i - (ax_i + b)] = -2 \sum_{i = 1}^n(x_iy_i - ax_i^{2} - bx_i) = 2(a\sum_{i = 1}^nx_i^{2} + b\sum_{i = 1}^nx_i - \sum_{i = 1}^nx_iy_i)$</p>
-<p>$\frac{\partial M}{\partial b} = -2\sum_{i = 1}^n[y_i - (ax_i + b)] = 2(\sum_{i = 1}^ny_i - a\sum_{i = 1}^nx_i - nb)$</p>
-<p>我们的目的是要求极值，所以令 $\frac{\partial M}{\partial a} = 0$，$\frac{\partial M}{\partial b} = 0$，令 $n\bar x = \sum_{i = 1}^nx_i$，$n\bar y = \sum_{i = 1}^ny_i$</p>
-<p>$\frac{\partial M}{\partial b} = -2(n\bar y - an\bar x - nb) = 0$</p>
-<p>$∴ b = \bar y - a\bar x$</p>
-<p>$a\sum_{i = 1}^nx_i^{2} + \bar y\sum_{i = 1}^nx_i - a\bar x\sum_{i = 1}^nx_i - \sum_{i = 1}^nx_iy_i = 0$</p>
-<p>$a\sum_{i = 1}^n x_i^{2} - a\bar x\sum_{i = 1}^nx_i = \sum_{i = 1}^nx_iy_i - \bar y\sum_{i = 1}^nx_i$</p>
-<p>$\sum_{i = 1}^nx_i^{2} - \bar x\sum{i = 1}^nx_i = \frac{\sum_{i = 1}^nx_iy_i - \bar y\sum_{i = 1}^nx_i)}{a}$</p>
-<p>$a = \frac{\sum_{i = 1}^nx_iy_i - \bar y\sum_{i = 1}^nx_i}{\sum_{i = 1}^nx_i^{2} - \bar x\sum_{i = 1}^nx_i}$</p>
-<p>$a = \frac{\sum_{i = 1}^n(x_i - \bar x)(y_i - \bar y)}{\sum_{i = 1}^n(x_i - \bar x)^{2}}$</p>
-</li>
-</ul>
-<ul>
-<li>化简后可得：<script type="math/tex; mode=display">\begin{cases}a &= \frac{\sum\_{i = 1}^n(x\_i - \bar x)(y\_i - \bar y)}{\sum\_{i = 1}^n(x\_i - \bar x)^{2}}\\\b &= \bar y - a\bar x\end{cases}</script></li>
-</ul>
-<h4 id="Question"><a href="#Question" class="headerlink" title="Question"></a>Question</h4><p><strong>为什么最小二乘法中用模型预测数据与实际数据差的平方和最小而不是绝对值和最小？</strong></p>
-<p><a href="http://blog.sciencenet.cn/blog-430956-621997.html" target="_blank" rel="external">http://blog.sciencenet.cn/blog-430956-621997.html</a></p>
-<p>其实本质是因为我们需要预测值和实际值的误差符合正态分布，符合客观的统计规律。</p>
-<h3 id="线性回归的缺陷"><a href="#线性回归的缺陷" class="headerlink" title="线性回归的缺陷"></a>线性回归的缺陷</h3><ul>
-<li>自变量和因变量一定要是线性</li>
-<li>线性回归对异常值非常敏感，会严重影响回归线，最终影响预测</li>
-<li>从公式中可以看出，随着 n 的增加，计算量会越来越大</li>
-</ul>
-<h3 id="线性回归的损失函数"><a href="#线性回归的损失函数" class="headerlink" title="线性回归的损失函数"></a>线性回归的损失函数</h3><p>指数损失函数</p>
+    <h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><p>目前我们的使用场景需要进行离线预测，这时候就需要拼接离线预测数据，很明显需要对 user 数据集和 cate 数据集进行笛卡尔积，但是 user 集合是全量数据，数据量大约为 1.8 亿，spark 中提供了 cartesian 操作，但是 cartesian 操作会迅速消耗大量的内存，并且数据集比较大的时候耗时是指数级增长，其实大部分时候耗时长就算了，=_=我们的数据量级是完全没办法跑出来，单个 Executor 会直接 OOM。这种情况下，我们就不得不去优化，跑不出来 job 是多么的令人绝望。</p>
+<h4 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h4><p>思考优化的时候我第一反应是使用广播，因为我们的数据集合比较特别，cate 数据集数据量较小，但是 user 数据量非常大，之前也遇到过 Executor OOM 的场景，当时也是使用广播来解决了这个问题，但是之前的场景是使用广播来代替 join 操作，也就是大表数据一对一输出，但是我们现在的场景很明显不符合，是需要大表的数据一对多输出，这时候我想到了 flatMap，没错 flatMap 就是一个数据集一条数据可输出多条数据，这时候就 so easy 啦，只需要遍历大表，将大表中的一条数据与小表中的所有数据拼接成一个 string，然后 split 后返回即可。</p>
+<h4 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h4><h5 id="Before"><a href="#Before" class="headerlink" title="Before"></a>Before</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// user is data collection A</span></div><div class="line"><span class="comment">// cate is data collection B</span></div><div class="line">JavaRDD&lt;String&gt; res = user.cartesian(cate).map(<span class="keyword">new</span> Function&lt;Tuple2&lt;Tuple2&lt;String, String&gt;, Tuple2&lt;String, String&gt;&gt;, String&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> String <span class="title">call</span><span class="params">(Tuple2&lt;Tuple2&lt;String, String&gt;, Tuple2&lt;String, String&gt;&gt; tuple2Tuple2Tuple2)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">                <span class="comment">// about map code</span></div><div class="line">                <span class="keyword">return</span> str;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure>
+<h5 id="After"><a href="#After" class="headerlink" title="After"></a>After</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// user is one data collection </span></div><div class="line"><span class="comment">// cate is the other data collection and is the small collection</span></div><div class="line"><span class="comment">// sc is JavaSparkContext</span></div><div class="line">List&lt;Tuple2&lt;String, String&gt;&gt; collect = cate.collect();</div><div class="line">Broadcast&lt;List&lt;Tuple2&lt;String, String&gt;&gt;&gt; broadcast = sc.broadcast(collect);</div><div class="line">JavaRDD&lt;String&gt; combine = user.flatMap(<span class="keyword">new</span> FlatMapFunction&lt;Tuple2&lt;String, String&gt;, String&gt;() &#123;</div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">public</span> Iterator&lt;String&gt; <span class="title">call</span><span class="params">(Tuple2&lt;String, String&gt; stringStringTuple2)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">    <span class="keyword">for</span>(Tuple2&lt;String, String&gt; value : broadcast.value()) &#123;</div><div class="line">      ... <span class="comment">// join one user data with all the cate data to one string</span></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> Arrays.asList(string.split()).iterator();</div><div class="line">  &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h4 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h4><p>Emmm…不止可以跑出来，而且快了很多…</p>
 
   </section>
 

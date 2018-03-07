@@ -206,6 +206,24 @@ classes that you can use:
     <li>
 
       <h2 class="post-list__post-title post-title">
+        <a href="/Math/statistic/" title="link to 笔记 - 统计学基础">笔记 - 统计学基础</a>
+      </h2>
+
+      <div class="post-list__meta">
+
+        <time datetime="2017-09-10" class="post-list__meta--date date">2017-09-10</time> 
+      </div>
+
+      <div class="excerpt">
+        
+      </div>
+
+      <hr class="post-list__divider" />
+    </li>
+    
+    <li>
+
+      <h2 class="post-list__post-title post-title">
         <a href="/Algo/codeforces-submission-08-19/" title="link to Codeforces 08-19">Codeforces 08-19</a>
       </h2>
 
@@ -365,24 +383,6 @@ classes that you can use:
       <hr class="post-list__divider" />
     </li>
     
-    <li>
-
-      <h2 class="post-list__post-title post-title">
-        <a href="/Go/go-effective-go-page1/" title="link to Effective Go Again（一）">Effective Go Again（一）</a>
-      </h2>
-
-      <div class="post-list__meta">
-
-        <time datetime="2017-03-01" class="post-list__meta--date date">2017-03-01</time> 
-      </div>
-
-      <div class="excerpt">
-        
-      </div>
-
-      <hr class="post-list__divider" />
-    </li>
-    
   </ol>
 
   <hr class="post-list__divider " />
@@ -441,7 +441,23 @@ classes that you can use:
     <!--kill ie6 -->
 <!--[if IE 6]>
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
-<![endif]--><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config("");
 </script>
@@ -459,6 +475,5 @@ classes that you can use:
 </script>
 <!-- End: Injected MathJax -->
 <!-- hexo-inject:end -->
-
 </body>
 </html>
