@@ -25,7 +25,7 @@
 <meta property="og:description" content="概述在很多情况下样本数据经过 One-Hot 编码后，大部分样本数据特征是比较稀疏的。通过观察大量样本数据我们发现，某些特征经过关联之后，与 label 之间的相关性会提高。表示特征之间的关联，最直接的方法是构造组合特征。样本中特征之间的关联信息在 One-Hot 编码和浅层学习模型（如 LR、SVM）是做不到的，目前常用的两种得到组合特征的手段是：  人工特征工程（数据分析 + 人工构造） 通过">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1flhno3d37oj30ny0domy9.jpg">
-<meta property="og:updated_time" content="2018-03-28T09:38:18.701Z">
+<meta property="og:updated_time" content="2018-03-28T09:46:29.209Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Factorization Machine | 小宇宙 | xiaoyusilen">
 <meta name="twitter:description" content="概述在很多情况下样本数据经过 One-Hot 编码后，大部分样本数据特征是比较稀疏的。通过观察大量样本数据我们发现，某些特征经过关联之后，与 label 之间的相关性会提高。表示特征之间的关联，最直接的方法是构造组合特征。样本中特征之间的关联信息在 One-Hot 编码和浅层学习模型（如 LR、SVM）是做不到的，目前常用的两种得到组合特征的手段是：  人工特征工程（数据分析 + 人工构造） 通过">
@@ -240,16 +240,65 @@ classes that you can use:
 <li>通过模型做组合特征的学习（FM/FFM、深度学习等）</li>
 </ul>
 <p>事实上决策树也可以用作特征组合，决策树可以很方便的对特征做高阶组合，一颗决策树的每个叶子节点其实都对应一条特征规则。Facebook 就使用 $GBDT​$ 学习特征的自动组合。但是决策树和二项式模型有一个共同的问题，就是无法学习到数据中不存在的模式。例如，如果某种特征组合的数据不存在或者很少是无法做训练的，如果数据不是高度稀疏的情况下，基本特征组合都可以找到足够的样本，但是数据高度稀疏，二项组合就足以让大多数模式找不到样本训练，更高阶组合就更不必说了。所以，引入 FM/FFM 做特征组合是非常有必要的。</p>
-<h3 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h3><p>要真正理解 FM 的模型，首先要从线性回归和多项式回归说起。对于特征集合 $x = (x_1, x_2, \cdots, x_n)$ 和标签 $y$，我们希望得到 $y$ 与 $x$ 的关系，最简单是建立线性回归模型，表示如下，<br>$$<br>\begin{equation}<br>\tag{1} y(x) = w_0 + \sum_{i = 1}^nw_ix_i<br>\end{equation}<br>$$<br>但是，一般线性模型无法学习到高阶组合特征，所以会将特征进行高阶组合，多项式模型是包含特征组合的最直观的模型。在多项式模型中，特征 $x_i$ 和 $x_j$ 的组合采用 $x_ix_j$ 表示，即 $x_i$ 和 $x_j$ 都非零时，组合特征 $x_ix_j$ 才有意义。我们这里只讨论二阶多项式模型，理论上 FM 可以组合任意高阶，但是实际情况中多用二阶，模型如下：<br>$$<br>\begin{equation}<br>\tag{2} y(x) = w<em>0 + \sum</em>{i = 1}^nw_ix<em>i + \sum</em>{i = 1}^n\sum<em>{j = i + 1}^nw</em>{ij}x_ix _j<br>\end{equation}<br>$$<br>其中，$n$ 表示样本的特征数量，$x_i$ 是第 $i$ 个特征的值，$w_0$、$w<em>i$、$w</em>{ij}$ 是模型参数。</p>
-<p>公式 $(2)$ 比公式 $(1)$ 多了 $\frac{n(n-1)}{2}$ 个组合特征的参数，其中任意两个参数是独立的。如概述中所述，数据稀疏的情况下，每个参数 $w_{ij}$ 的训练都需要大量不为零的 $x_i$ 和 $x_j$ 样本，样本数据本来就稀疏，满足 $x_i$ 和 $x<em>j$ 同时非零条件的样本很少，训练样本不足会导致 $w</em>{ij}$ 不准确，影响模型的效果。为了求出参数 $w<em>{ij}$，我们可以将所有 $w</em>{ij}$ 组成一个矩阵，<br>$$<br>\begin{equation}<br>W = \begin{pmatrix}<br>w<em>{11} &amp; w</em>{12} &amp; \cdots &amp; w<em>{1n} \\<br>w</em>{21} &amp; w<em>{22} &amp; \cdots &amp; w</em>{2n} \\<br>\vdots&amp;\vdots&amp; &amp; \vdots \\<br>w<em>{n1} &amp; w</em>{n2} &amp; \cdots &amp; w_{nn} \\<br>\end{pmatrix}<br>\end{equation}<br>$$<br>很显然矩阵 $W$ 是一个对称矩阵，根据正定矩阵的定义，图示 $W$ 至少是一个半正定矩阵，我们假定 $W$ 是一个正定矩阵，根据矩阵的性质，正定矩阵可以进行分解。<img src="https://ws1.sinaimg.cn/large/006tNc79ly1flhno3d37oj30ny0domy9.jpg" alt="ffm_mf"></p>
+<h3 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h3><p>要真正理解 FM 的模型，首先要从线性回归和多项式回归说起。对于特征集合 $x = (x_1, x_2, \cdots, x_n)$ 和标签 $y$，我们希望得到 $y$ 与 $x$ 的关系，最简单是建立线性回归模型，表示如下，</p>
+<script type="math/tex; mode=display">
+\begin{equation}
+\tag{1} y(x) = w_0 + \sum_{i = 1}^nw_ix_i
+\end{equation}</script><p>但是，一般线性模型无法学习到高阶组合特征，所以会将特征进行高阶组合，多项式模型是包含特征组合的最直观的模型。在多项式模型中，特征 $x_i$ 和 $x_j$ 的组合采用 $x_ix_j$ 表示，即 $x_i$ 和 $x_j$ 都非零时，组合特征 $x_ix_j$ 才有意义。我们这里只讨论二阶多项式模型，理论上 FM 可以组合任意高阶，但是实际情况中多用二阶，模型如下：</p>
+<script type="math/tex; mode=display">
+\begin{equation}
+\tag{2} y(x) = w_0 + \sum_{i = 1}^nw_ix_i + \sum_{i = 1}^n\sum_{j = i + 1}^nw_{ij}x_ix _j
+\end{equation}</script><p>其中，$n$ 表示样本的特征数量，$x<em>i$ 是第 $i$ 个特征的值，$w_0$、$w_i$、$w</em>{ij}$ 是模型参数。</p>
+<p>公式 $(2)​$ 比公式 $(1)​$ 多了 $\frac{n(n-1)}{2}​$ 个组合特征的参数，其中任意两个参数是独立的。如概述中所述，数据稀疏的情况下，每个参数 $w<em>{ij}​$ 的训练都需要大量不为零的 $x_i​$ 和 $x_j​$ 样本，样本数据本来就稀疏，满足 $x_i​$ 和 $x_j​$ 同时非零条件的样本很少，训练样本不足会导致 $w</em>{ij}​$ 不准确，影响模型的效果。为了求出参数 $w<em>{ij}​$，我们可以将所有 $w</em>{ij}​$ 组成一个矩阵，</p>
+<script type="math/tex; mode=display">
+\begin{equation}
+W = \begin{pmatrix}
+w_{11} & w_{12} & \cdots & w_{1n} \\\
+w_{21} & w_{22} & \cdots & w_{2n} \\\
+\vdots&\vdots& & \vdots \\\
+w_{n1} & w_{n2} & \cdots & w_{nn} \\\
+\end{pmatrix}
+\end{equation}</script><p>很显然矩阵 $W$ 是一个对称矩阵，根据正定矩阵的定义，图示 $W$ 至少是一个半正定矩阵，我们假定 $W$ 是一个正定矩阵，根据矩阵的性质，正定矩阵可以进行分解。<img src="https://ws1.sinaimg.cn/large/006tNc79ly1flhno3d37oj30ny0domy9.jpg" alt="ffm_mf"></p>
 <p>先举一个简单的矩阵分解的例子，上图是用户针对电影的评分，这里我们可以把 $rating$ 矩阵分解成 $user$ 矩阵和 $movie$ 矩阵，每个 $user$ 和 每个 $movie$ 我们都可以用一个二维向量表示（这里的维数是自定义的），以上两个向量的点积就是矩阵中 $user$ 对 $movie$ 的打分，以上就是一个 $rating$ 矩阵的分解过程。</p>
-<p>接下来我们来思考我们的 $W$ 矩阵如何分解，正定矩阵分解如公式 $(3)$。<br>$$<br>\begin{equation}<br>\tag{3} W = Q\Lambda Q^T<br>\end{equation}<br>$$<br>说起 $FM$ 中 $W$ 矩阵如何分解，首先要讲一下 $SVD$ 变换。</p>
+<p>接下来我们来思考我们的 $W$ 矩阵如何分解，正定矩阵分解如公式 $(3)$。</p>
+<script type="math/tex; mode=display">
+\begin{equation}
+\tag{3} W = Q\Lambda Q^T
+\end{equation}</script><p>说起 $FM$ 中 $W$ 矩阵如何分解，首先要讲一下 $SVD$ 变换。</p>
 <h4 id="SVD-变换"><a href="#SVD-变换" class="headerlink" title="SVD 变换"></a>SVD 变换</h4><p>对任意 $n\times m$ 的矩阵，能否找到一组正交基使得经过它变换后还是正交基？现在假设存在 $n\times m$ 矩阵A，事实上，A矩阵将n维空间中的向量映射到 $k$ 维空间中，其中 $k\ll n$，现在的目标就是，在 $n$ 维空间中找到一组正交基，使得经过 $A$ 变换后还是正交的。</p>
-<p>假设已经找到了这样一组正交基，<br>$$<br>{v_1, v_2, \cdots, v_n}<br>$$<br>则 $A$ 矩阵将这组基映射为，<br>$$<br>{Av_1, Av_2, \cdots, Av_n}<br>$$<br>已知映射后的矩阵仍为正交矩阵，则其中两两正交，即，<br>$$<br>(Av_i, Av_j) = (Av_i)^TAv_j = {v_i}^TA^TAv_j ={v_i}^Tv_j = (v_i, v_j) = 0<br>$$<br>如果正交基 $v$ 选择 $A^TA$ 作为特征向量的话，因为 $A^TA$ 为对称阵，$v$ 之间两两正交，那么，<br>$$<br>{v_i}^TA^TAv_j = {v_i}^T\lambda_jv_j = \lambda_j{v_i}^Tv_j = \lambda_j(v_i, v_j) = 0<br>$$<br>这时候就找到了映射后的正交基，现在将映射后的正交基单位化，<br>$$<br>Av_i\cdot Av_i = \lambda_i(v_i, v_i) = \lambda_i<br>$$<br>所以有，<br>$$<br>|Av_i|^2 = \lambda_i\geq0<br>$$<br>所以取单位向量<br>$$<br>u_i = \frac{Av_i}{|Av_i|} = \frac{1}{\sqrt{\lambda_i}}Av_i<br>$$<br>由此可得，<br>$$<br>Av_i = \sigma_iu_i<br>$$<br>$\sigma_i = \sqrt{\lambda_i}$，其中 $\sigma_i$ 就是奇异值，$0\leq i \leq k$，$k = Rank(A)$。</p>
-<p>上边说到，我们把 $A^TA$ 视作特征值，其实，公式 $(3)$ 中的 $\Lambda$ 就是上述变换中的 $A$，所以分解后的奇异值为 $\sqrt{\Lambda^\Lambda}$，那么，令 $V = Q\sqrt{\Lambda}$，<br>$$<br>\begin{align}<br>W &amp;= Q\sqrt{\Lambda\Lambda^T}Q^T\\<br>&amp;= Q\sqrt{\Lambda}\sqrt{\Lambda^T}Q^T\\<br>&amp;= VV^T<br>\end{align}<br>$$<br>上面的过程以及基于我们已有的数据可以看出，隐向量的维度 $k$ 应该远小于特征数量 $n$，所以分解后需要学习的参数数量为 $nk$ 个，分解前需要学习的参数数量为 $\frac{n(n-1)}{2}$，因此时间复杂度从 $O(n^2)$ 降低到了 $kO(n)$ 级别。对于 $k$ 值的限定，就反映了 FM 模型的表达能力。</p>
-<p>同时，参数因子化使得 $x_hx_i$ 的参数不再是互相独立的，因此我们可以在样本稀疏的情况下相对合理的估计 FM 的二次项参数。比如，$x_hx_i$ 和 $x_ix_j$ 的系数分别是 $\left \langle v_h，v_i \right \rangle$ 和 $ \left \langle v_i，v_j \right \rangle$，它们之间有共同项 $v_i$。也就是说，所有包含 $x_i$ 的非零组合特征，即存在某个 $j\neq i$，使得 $x_ix_j \neq 0$ 的样本都可以用来学习隐向量 $v_i$，这很大程度上避免了数据稀疏造成的影响。而在多项式模型中，$w_{hi}$ 和 $w_{ij}$ 是相互独立的。</p>
-<h3 id="计算交叉项"><a href="#计算交叉项" class="headerlink" title="计算交叉项"></a>计算交叉项</h3><p>仔细观察我们需要求的 $W$ 矩阵会发现，其实我们所需要求的应该是 $W$ 矩阵的上三角部分，因为在 $W$ 矩阵中的 $w_{12}$ 和 $w_{21}$ 其实对我们来说是同一种特征组合，所以我们只需要求出一半的 $w_{ij}$ 即可。交叉项计算的算法是类似 $(a + b + c)^2 - a^2 - b^2 - c^2$ 求出交叉项，第一步的意思是 $W$ 矩阵的一半减去对角线部分即上三角部分，具体过程如下，<br>$$<br>\begin{align}<br>\sum_{i = 1}^n\sum_{j = i + 1}^n (v_i, v_j)x_ix_j &amp;= \frac{1}{2} \sum_{i = 1}^n\sum_{j = 1}^n (v_i, v_j)x_ix_j - \frac{1}{2} \sum_{i = 1}^n(v_i, v_i)x_ix_i\\<br>&amp;= \frac{1}{2}(\sum_{i = 1}^n\sum_{j = 1}^n\sum_{f = 1}^k(v_{i,f}, v_{j,f})x_ix_j - \sum_{i = 1}^n\sum_{f = 1}^k(v_i, v_i)x_{i,f}x_{i,f})\\<br>&amp;= \frac{1}{2}\sum_{i = 1}^k((\sum_{i = 1}^nv_{i,f}x_i)(\sum_{i = 1}^nv_{j,f}x_j) - \sum_{i = 1}^nv_{i,f}x_i)\\<br>&amp;= \frac{1}{2}\sum_{f = 1}^k((\sum_{i = 1}^nv_{i,f}x_i)^2 - \sum_{i = 1}^n{v_{i,f}}^2x_i)<br>\end{align}<br>$$</p>
-<h3 id="在回归和分类上的应用"><a href="#在回归和分类上的应用" class="headerlink" title="在回归和分类上的应用"></a>在回归和分类上的应用</h3><p>最优化一般需要加上正规化项，避免参数过拟合，FM 添加 L2 正规化。</p>
+<p>假设已经找到了这样一组正交基，</p>
+<script type="math/tex; mode=display">
+\{v\_1, v\_2, \cdots, v\_n\}</script><p>则 $A$ 矩阵将这组基映射为，</p>
+<script type="math/tex; mode=display">
+\{Av\_1, Av\_2, \cdots, Av\_n\}</script><p>已知映射后的矩阵仍为正交矩阵，则其中两两正交，即，</p>
+<script type="math/tex; mode=display">
+(Av\_i, Av\_j) = (Av\_i)^TAv\_j = {v\_i}^TA^TAv\_j ={v\_i}^Tv\_j = (v\_i, v\_j) = 0</script><p>如果正交基 $v$ 选择 $A^TA$ 作为特征向量的话，因为 $A^TA$ 为对称阵，$v$ 之间两两正交，那么，</p>
+<script type="math/tex; mode=display">
+{v\_i}^TA^TAv\_j = {v\_i}^T\lambda\_jv\_j = \lambda\_j{v\_i}^Tv\_j = \lambda\_j(v\_i, v\_j) = 0</script><p>这时候就找到了映射后的正交基，现在将映射后的正交基单位化，</p>
+<script type="math/tex; mode=display">
+Av\_i\cdot Av\_i = \lambda\_i(v\_i, v\_i) = \lambda\_i</script><p>所以有，</p>
+<script type="math/tex; mode=display">
+|Av\_i|^2 = \lambda\_i\geq0</script><p>所以取单位向量</p>
+<script type="math/tex; mode=display">
+u\_i = \frac{Av\_i}{|Av\_i|} = \frac{1}{\sqrt{\lambda\_i}}Av\_i</script><p>由此可得，</p>
+<script type="math/tex; mode=display">
+Av\_i = \sigma\_iu\_i</script><p>$\sigma_i = \sqrt{\lambda_i}$，其中 $\sigma_i$ 就是奇异值，$0\leq i \leq k$，$k = Rank(A)$。</p>
+<p>上边说到，我们把 $A^TA$ 视作特征值，其实，公式 $(3)$ 中的 $\Lambda$ 就是上述变换中的 $A$，所以分解后的奇异值为 $\sqrt{\Lambda^\Lambda}$，那么，令 $V = Q\sqrt{\Lambda}$，</p>
+<script type="math/tex; mode=display">
+\begin{align}
+W &= Q\sqrt{\Lambda\Lambda^T}Q^T\\\
+&= Q\sqrt{\Lambda}\sqrt{\Lambda^T}Q^T\\\
+&= VV^T
+\end{align}</script><p>上面的过程以及基于我们已有的数据可以看出，隐向量的维度 $k$ 应该远小于特征数量 $n$，所以分解后需要学习的参数数量为 $nk$ 个，分解前需要学习的参数数量为 $\frac{n(n-1)}{2}$，因此时间复杂度从 $O(n^2)$ 降低到了 $kO(n)$ 级别。对于 $k$ 值的限定，就反映了 FM 模型的表达能力。</p>
+<p>同时，参数因子化使得 $x<em>hx_i$ 的参数不再是互相独立的，因此我们可以在样本稀疏的情况下相对合理的估计 FM 的二次项参数。比如，$x_hx_i$ 和 $x_ix_j$ 的系数分别是 $\left \langle v_h，v_i \right \rangle$ 和 $ \left \langle v_i，v_j \right \rangle$，它们之间有共同项 $v_i$。也就是说，所有包含 $x_i$ 的非零组合特征，即存在某个 $j\neq i$，使得 $x_ix_j \neq 0$ 的样本都可以用来学习隐向量 $v_i$，这很大程度上避免了数据稀疏造成的影响。而在多项式模型中，$w\</em>{hi}$ 和 $w_{ij}$ 是相互独立的。</p>
+<h3 id="计算交叉项"><a href="#计算交叉项" class="headerlink" title="计算交叉项"></a>计算交叉项</h3><p>仔细观察我们需要求的 $W$ 矩阵会发现，其实我们所需要求的应该是 $W$ 矩阵的上三角部分，因为在 $W$ 矩阵中的 $w_{12}$ 和 $w_{21}$ 其实对我们来说是同一种特征组合，所以我们只需要求出一半的 $w_{ij}$ 即可。交叉项计算的算法是类似 $(a + b + c)^2 - a^2 - b^2 - c^2$ 求出交叉项，第一步的意思是 $W$ 矩阵的一半减去对角线部分即上三角部分，具体过程如下，</p>
+<script type="math/tex; mode=display">
+\begin{align}
+\sum\_{i = 1}^n\sum\_{j = i + 1}^n (v\_i, v\_j)x\_ix\_j &= \frac{1}{2} \sum\_{i = 1}^n\sum\_{j = 1}^n (v\_i, v\_j)x\_ix\_j - \frac{1}{2} \sum\_{i = 1}^n(v\_i, v\_i)x\_ix\_i\\\
+&= \frac{1}{2}(\sum\_{i = 1}^n\sum\_{j = 1}^n\sum\_{f = 1}^k(v\_{i,f}, v\_{j,f})x\_ix\_j - \sum\_{i = 1}^n\sum\_{f = 1}^k(v\_i, v\_i)x\_{i,f}x\_{i,f})\\\
+&= \frac{1}{2}\sum\_{i = 1}^k((\sum\_{i = 1}^nv\_{i,f}x\_i)(\sum\_{i = 1}^nv\_{j,f}x\_j) - \sum\_{i = 1}^nv\_{i,f}x\_i)\\\
+&= \frac{1}{2}\sum\_{f = 1}^k((\sum\_{i = 1}^nv\_{i,f}x\_i)^2 - \sum\_{i = 1}^n{v\_{i,f}}^2x\_i)
+\end{align}</script><h3 id="在回归和分类上的应用"><a href="#在回归和分类上的应用" class="headerlink" title="在回归和分类上的应用"></a>在回归和分类上的应用</h3><p>最优化一般需要加上正规化项，避免参数过拟合，FM 添加 L2 正规化。</p>
 <h4 id="回归问题"><a href="#回归问题" class="headerlink" title="回归问题"></a>回归问题</h4><ul>
 <li>平方损失，$\frac{1}{2}(y - y(x))^2，y\in R，y(x)\in R$</li>
 <li>损失函数，$E = \frac{1}{2m}\sum_{h = 1}^m(w_0 + \sum_{i = 1}^nw_i{x_i}^{h} + \sum_{i = 1}^n\sum_{j = i + 1}^nv_i{v_j}^T{x_i}^h{x_j}^h - y^h)^2 + \frac{\lambda_0}{m}{w_0}^2 + \frac{\lambda_1}{m}\sum_{i = 1}^n{w_i}^2 + \frac{\lambda_2}{m}\sum_{i = 1}^n{v_i}^Tv_i$</li>
