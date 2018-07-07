@@ -28,7 +28,7 @@
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcly1ft1gje5vacj31900aemzo.jpg">
 <meta property="og:image" content="https://ws2.sinaimg.cn/large/006tKfTcly1ft1qabshfsj30l208emy9.jpg">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcly1ft1qi2w6ivj30lc0a0dgv.jpg">
-<meta property="og:updated_time" content="2018-07-07T16:21:48.457Z">
+<meta property="og:updated_time" content="2018-07-07T16:23:52.638Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文笔记 - Wide &amp;Deep Learning for Recommender Systems | 小宇宙 | xiaoyusilen">
 <meta name="twitter:description" content="这篇 paper 讲道理也 delay 很久了~最近终于又抽了点时间重新看了一下这篇 paper~看这篇 paper 的背景是因为目前我所负责的推荐项目所使用的模型和 wide&amp;amp;deep 这个模型的背景非常非常相似~基本都是线性模型作为 wide 模型，隐性模型作为 deep 模型，比如我们模型 deep 部分目前使用的是 embedding-based 模型，FM，而这篇 paper 是">
@@ -272,7 +272,7 @@ classes that you can use:
 <p>$$y = \mathbf{w}^T \mathbf{x} + b$$</p>
 <p>其中 $y$ 是预测的概率，$x$ 是表示特征的向量，$w$ 表示模型的参数，也就是最终训练出来的每个特征向量的权重，$b$ 是贝叶斯项，也就是常数项。</p>
 <p>在这部分特征使用 one-hot 编码，为了达到记忆的目的，对稀疏的特征采用了 cross-product transformation，表达如下</p>
-<p>$\phi<em>k(\mathbf{x}) = \prod</em>{i = 1}^d x<em>i^{c</em>{k<em>i}}\quad c</em>{k_i} \in {0, 1}$</p>
+<p>$\phi_k(\mathbf{x}) = \prod_{i = 1}^d x_i^{c_{k_i}}\quad c_{k_i} \in {0, 1}$</p>
 <p>比如对于“AND(gender=female, language=en)”这个特征，当且仅当这个用户的性别为 female，语言为 en 的时候，这个特征值才为 1，其他情况都为 0。这个操作，增加了二元特征之间的相互作用，并且为线性模型增加了非线性因素。</p>
 <h4 id="Deep-Model"><a href="#Deep-Model" class="headerlink" title="Deep Model"></a>Deep Model</h4><p>图中的右半部分也就是组合模型中的 deep model，这部分使用的是前馈神经网络。对于分类特征，特征输入通常是 string，比如”language=en”，这样的高维分类特征首先会被转换成一个低维的且密集的实数向量。向量的维数通常在$O(10)$到$O(100)$之间，这些向量一般使用随机的方法进行初始化，随机可以均匀随机也可以随机成正态分布，随机初始化的目的是将向量初始化到一个数量级，在训练过程中通过最小化损失函数来优化模型。然后将这些低维向量传入到神经网络的隐层中去。</p>
 <p>每个隐层中都做这样的计算，</p>
@@ -286,7 +286,7 @@ classes that you can use:
 </ul>
 <p>同时，这两种训练的区别在模型大小上也有所体现，单独训练的模型会更大一些。wide&amp;deep model 使用 mini-batch stochastic optimization 进行训练，在实验中，wide model 使用了 FTRL+L1 正则，而 deep model 使用了 AdaGrad。</p>
 <p>对于 LR，模型预测如下，</p>
-<p>$P(Y = 1|\mathbf{x}) = \sigma(\mathbf{w}^T<em>{wide}[\mathbf{x},\phi(\mathbf{x})] + \mathbf{w}^T</em>{deep}a^{(l_f)}+b)$</p>
+<p>$P(Y = 1|\mathbf{x}) = \sigma(\mathbf{w}^T_{wide}[\mathbf{x},\phi(\mathbf{x})] + \mathbf{w}^T_{deep}a^{(l_f)}+b)$</p>
 <p>其中，Y 是二分类的 label，$\sigma$ 表示 sigmoid 函数，$\phi(\mathbf{x})$表示原始特征$\mathbf{x}$ cross product transformations，b 表示贝叶斯项，$\mathbf{w}_{deep}$ 表示最终激活 $a^{(l_f)}$ 的权重。</p>
 <h3 id="System-Implementation"><a href="#System-Implementation" class="headerlink" title="System Implementation"></a>System Implementation</h3><p>应用推荐的 pipline 主要包含三个阶段：数据生成，模型训练和模型服务，如下图，</p>
 <p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1ft1qabshfsj30l208emy9.jpg" alt="image-20180707234506443"></p>
