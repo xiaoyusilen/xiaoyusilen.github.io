@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      论文笔记 - Wide &amp; Deep Learning for Recommender Systems | 小宇宙 | xiaoyusilen 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="xiaoyusilen">
+    
+    
+
+    <meta name="description" content="这篇 paper 讲道理也 delay 很久了~最近终于又抽了点时间重新看了一下这篇 paper~看这篇 paper 的背景是因为目前我所负责的推荐项目所使用的模型和 wide&amp;amp;deep 这个模型的背景非常非常相似~基本都是线性模型作为 wide 模型，隐性模型作为 deep 模型，比如我们模型 deep 部分目前使用的是 embedding-based 模型，FM，而这篇 paper 是">
+<meta name="keywords" content="Paper,Note,Recsys">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文笔记 - Wide &amp; Deep Learning for Recommender Systems | 小宇宙 | xiaoyusilen">
+<meta property="og:url" content="http://yoursite.com/ML/note-for-wide-deep-learning-for-recommender-systems/index.html">
+<meta property="og:site_name" content="小宇宙 | xiaoyusilen">
+<meta property="og:description" content="这篇 paper 讲道理也 delay 很久了~最近终于又抽了点时间重新看了一下这篇 paper~看这篇 paper 的背景是因为目前我所负责的推荐项目所使用的模型和 wide&amp;amp;deep 这个模型的背景非常非常相似~基本都是线性模型作为 wide 模型，隐性模型作为 deep 模型，比如我们模型 deep 部分目前使用的是 embedding-based 模型，FM，而这篇 paper 是">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1fsx53r64jgj30lh0arwfe.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcly1ft1gje5vacj31900aemzo.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tKfTcly1ft1qabshfsj30l208emy9.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcly1ft1qi2w6ivj30lc0a0dgv.jpg">
+<meta property="og:updated_time" content="2018-07-08T05:16:44.732Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="论文笔记 - Wide &amp; Deep Learning for Recommender Systems | 小宇宙 | xiaoyusilen">
+<meta name="twitter:description" content="这篇 paper 讲道理也 delay 很久了~最近终于又抽了点时间重新看了一下这篇 paper~看这篇 paper 的背景是因为目前我所负责的推荐项目所使用的模型和 wide&amp;amp;deep 这个模型的背景非常非常相似~基本都是线性模型作为 wide 模型，隐性模型作为 deep 模型，比如我们模型 deep 部分目前使用的是 embedding-based 模型，FM，而这篇 paper 是">
+<meta name="twitter:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1fsx53r64jgj30lh0arwfe.jpg">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</head>
+<body>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">小宇宙 | xiaoyusilen</a></h1>
+        <hr class="panel-cover__divider" />
+
+        
+        <p class="panel-cover__description">
+          Life.pop(&#39;Fear&#39;)
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title="" class="">关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title="" class="">归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/xiaoyusilen" title="Huno on GitHub">
+          <i class='icon icon-social-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+    <li class="navigation__item">
+      <a href="mailto:debug@xiaoyu.fail" title="">
+        <i class='icon icon-mail'></i>
+        <span class="label">Weixin</span>
+      </a>
+    </li>
+
+  </ul>
+</nav>
+
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">论文笔记 - Wide &amp; Deep Learning for Recommender Systems</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2018-07-08" class="post-meta__date date">2018-07-08</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+            <font class="categories">
+            &#8226; 分类:
+            <a class="categories-link" href="/categories/ML/">ML</a>
+            </font>
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/Note/">Note</a>, <a class="tags-link" href="/tags/Paper/">Paper</a>, <a class="tags-link" href="/tags/Recsys/">Recsys</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <p>这篇 paper 讲道理也 delay 很久了~最近终于又抽了点时间重新看了一下这篇 paper~看这篇 paper 的背景是因为目前我所负责的推荐项目所使用的模型和 wide&amp;deep 这个模型的背景非常非常相似~基本都是线性模型作为 wide 模型，隐性模型作为 deep 模型，比如我们模型 deep 部分目前使用的是 embedding-based 模型，FM，而这篇 paper 是在 deep 这部分使用了神经网络。</p>
+<p>先推荐一波自己之前的分享~</p>
+<p><a href="http://gitbook.cn/gitchat/activity/5ac465d1817f7f29e510aaad" target="_blank" rel="external">亿级用户个性化品类推荐实战</a></p>
+<p>然后，放上 paper 地址~</p>
+<p><a href="https://arxiv.org/pdf/1606.07792.pdf" target="_blank" rel="external">Wide &amp;Deep Learning for Recommender Systems</a></p>
+<p>这篇 paper 的核心就是结合 wide 模型和 deep 模型，最终的组合模型可以达到有效的记忆和归纳。</p>
+<h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h3><p>paper 中将推荐系统视作了一个检索系统，输入的查询条件是用户和上下文信息，输出是一个有序的推荐列表。当给定一个查询时，推荐系统的任务是：</p>
+<ol>
+<li>从数据库中找到与查询条件相关性最强的推荐内容</li>
+<li>然后将查询出的内容根据一定条件进行排序，比如点击或购买</li>
+</ol>
+<p>如何同时实现记忆和归纳在推荐系统和检索系统中都是一个挑战~简单来说，记忆就是通过学习历史数据中频繁出现的品类或特征的共现，归纳是通过相关性传递并且探索历史数据中从未出现过的特征组合。基于记忆的推荐系统通常更有针对性，与用户历史的行为相关性更强。与记忆相比，归纳更倾向于改善推荐内容的多样性。在这篇 paper 中，更专注于 Google play 应用商店的应用推荐问题，但是这个研究同样适用于普通推荐系统。</p>
+<p>大规模的在线推荐系统，LR 这样的线性模型非常常用，因为简单并且可解释性强，但是线性模型无法学习到没有出现过的特征组合，需要人工特征工程。</p>
+<p>而 embedding-based 模型，比如 FM 或者神经网络，可以通过学习每一次 query 中低维的向量来泛化之前没有出现过得特征组合。但是，当数据稀疏且高维的时候，是很难学习到有效的低维向量的。</p>
+<h3 id="Recommender-System-Overview"><a href="#Recommender-System-Overview" class="headerlink" title="Recommender System Overview"></a>Recommender System Overview</h3><p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fsx53r64jgj30lh0arwfe.jpg" alt="image-20180704002749511"></p>
+<p>上图给出了一个推荐系统的架构，整体由上一节说到的两部分组成，检索系统和排序系统，当用户访问 APP store 的时候视作一次查询，包含用户和上下文的特征，然后检索这部分会根据用户的偏好行为，比如点击、购买，返回用户最感兴趣的 APP 列表。同时，这一次的用户行为会记录在日志中作为训练数据。</p>
+<p>目前数据库中已有的 APP 已经数以百万计，所以如果每一次查询的时候都计算用户对每个 APP 的 score，这样是不现实的。因此，第一步应该是挑选召回集。检索也就是召回系统会返回与当前用户最匹配的很少的 APP 列表，这里的检索通常会结合机器学习模型和人工定义规则的两种方法，召回最佳候选集后，再使用排序系统对每个 APP 进行 score 的计算和最终排序。这里计算出的 score 通常是$P(y|x)$，即当给定特征 x，用户行为的概率，这里的 y 是用户的行为，即 label，这里的 x 为特征，包括</p>
+<ul>
+<li>user feature<ul>
+<li>country，language，demographics</li>
+<li>即用户特征</li>
+</ul>
+</li>
+<li>Contextual feature<ul>
+<li>device，hour of the day，day of the week</li>
+<li>即上下文特征</li>
+</ul>
+</li>
+<li>Impression feature<ul>
+<li>app age，historical statistics of an app</li>
+<li>即 APP 统计特征</li>
+</ul>
+</li>
+</ul>
+<h3 id="Wide-amp-Deep-Learning"><a href="#Wide-amp-Deep-Learning" class="headerlink" title="Wide &amp; Deep Learning"></a>Wide &amp; Deep Learning</h3><p>在介绍中说到，这篇 paper 的核心点就在于，结合了 wide model 和 deep model，一个用作记忆，一个用作归纳泛化，结合各自的优势行程了 Wide&amp;Deep 模型用于推荐排序。</p>
+<p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1ft1gje5vacj31900aemzo.jpg" alt="image-20180707180752592"></p>
+<h4 id="Wide-Model"><a href="#Wide-Model" class="headerlink" title="Wide Model"></a>Wide Model</h4><p>上图的左半部分就是组合模型中的 wide model，这部分使用的模型是 LR，这部分主要用作学习样本中特征的共现性，产生的结果是和用户有过直接行为的 item，线性模型表达如下，</p>
+<p>$$y = \mathbf{w}^T \mathbf{x} + b$$</p>
+<p>其中 $y$ 是预测的概率，$x$ 是表示特征的向量，$w$ 表示模型的参数，也就是最终训练出来的每个特征向量的权重，$b$ 是贝叶斯项，也就是常数项。</p>
+<p>在这部分特征使用 one-hot 编码，为了达到记忆的目的，对稀疏的特征采用了 cross-product transformation，表达如下</p>
+<p>$\phi_k(\mathbf{x}) = \prod_{i = 1}^d x_i^{c_{k_i}}\quad c_{k_i} \in {0, 1}$</p>
+<p>比如对于“AND(gender=female, language=en)”这个特征，当且仅当这个用户的性别为 female，语言为 en 的时候，这个特征值才为 1，其他情况都为 0。这个操作，增加了二元特征之间的相互作用，并且为线性模型增加了非线性因素。</p>
+<h4 id="Deep-Model"><a href="#Deep-Model" class="headerlink" title="Deep Model"></a>Deep Model</h4><p>图中的右半部分也就是组合模型中的 deep model，这部分使用的是前馈神经网络。对于分类特征，特征输入通常是 string，比如”language=en”，这样的高维分类特征首先会被转换成一个低维的且密集的实数向量。向量的维数通常在$O(10)$到$O(100)$之间，这些向量一般使用随机的方法进行初始化，随机可以均匀随机也可以随机成正态分布，随机初始化的目的是将向量初始化到一个数量级，在训练过程中通过最小化损失函数来优化模型。然后将这些低维向量传入到神经网络的隐层中去。</p>
+<p>每个隐层中都做这样的计算，</p>
+<p>$a^{(l+1)} = f(W^{(l)}a^{(l)} + b^{(l)})$</p>
+<p>其中，$l$ 是层数，$f$ 是激活函数，通常使用 ReLU。</p>
+<p>通常情况下这部分特征使用的是用户行为特征，用于学习历史数据中不存在的特征组合。</p>
+<h4 id="组合训练"><a href="#组合训练" class="headerlink" title="组合训练"></a>组合训练</h4><p>对于两个模型的输出分别计算比值比，然后取 log 后加权求和作为最终的 score。</p>
+<h5 id="区分-ensemble-和-joint-quad-training"><a href="#区分-ensemble-和-joint-quad-training" class="headerlink" title="区分 $ensemble$ 和 $joint\quad training$"></a>区分 $ensemble$ 和 $joint\quad training$</h5><ul>
+<li>Emsemble 表示两个模型分别独立训练，只有在最终预测的时候才将两个模型组合计算</li>
+<li>Join training 通过在训练的时候同时考虑 wide model 和 deep model 以及两个部分拼接起来的特征的权重来同时优化所有参数</li>
+</ul>
+<p>同时，这两种训练的区别在模型大小上也有所体现，单独训练的模型会更大一些。wide&amp;deep model 使用 mini-batch stochastic optimization 进行训练，在实验中，wide model 使用了 FTRL+L1 正则，而 deep model 使用了 AdaGrad。</p>
+<p>对于 LR，模型预测如下，</p>
+<p>$P(Y = 1|\mathbf{x}) = \sigma(\mathbf{w}^T_{wide}[\mathbf{x},\phi(\mathbf{x})] + \mathbf{w}^T_{deep}a^{(l_f)}+b)$</p>
+<p>其中，Y 是二分类的 label，$\sigma$ 表示 sigmoid 函数，$\phi(\mathbf{x})$表示原始特征$\mathbf{x}$ cross product transformations，b 表示贝叶斯项，$\mathbf{w}_{deep}$ 表示最终激活 $a^{(l_f)}$ 的权重。</p>
+<h3 id="System-Implementation"><a href="#System-Implementation" class="headerlink" title="System Implementation"></a>System Implementation</h3><p>应用推荐的 pipline 主要包含三个阶段：数据生成，模型训练和模型服务，如下图，</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1ft1qabshfsj30l208emy9.jpg" alt="image-20180707234506443"></p>
+<h4 id="数据生成"><a href="#数据生成" class="headerlink" title="数据生成"></a>数据生成</h4><p>在这部分，选取一个时间周期内用户和 APP 数据作为训练数据。</p>
+<p>Label：应用下载，当应用被下载，则为 1，否则为 0</p>
+<p>Vocabularies：将类别特征映射为整型 ID，连续的实数特征先映射到 CDF，然后再做离散化。</p>
+<h4 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h4><p>模型结构如图，</p>
+<p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1ft1qi2w6ivj30lc0a0dgv.jpg" alt="image-20180707235239386"></p>
+<p>在训练过程中，我们输入的隐层获取训练数据和 vocabularies，生成稀疏和密集的特征并与 label 进行拼接。wide 部分包含用户展示和安装 APP 的 cross-product transformation，deep 部分，每个分类特征都是一个 32 维的向量进行学习。我们将所有 embedding 和密集的特征连接在一起，形成一个约为 1200 维的密集向量。然后将连接的向量输入3个 ReLU 层，最后输入到逻辑输出单元。</p>
+<p>在这部分需要注意的点是，如果每一次都重新训练的话，时间成本很高，所以为了解决这个问题，当新的训练数据来的时候，我们使用热启动，方法是从之前的模型中读取 embeddings 和线性模型的权重来初始化新模型。同时，我们会使用之前的模型进行及安装检查，保证在接入实时流的时候不会出现问题。</p>
+<h4 id="模型服务"><a href="#模型服务" class="headerlink" title="模型服务"></a>模型服务</h4><p>为了保证每个请求都可以在 10 ms 内返回结果，我们通过多线程并行运行来优化性能，而不是单个 batch 内对所有候选集的 score 进行计算。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>整体上来讲，这篇 paper 的模型适用的场景很广泛，目前也有很多公司都在用 wide&amp;deep，可用性很强~</p>
+
+  </section>
+
+  <section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2016-2018. | <a href="http://xiaoyu.world">xiaoyusilen</a> ❤ <a href="http://dcspsy.world">dcspsy</a> | <a href="https://github.com/someus/huno">Huno</a></span>
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv" style="display: inline;">
+         This site already had <span id="busuanzi_value_site_pv"></span> Visits by
+    </span>
+    <span id="busuanzi_container_site_uv" style="display: inline;">
+    <span id="busuanzi_value_site_uv"></span> Visitors 
+    </span>
+
+</footer>
+
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+    
+
+        <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['$','$'],['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

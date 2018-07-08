@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      论文笔记 - The Case For Learned Index Structures | 小宇宙 | xiaoyusilen 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="xiaoyusilen">
+    
+    
+
+    <meta name="description" content="这篇 paper 的笔记实在是 delay 了好久= =，然而也没有读太细致，就大致浏览了几遍~ paper 地址 ⬇️ The Case For Learned Index Structures Introduction当我们需要查询数据库中的某条数据时，这数据在数据库中的 index 就是我们想要的答案，数据库对我们的重要性不言而喻。 现有的索引结构中，B+ 树对于范围查询无疑是最佳的，哈希表">
+<meta name="keywords" content="Paper,Note">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文笔记 - The Case For Learned Index Structures | 小宇宙 | xiaoyusilen">
+<meta property="og:url" content="http://yoursite.com/ML/note-for-the-case-for-learned-index Structures/index.html">
+<meta property="og:site_name" content="小宇宙 | xiaoyusilen">
+<meta property="og:description" content="这篇 paper 的笔记实在是 delay 了好久= =，然而也没有读太细致，就大致浏览了几遍~ paper 地址 ⬇️ The Case For Learned Index Structures Introduction当我们需要查询数据库中的某条数据时，这数据在数据库中的 index 就是我们想要的答案，数据库对我们的重要性不言而喻。 现有的索引结构中，B+ 树对于范围查询无疑是最佳的，哈希表">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fspinn7tysj31400jiwge.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fspinmn97fj315w0o0jvq.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fspinonuibj30jy02wq32.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fspinnky1wj305i01odfr.jpg">
+<meta property="og:updated_time" content="2018-07-08T05:16:29.395Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="论文笔记 - The Case For Learned Index Structures | 小宇宙 | xiaoyusilen">
+<meta name="twitter:description" content="这篇 paper 的笔记实在是 delay 了好久= =，然而也没有读太细致，就大致浏览了几遍~ paper 地址 ⬇️ The Case For Learned Index Structures Introduction当我们需要查询数据库中的某条数据时，这数据在数据库中的 index 就是我们想要的答案，数据库对我们的重要性不言而喻。 现有的索引结构中，B+ 树对于范围查询无疑是最佳的，哈希表">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fspinn7tysj31400jiwge.jpg">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</head>
+<body>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">小宇宙 | xiaoyusilen</a></h1>
+        <hr class="panel-cover__divider" />
+
+        
+        <p class="panel-cover__description">
+          Life.pop(&#39;Fear&#39;)
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title="" class="">关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title="" class="">归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/xiaoyusilen" title="Huno on GitHub">
+          <i class='icon icon-social-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+    <li class="navigation__item">
+      <a href="mailto:debug@xiaoyu.fail" title="">
+        <i class='icon icon-mail'></i>
+        <span class="label">Weixin</span>
+      </a>
+    </li>
+
+  </ul>
+</nav>
+
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">论文笔记 - The Case For Learned Index Structures</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2018-06-22" class="post-meta__date date">2018-06-22</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+            <font class="categories">
+            &#8226; 分类:
+            <a class="categories-link" href="/categories/ML/">ML</a>
+            </font>
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/Note/">Note</a>, <a class="tags-link" href="/tags/Paper/">Paper</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <p>这篇 paper 的笔记实在是 delay 了好久= =，然而也没有读太细致，就大致浏览了几遍~</p>
+<p>paper 地址 ⬇️</p>
+<p><a href="https://arxiv.org/pdf/1712.01208.pdf" target="_blank" rel="external">The Case For Learned Index Structures</a></p>
+<h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h3><p>当我们需要查询数据库中的某条数据时，这数据在数据库中的 index 就是我们想要的答案，数据库对我们的重要性不言而喻。</p>
+<p>现有的索引结构中，B+ 树对于范围查询无疑是最佳的，哈希表对于 kv 查询是最合适的，而布隆过滤器更多用于查询 key 是否存在于某个数据集中，但是这些索引结构的优化大多是基于数据最差的情况，并且读写相对均匀进行优化，这里作者举了一个极端的例子来说明，比如我们的数据集就是1-100M，那么这时候如果使用 B+ 树其实不是最合理的，因为 key 值本身就可以作为偏移量使用，如果使用 B+ 树的话，无疑是把 O(1) 的时间复杂度变成了 O(logn)，并且由于索引的存在，所以内存空间也会由 O(1) 变成 O(n)。换句话说，<strong>当我们了解数据分布的情况下，其实可以优化数据库的索引。</strong></p>
+<p>基于这个想法，在这篇 paper 中，作者认为索引结构也可以视作模型，因为它们同样“预测”了给定 key 的 position，同时探索了数据库索引 key → value 这个过程中的 B+ 树和布隆过滤器这些传统索引结构在多大程度上可以被训练好的网络模型代替。</p>
+<p>这篇 paper 主要讨论的是只读类型，但是同样也在 paper 内讨论了如何扩展到写多读少的数据库场景中，至于数据库中的一些其他操作，比如 join 等，将会是未来的一个工作方向，不在这篇 paper 的讨论范围。</p>
+<h3 id="Range-Index"><a href="#Range-Index" class="headerlink" title="Range Index"></a>Range Index</h3><p>对于区间查询而言，作者认为它本身就是一个模型，给定一个 key 值的时候去预测 key index 的 position，B+ 树可以被回归树代替，而 B+ 树中的 pagesize 相当于 ML 模型中的 最大最小误差。但是我们想要用 ML 模型代替 B+ 树的时候还有一些挑战，</p>
+<ol>
+<li>当 B+ 树在内存中进行插入或者查找操作的时候开销是很小的</li>
+<li>B+ 树可以将 key 映射到不连续的磁盘或者内存的 page 上</li>
+<li>如果模型不是单调递增时，当 key 不存在于 set 中，模型可能会返回一个不在最大最小误差范围内的 position</li>
+</ol>
+<p>但是针对区间查找，使用模型代替 B+ 树依然会有很多的好处，这里作者举了一个和 introduction 中相似的例子来说明，使用 ML 模型代替 B+ 树的时候，查找操作的复杂度会从 O(logn) 变成常数复杂度。<strong>所以这里关键的挑战就在于如何根据模型的精度平衡模型的复杂度。</strong></p>
+<h4 id="Range-Index-模型抽象为-CDF"><a href="#Range-Index-模型抽象为-CDF" class="headerlink" title="Range Index 模型抽象为 CDF"></a>Range Index 模型抽象为 CDF</h4><p>将 index 视作模型的时候，key 作为输入，对应 key 的记录的 position 作为预测结果，对于点查询，记录的顺序是无所谓的，但是对于区间查询而言，数据必须是有序的，这样才能有效的查到对应的记录。这样的话我们就观察到一个非常有趣的现象，预测给定有序的数组内 key 的 position 近似累计分布函数（CDF），我们可以建模数据的 CDF 来预测数据的 position，</p>
+<p>$p = F(Key)*N$</p>
+<p>其中，p 是位置的估计，F(Key) 是估计的 CDF，用来估计一个 x ≤ key 的概率，即$P(x≤Key)$，N 是 key 的个数。观察新的数据集会有一些有趣的发现，</p>
+<ol>
+<li>B 树通过构建一颗回归树来学习数据分布，线性回归模型可以通过最小化线性方程的方差来学习数据分布</li>
+<li>学习 CDF 分布我们可以受益于过去多年的研究</li>
+<li>学习 CDF 对于优化其他类型的索引结构和算法起着关键作用，会在这篇 paper 的后面讲到</li>
+</ol>
+<p>接着作者尝试使用 200 M 的 web 服务日志记录中的时间戳作为数据集来训练模型，2层宽度为32的全连接的神经网络使用 ReLU 作为激活函数，时间戳作为输入，position 作为 label，使用 TensorFlow 和 Python 进行模型训练，大约需要花费 80000 纳秒进行模型的训练，查询几乎不花费时间，作为对比，B 树查找同样的数据大约只需要 300 纳秒，相差两个数量级，整个 key 空间查找大约快2-3倍，可能是由以下原因导致的，</p>
+<ol>
+<li>TensorFlow 更适用于大的模型，尤其是使用 Python 作为前端</li>
+<li>最后一公里的精度问题，虽然整体数据分布看上去接近于 CDF，很平滑，但是放大某个点的数据分布的时候，我们会发现数据分布很不规则，所以如何解决最后一公里的精度问题就十分重要</li>
+<li>经典的机器学习问题，最终的目标是想要减小平均误差，但是我们查找索引，是希望获得最佳预测，最终是期望找到 key 的真实的 position</li>
+<li>B+ 树十分高效，因为顶层的节点也就是索引都在缓存中，但是其他模型无法利用缓存的高效性，比如如果我们使用神经网络，那么需要使用所有的权重来预测最终的结果，权重如果在内存中的话开销就会比较大</li>
+</ol>
+<h3 id="The-RM-Index"><a href="#The-RM-Index" class="headerlink" title="The RM Index"></a>The RM Index</h3><p>为了解决 ML 模型替代 B+ 树的最后一公里精度问题，paper 中提出了 LIF 和递归模型索引，主要使用简单的全连接神经网络。</p>
+<h4 id="The-Learning-Index-Framework"><a href="#The-Learning-Index-Framework" class="headerlink" title="The Learning Index Framework"></a>The Learning Index Framework</h4><p>LIF 可以看做一个索引综合系统，给定一个索引规范，LIF 可以生成不同的索引配置，优化并且自动测试，可以即时的学习简单的模型，也可以依赖 TensorFlow 获取复杂的模型，但是不使用 TensorFlow 进行预测，并且当给定一个使用 TensorFlow 训练好的模型 LIF 可以自动提取权重，并根据规范生成搞笑的索引结构。使用 XLA 的 TensorFlow 可以支持代码编译，但是主要用于大型模型，相比之下 LIF 专注于小型模型，所以必须减少用于管理大型模型的许多不必要的开销，引用21中的已经展示了如何消除 Spark 运行时间不必要的开销，目前 LIF 计算简单的模型可以仅在 30 纳秒内完成。</p>
+<p>这一部分内容主要用于解决当数据分布改变时需要重新训练模型的时间开销。</p>
+<h4 id="The-Recursive-Model-Index"><a href="#The-Recursive-Model-Index" class="headerlink" title="The Recursive Model Index"></a>The Recursive Model Index</h4><p>为了解决最后一公里精度的问题，paper 中提出了递归回归模型。使用单个模型将误差从100M 减少到百数量级是很困难的，但是从100M 将误差减小到10k 是很容易的，使用模型代替 B 树的前两层，带来的精度增益就是100*100=10000，同样，将误差从1000减小到100也很容易，因为模型只需要关注数据的一个子集即可。</p>
+<p>因此，paper 提出了递归回归模型，如图，</p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fspinn7tysj31400jiwge.jpg" alt="image-20180618234448540"></p>
+<p>每一层中 key 作为输入，并基于此挑选出另一个模型，直到最后一层预测最终的索引位置。</p>
+<p>这种模型结构的好处是，</p>
+<ol>
+<li>很容易学习整体数据分布</li>
+<li>将整个空间分割为更小的子区间，每个子区间都类似于一个 B 树或者决策树，更容易去解决最后一公里的精度问题</li>
+<li>不同的层之间不需要搜索，比如 model 1.1 输出的 y 是一个偏移量，可以直接用于挑选下一层的模型</li>
+</ol>
+<p>递归模型索引的另一个优点是能够使用混合模型，比如顶层，可能使用 ReLU 的神经网络是最好的，因为可以学习大范围的复杂数据分布，但是下层模型可能使用简单的线性回归模型就可以了，因为时间和空间的开销都相对更小一些，同时，如果数据分布很难学习，我们甚至可以设置阈值，在最终阶段使用传统 B 树。</p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fspinmn97fj315w0o0jvq.jpg" alt="image-20180619004433681"></p>
+<p>4-10行实现了基于顶点模型进行训练，并将范围内的 key 存入；11-14行，根据阈值决定是否使用 B 树代替模型。</p>
+<h4 id="搜索策略"><a href="#搜索策略" class="headerlink" title="搜索策略"></a>搜索策略</h4><p>paper 中提出了三种搜索策略，</p>
+<ol>
+<li>模型二分搜索：默认搜索策略，类似传统二分搜索，不同点在于初始的中间点被设置为模型预测的结果</li>
+<li>Biased Search：基于二分搜索进行修改，新的中间点基于最后一层模型的标准偏差σ设置，比如，当 key 比中间节点大的时候，middle = min(middle+σ, (middle+right)/2)</li>
+<li>Biased Quaternary Search：同时查找三个点，pos-σ，pos，pos+σ，需要 CPU 可以从主存中并行获取多个数据地址</li>
+</ol>
+<h4 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h4><p>使用的数据集</p>
+<ol>
+<li>Web log</li>
+<li>Map</li>
+<li>合成数据集</li>
+</ol>
+<p>使用模型训练比 B 树整体上而言，不论是查询时间还是存储空间都有了不止一个数量级的降低，但是适用的数据集比较有限，比如使用 web log 的时间戳的数据集进行训练的时候，由于时间戳的分布不规则，所以基本上是上面说到的大部分依赖于 B 树的 bad case，搜索策略对于 web log 比较有效果，但是对于其他数据集而言，搜索策略的影响不大。</p>
+<h3 id="Point-Index"><a href="#Point-Index" class="headerlink" title="Point Index"></a>Point Index</h3><p>对于点查询，是将 Hash Function 替换为 Model，这里的核心不在于存储，而在于减少哈希碰撞，并且减少 key 的存储空间。使用 model 替换 hash function，学习的内容和 key 和 value 本身没有关系，只是学习了 CDF 分布，因为点查询是不能保证 key 单调递增的，如果不能保证单调递增，那么 key 的分布本身也不符合 CDF 分布，当学习 CDF 足够好的时候，就会保证区分度，这样再使用 key 的大小 M 来将这个 hash 的值扩展开，这样就可以保证没有碰撞。</p>
+<p>但是如果真的出现碰撞的话，处理方法和 hash function 一样，使用链表来处理。</p>
+<p>$h(K) = F(K) * M$</p>
+<h4 id="结论-1"><a href="#结论-1" class="headerlink" title="结论"></a>结论</h4><p>hash function 使用 model 进行替换后，查询时间没有缩短，但是 key 空间确实有效的减少了，提高了空间利用率。</p>
+<h3 id="Existence-Index"><a href="#Existence-Index" class="headerlink" title="Existence Index"></a>Existence Index</h3><p>对于判断某个 key 是否存在于数据集内，目前的场景是使用布隆过滤器，但是布隆过滤器有一定的误判率，如果要提升精度减少误判率就势必要增加 bitmap。对于 hash function 来说，我们期望的 f(x) 使得不同的 key 冲突越少越好，但是对于布隆过滤器来说，我们期望存在的 key 和不存在的 key 它们在自己的 f(x) 内冲突越多越好，这样可以用更小的 bitmap 表示更多的 key，我们想要使用 ML model 代替布隆过滤器时，我们期望提供特定的假阳性，并且假阴性为0。paper 中介绍了两种学习布隆过滤器的方法，</p>
+<h4 id="将布隆过滤器视作一个分类问题"><a href="#将布隆过滤器视作一个分类问题" class="headerlink" title="将布隆过滤器视作一个分类问题"></a>将布隆过滤器视作一个分类问题</h4><p>$D = {(xi, yi= 1)|xi∈ K} ∪ {(xi, yi= 0)|xi∈ U}$</p>
+<p>我们需要训练这样一个神经网络，使得 log 损失函数最小。为了满足假阴性为0这个条件，我们创建一个溢出的布隆过滤器，根据阈值学习一个模型，当输出结果大于等于阈值的时候，我们认为这个 key 是存在于 set 中的，当小于阈值时，则去 check 溢出的布隆过滤器。</p>
+<p>简单的说，就是将存在的 key 和不存在的 key 划分为两个数据集，然后融合到一个集合中进行训练，最小化一个 log 损失函数。</p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fspinonuibj30jy02wq32.jpg" alt="image-20180620011540343"></p>
+<h4 id="使用-model-hashes-学习布隆过滤器"><a href="#使用-model-hashes-学习布隆过滤器" class="headerlink" title="使用 model hashes 学习布隆过滤器"></a>使用 model hashes 学习布隆过滤器</h4><p>将布隆过滤器视作一个分类问题时与布隆过滤器中的散列函数本身是矛盾的，因为没有区间具有非零的 FNR，我们可以使用 f(x) 映射到 m 的位数组上，f(x) 映射范围是[0,1]，所以我们可以假设 d 如下，作用是离散化空间，</p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fspinnky1wj305i01odfr.jpg" alt="image-20180620012415171"></p>
+<p>所以我们可以使用 d(f(x)) 作为散列函数，这样可以将存在的 key 映射到 bit 的高位上，将不存在的 key 映射到 bit 的低位上。</p>
+<p>f(x) ∈ [0,1]，当 key 不存在时，f(x)更接近于0，反之，更接近于1，所以 key 大多分布在高位上，non-key 大多分布在低位上。</p>
+<h4 id="结论-2"><a href="#结论-2" class="headerlink" title="结论"></a>结论</h4><p>空间利用率确实有所提升，并且模型精度越高，占用内存越少，但没有对比数据作为支撑。</p>
+
+  </section>
+
+  <section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2016-2018. | <a href="http://xiaoyu.world">xiaoyusilen</a> ❤ <a href="http://dcspsy.world">dcspsy</a> | <a href="https://github.com/someus/huno">Huno</a></span>
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv" style="display: inline;">
+         This site already had <span id="busuanzi_value_site_pv"></span> Visits by
+    </span>
+    <span id="busuanzi_container_site_uv" style="display: inline;">
+    <span id="busuanzi_value_site_uv"></span> Visitors 
+    </span>
+
+</footer>
+
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+    
+
+        <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['$','$'],['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>
