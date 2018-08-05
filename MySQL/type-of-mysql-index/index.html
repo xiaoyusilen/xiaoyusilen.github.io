@@ -7,7 +7,7 @@
     
 
     <title>
-      MySQL 索引类型 | 小宇宙 | xiaoyusilen 
+      MySQL 学习笔记 - 索引类型 | 小宇宙 | xiaoyusilen 
     </title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -19,14 +19,14 @@
     <meta name="description" content="索引类型包括 B-Tree、哈希索引、R-Tree、全文索引等，这里主要总结 B-Tree 和哈希索引。 B-Tree 索引以 B-Tree 为结构的索引是最常见的索引类型，比如 InnoDB 和 MyISAM 都是以 B-Tree 为索引结构的索引，事实上是以 B+ Tree 为索引结构，B-Tree 和 B+Tree 区别在于，B+ Tree 在叶子节点上增加了顺序访问指针，方便叶子节点的范围">
 <meta name="keywords" content="MySQL">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MySQL 索引类型 | 小宇宙 | xiaoyusilen">
+<meta property="og:title" content="MySQL 学习笔记 - 索引类型 | 小宇宙 | xiaoyusilen">
 <meta property="og:url" content="http://yoursite.com/MySQL/type-of-mysql-index/index.html">
 <meta property="og:site_name" content="小宇宙 | xiaoyusilen">
 <meta property="og:description" content="索引类型包括 B-Tree、哈希索引、R-Tree、全文索引等，这里主要总结 B-Tree 和哈希索引。 B-Tree 索引以 B-Tree 为结构的索引是最常见的索引类型，比如 InnoDB 和 MyISAM 都是以 B-Tree 为索引结构的索引，事实上是以 B+ Tree 为索引结构，B-Tree 和 B+Tree 区别在于，B+ Tree 在叶子节点上增加了顺序访问指针，方便叶子节点的范围">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-08-05T09:20:22.399Z">
+<meta property="og:updated_time" content="2018-08-05T09:22:59.601Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="MySQL 索引类型 | 小宇宙 | xiaoyusilen">
+<meta name="twitter:title" content="MySQL 学习笔记 - 索引类型 | 小宇宙 | xiaoyusilen">
 <meta name="twitter:description" content="索引类型包括 B-Tree、哈希索引、R-Tree、全文索引等，这里主要总结 B-Tree 和哈希索引。 B-Tree 索引以 B-Tree 为结构的索引是最常见的索引类型，比如 InnoDB 和 MyISAM 都是以 B-Tree 为索引结构的索引，事实上是以 B+ Tree 为索引结构，B-Tree 和 B+Tree 区别在于，B+ Tree 在叶子节点上增加了顺序访问指针，方便叶子节点的范围">
     
     
@@ -201,7 +201,7 @@ classes that you can use:
 
   <header class="post-header">
     
-    <h1 class="post-title">MySQL 索引类型</h1>
+    <h1 class="post-title">MySQL 学习笔记 - 索引类型</h1>
 
     
 
@@ -261,6 +261,7 @@ classes that you can use:
 <li>使用索引可以将随机 I/O 变为顺序 I/O</li>
 </ul>
 <p>但是不是所有情况下，索引都是最好的解决方案，对于非常小的表来说，大部分情况下简单的全表扫描更高效，对于中到大型表，索引就比较有效，对于特大型的表来说，分区会更加有效。</p>
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><p>《高性能 MySQL》</p>
 
   </section>
 
