@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      MySQL 索引类型 | 小宇宙 | xiaoyusilen 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="xiaoyusilen">
+    
+    
+
+    <meta name="description" content="索引类型包括 B-Tree、哈希索引、R-Tree、全文索引等，这里主要总结 B-Tree 和哈希索引。 B-Tree 索引以 B-Tree 为结构的索引是最常见的索引类型，比如 InnoDB 和 MyISAM 都是以 B-Tree 为索引结构的索引，事实上是以 B+ Tree 为索引结构，B-Tree 和 B+Tree 区别在于，B+ Tree 在叶子节点上增加了顺序访问指针，方便叶子节点的范围">
+<meta name="keywords" content="MySQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL 索引类型 | 小宇宙 | xiaoyusilen">
+<meta property="og:url" content="http://yoursite.com/MySQL/type-of-mysql-index/index.html">
+<meta property="og:site_name" content="小宇宙 | xiaoyusilen">
+<meta property="og:description" content="索引类型包括 B-Tree、哈希索引、R-Tree、全文索引等，这里主要总结 B-Tree 和哈希索引。 B-Tree 索引以 B-Tree 为结构的索引是最常见的索引类型，比如 InnoDB 和 MyISAM 都是以 B-Tree 为索引结构的索引，事实上是以 B+ Tree 为索引结构，B-Tree 和 B+Tree 区别在于，B+ Tree 在叶子节点上增加了顺序访问指针，方便叶子节点的范围">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-08-05T09:20:22.399Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL 索引类型 | 小宇宙 | xiaoyusilen">
+<meta name="twitter:description" content="索引类型包括 B-Tree、哈希索引、R-Tree、全文索引等，这里主要总结 B-Tree 和哈希索引。 B-Tree 索引以 B-Tree 为结构的索引是最常见的索引类型，比如 InnoDB 和 MyISAM 都是以 B-Tree 为索引结构的索引，事实上是以 B+ Tree 为索引结构，B-Tree 和 B+Tree 区别在于，B+ Tree 在叶子节点上增加了顺序访问指针，方便叶子节点的范围">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</head>
+<body>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">小宇宙 | xiaoyusilen</a></h1>
+        <hr class="panel-cover__divider" />
+
+        
+        <p class="panel-cover__description">
+          Life.pop(&#39;Fear&#39;)
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title="" class="">关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title="" class="">归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/xiaoyusilen" title="Huno on GitHub">
+          <i class='icon icon-social-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+    <li class="navigation__item">
+      <a href="mailto:debug@xiaoyu.fail" title="">
+        <i class='icon icon-mail'></i>
+        <span class="label">Weixin</span>
+      </a>
+    </li>
+
+  </ul>
+</nav>
+
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">MySQL 索引类型</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2018-08-05" class="post-meta__date date">2018-08-05</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+            <font class="categories">
+            &#8226; 分类:
+            <a class="categories-link" href="/categories/MySQL/">MySQL</a>
+            </font>
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/MySQL/">MySQL</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <p>索引类型包括 B-Tree、哈希索引、R-Tree、全文索引等，这里主要总结 B-Tree 和哈希索引。</p>
+<h3 id="B-Tree-索引"><a href="#B-Tree-索引" class="headerlink" title="B-Tree 索引"></a>B-Tree 索引</h3><p>以 B-Tree 为结构的索引是最常见的索引类型，比如 InnoDB 和 MyISAM 都是以 B-Tree 为索引结构的索引，事实上是以 B+ Tree 为索引结构，B-Tree 和 B+Tree 区别在于，B+ Tree 在叶子节点上增加了顺序访问指针，方便叶子节点的范围遍历。这里主要介绍一下 InnoDB 和 MyISAM 两种不同的索引。</p>
+<h4 id="InnoDB"><a href="#InnoDB" class="headerlink" title="InnoDB"></a>InnoDB</h4><p>InnoDB 也叫做聚簇索引，这个名字跟它本身的存储方式有关系，“聚簇“表示数据行和相邻的键值存储在一起，简单的说，就是叶子节点中存储的实际是真实的数据。InnoDB 通过主键聚集数据，所以一个表只能有一个聚簇索引，且必须有主键，如果没有定义主键，且不存在非空索引可以代替，InnoDB 会隐式定义一个主键作为聚簇索引。</p>
+<p>聚簇索引的二级索引存储的不是指向行的物理位置的指针，而是行的主键值，所以如果通过二级索引查找行，需要找到二级索引的叶子结点获得对应的主键值，然后再去查找对应的行。对于 InnoDB，自适应哈希索引可以减少这样的重复工作。</p>
+<h4 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h4><p>MyISAM 也叫非聚簇索引，和 InnoDB 的区别在于，叶子结点上存的是指向对应行的物理地址，也就是说索引和数据实际是分开存储的。</p>
+<p>MyISAM 采用了前缀压缩技术，从而使得更多索引可以放入到内存中，默认只压缩字符串，但是通过参数设置也可以对整数做压缩。压缩方法为，完整保存索引块中的第一个IE之，然后将其他值和第一个值进行比较得到相同前缀的字节数和剩余的不同后缀部分，把这部分存储起来即可。例如，索引块中的第一个值是”perform“，第二个值是”performance“，那么第二个值的前缀压缩后存储的是类似”7，ance“这样的形式。MyISAM 对行指针也采用类似的前缀压缩方式。</p>
+<p>压缩可以使索引使用更少的空间，在某种程度上性能有所提升，但是代价是某些操作可能更慢。因为每个值的压缩前缀都依赖前面的值，所以 MyISAM 查找时无法在索引块使用二分查找，只能从头开始扫描，正序扫描速度还不错，逆序扫描的话查找某一行的操作平均都需要扫描半个索引块。对于 CPU 密集型应用，扫描需要随机查找，所以压缩索引会使得索引查找慢很多，而对于 I/O 密集型应用，对于某些查询的优化更明显。</p>
+<h4 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h4><p>InnoDB 使用的是行锁，所以支持事务，而 MyISAM 使用的是表锁，不支持事务。</p>
+<h4 id="适用范围"><a href="#适用范围" class="headerlink" title="适用范围"></a>适用范围</h4><p>B-Tree 索引适用于区间查询，因为 B-Tree 存储后的叶子节点本身就是有序的，并且 B+ Tree 结构还增加了叶子节点的连续顺序指针，对于区间查询来说就更加方便了。</p>
+<h3 id="哈希索引"><a href="#哈希索引" class="headerlink" title="哈希索引"></a>哈希索引</h3><p>哈希索引是基于哈希表实现的，只有精确匹配索引所有列的查询才有效。方法是，对所有的索引列计算一个 hash code，hash code 作为索引，在哈希表中保存指向每个数据行的指针。</p>
+<h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><ul>
+<li>索引本身只存储 hash code，所以结构很紧凑，并且查找速度很快</li>
+</ul>
+<h4 id="限制"><a href="#限制" class="headerlink" title="限制"></a>限制</h4><ul>
+<li>索引中的 hash code 是顺序存储的，但是 hash code 对应的数据并不是顺序的，所以无法用于排序</li>
+<li>不支持部分索引列匹配查找，因为哈希索引是使用索引列的全部内容来计算 hash code</li>
+<li>只支持等值比较，不支持范围查询</li>
+<li>如果哈希冲突严重时，必须遍历链表中所有行指针</li>
+<li>哈希冲突严重的话，索引维护操作的代价也很高</li>
+</ul>
+<h4 id="InnoDB-的自适应哈希索引"><a href="#InnoDB-的自适应哈希索引" class="headerlink" title="InnoDB 的自适应哈希索引"></a>InnoDB 的自适应哈希索引</h4><p>首先，请注意，自适应哈希索引对于用户来说是无感知的，这是一个完全自动、内部的行为，用户无法控制或者配置，但是可以关闭。</p>
+<p>当 InnoDB 注意到某个索引值被使用的非常频繁时，它会在内存中基于 B-Tree 索引之上再创建一个哈希索引，这样 B-Tree 也可以具有哈希索引的一些优点，比如快速的哈希查找。</p>
+<p>当然如果存储引擎不支持哈希索引，用户也可以自定义哈希索引，这样性能会比较高，缺陷是需要自己维护哈希值，如果采用这种方法，不要使用 <code>SHA1()</code> 和 <code>MD5()</code> 作为哈希函数，因为这两个是强加密函数，设计目标是最大限度消除冲突，生成的 hash code 是一个非常长的字符串，浪费大量的空间，哈希索引中对于索引的冲突要求没有那么高。</p>
+<h3 id="索引的优点"><a href="#索引的优点" class="headerlink" title="索引的优点"></a>索引的优点</h3><ul>
+<li>使用索引可以减少服务器需要扫描的数据量</li>
+<li>使用索引可以帮助服务器避免排序和临时表</li>
+<li>使用索引可以将随机 I/O 变为顺序 I/O</li>
+</ul>
+<p>但是不是所有情况下，索引都是最好的解决方案，对于非常小的表来说，大部分情况下简单的全表扫描更高效，对于中到大型表，索引就比较有效，对于特大型的表来说，分区会更加有效。</p>
+
+  </section>
+
+  <section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2016-2018. | <a href="http://xiaoyu.world">xiaoyusilen</a> ❤ <a href="http://dcspsy.world">dcspsy</a> | <a href="https://github.com/someus/huno">Huno</a></span>
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv" style="display: inline;">
+         This site already had <span id="busuanzi_value_site_pv"></span> Visits by
+    </span>
+    <span id="busuanzi_container_site_uv" style="display: inline;">
+    <span id="busuanzi_value_site_uv"></span> Visitors 
+    </span>
+
+</footer>
+
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+    
+
+        <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['$','$'],['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>
