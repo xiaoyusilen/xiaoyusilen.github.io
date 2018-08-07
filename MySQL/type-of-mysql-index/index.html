@@ -16,18 +16,21 @@
     
     
 
-    <meta name="description" content="索引类型包括 B-Tree、哈希索引、R-Tree、全文索引等，这里主要总结 B-Tree 和哈希索引。 B-Tree 索引以 B-Tree 为结构的索引是最常见的索引类型，比如 InnoDB 和 MyISAM 都是以 B-Tree 为索引结构的索引，事实上是以 B+ Tree 为索引结构，B-Tree 和 B+Tree 区别在于，B+ Tree 在叶子节点上增加了顺序访问指针，方便叶子节点的范围">
+    <meta name="description" content="索引类型包括 B-Tree、哈希索引、R-Tree、全文索引等，这里主要总结 B-Tree 和哈希索引。 B-Tree说索引之前就不得不先说一说 B-Tree。 B-Tree 是一种平衡搜索树，结构类似于普通的二叉树，区别在于每个结点允许有更多的子结点。 B-Tree 结构B-Tree，这里的图直接引用了参考中第一篇文章的图~如有侵权，烦请私信我~  B+Tree 结构B+Tree 是 B-Tre">
 <meta name="keywords" content="MySQL">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MySQL 学习笔记 - 索引类型 | 小宇宙 | xiaoyusilen">
 <meta property="og:url" content="http://yoursite.com/MySQL/type-of-mysql-index/index.html">
 <meta property="og:site_name" content="小宇宙 | xiaoyusilen">
-<meta property="og:description" content="索引类型包括 B-Tree、哈希索引、R-Tree、全文索引等，这里主要总结 B-Tree 和哈希索引。 B-Tree 索引以 B-Tree 为结构的索引是最常见的索引类型，比如 InnoDB 和 MyISAM 都是以 B-Tree 为索引结构的索引，事实上是以 B+ Tree 为索引结构，B-Tree 和 B+Tree 区别在于，B+ Tree 在叶子节点上增加了顺序访问指针，方便叶子节点的范围">
+<meta property="og:description" content="索引类型包括 B-Tree、哈希索引、R-Tree、全文索引等，这里主要总结 B-Tree 和哈希索引。 B-Tree说索引之前就不得不先说一说 B-Tree。 B-Tree 是一种平衡搜索树，结构类似于普通的二叉树，区别在于每个结点允许有更多的子结点。 B-Tree 结构B-Tree，这里的图直接引用了参考中第一篇文章的图~如有侵权，烦请私信我~  B+Tree 结构B+Tree 是 B-Tre">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-08-06T08:38:40.024Z">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/0069RVTdly1fu1kb6yoz9j30ju05x0tc.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/0069RVTdly1fu1kb856bpj30kn06mgm7.jpg">
+<meta property="og:updated_time" content="2018-08-07T16:47:04.264Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MySQL 学习笔记 - 索引类型 | 小宇宙 | xiaoyusilen">
-<meta name="twitter:description" content="索引类型包括 B-Tree、哈希索引、R-Tree、全文索引等，这里主要总结 B-Tree 和哈希索引。 B-Tree 索引以 B-Tree 为结构的索引是最常见的索引类型，比如 InnoDB 和 MyISAM 都是以 B-Tree 为索引结构的索引，事实上是以 B+ Tree 为索引结构，B-Tree 和 B+Tree 区别在于，B+ Tree 在叶子节点上增加了顺序访问指针，方便叶子节点的范围">
+<meta name="twitter:description" content="索引类型包括 B-Tree、哈希索引、R-Tree、全文索引等，这里主要总结 B-Tree 和哈希索引。 B-Tree说索引之前就不得不先说一说 B-Tree。 B-Tree 是一种平衡搜索树，结构类似于普通的二叉树，区别在于每个结点允许有更多的子结点。 B-Tree 结构B-Tree，这里的图直接引用了参考中第一篇文章的图~如有侵权，烦请私信我~  B+Tree 结构B+Tree 是 B-Tre">
+<meta name="twitter:image" content="https://ws4.sinaimg.cn/large/0069RVTdly1fu1kb6yoz9j30ju05x0tc.jpg">
     
     
     
@@ -233,35 +236,100 @@ classes that you can use:
 
   <section id="post-content" class="article-content post">
     <p>索引类型包括 B-Tree、哈希索引、R-Tree、全文索引等，这里主要总结 B-Tree 和哈希索引。</p>
-<h3 id="B-Tree-索引"><a href="#B-Tree-索引" class="headerlink" title="B-Tree 索引"></a>B-Tree 索引</h3><p>以 B-Tree 为结构的索引是最常见的索引类型，比如 InnoDB 和 MyISAM 都是以 B-Tree 为索引结构的索引，事实上是以 B+ Tree 为索引结构，B-Tree 和 B+Tree 区别在于，B+ Tree 在叶子节点上增加了顺序访问指针，方便叶子节点的范围遍历。这里主要介绍一下 InnoDB 和 MyISAM 两种不同的索引。</p>
-<h4 id="InnoDB"><a href="#InnoDB" class="headerlink" title="InnoDB"></a>InnoDB</h4><p>InnoDB 支持聚簇索引，聚簇索引和非聚簇索引严格来说不是一种索引，而是一种数据存储方式，这个名字跟它本身的存储方式有关系，“聚簇“表示数据行和相邻的键值存储在一起，简单的说，就是叶子节点中存储的实际是真实的数据。InnoDB 通过主键聚集数据，所以一个表只能有一个聚簇索引，且必须有主键，如果没有定义主键，且不存在非空索引可以代替，InnoDB 会隐式定义一个主键作为聚簇索引。</p>
+<h2 id="B-Tree"><a href="#B-Tree" class="headerlink" title="B-Tree"></a>B-Tree</h2><p>说索引之前就不得不先说一说 B-Tree。</p>
+<p>B-Tree 是一种平衡搜索树，结构类似于普通的二叉树，区别在于每个结点允许有更多的子结点。</p>
+<h3 id="B-Tree-结构"><a href="#B-Tree-结构" class="headerlink" title="B-Tree 结构"></a>B-Tree 结构</h3><p>B-Tree，这里的图直接引用了参考中第一篇文章的图~如有侵权，烦请私信我~</p>
+<p><img src="https://ws4.sinaimg.cn/large/0069RVTdly1fu1kb6yoz9j30ju05x0tc.jpg" alt="image-20180806224627469"></p>
+<h3 id="B-Tree-结构-1"><a href="#B-Tree-结构-1" class="headerlink" title="B+Tree 结构"></a>B+Tree 结构</h3><p>B+Tree 是 B-Tree 的变种，也是一种平衡二叉树，B+Tree 如图所示，这里的图直接引用了参考中第一篇文章的图~如有侵权，烦请私信我~</p>
+<p><img src="https://ws3.sinaimg.cn/large/0069RVTdly1fu1kb856bpj30kn06mgm7.jpg" alt="image-20180806224734127"></p>
+<h3 id="B-Tree-的定义"><a href="#B-Tree-的定义" class="headerlink" title="B-Tree 的定义"></a>B-Tree 的定义</h3><p>这一部分引用算导的定义方法~</p>
+<p>一颗 B-Tree T 具有以下性质，</p>
+<ul>
+<li>每个结点 x 有以下属性：<ul>
+<li>x.n，表示存储在结点 x 中的关键字个数</li>
+<li>x.n 个关键字本身非降序存放</li>
+<li>x.leaf 表示 x 是否为叶子节点</li>
+</ul>
+</li>
+<li>内部结点包含 x.n+1 个指针指向它的孩子</li>
+<li>每个叶子结点具有相同的深度，即树的高度$h=log_t \frac{n+1}{2}+1$</li>
+<li>每个结点中的关键字个数有上界和下界，这里使用 B-Tree 的最小度即 t 来表示，$t \ge 2$<ul>
+<li>除了根结点和叶子结点外，每个结点的孩子个数为 $t \leq n \leq 2t$</li>
+<li>除了根结点和叶子结点外，每个结点的关键字个数为$t-1 \leq n \leq 2t-1$</li>
+</ul>
+</li>
+<li>B+Tree 中非叶子结点的孩子个数和关键字个数相同</li>
+</ul>
+<h3 id="B-Tree-vs-B-Tree"><a href="#B-Tree-vs-B-Tree" class="headerlink" title="B-Tree vs B+Tree"></a>B-Tree vs B+Tree</h3><p>看完图，来总结一下~</p>
+<p>B-Tree，</p>
+<ul>
+<li>每个结点上都有对应数据的存储</li>
+<li>每个关键字出现且仅在一个结点上出现</li>
+<li>搜索可能在非叶子结点结束</li>
+</ul>
+<p>B+Tree，</p>
+<ul>
+<li>非叶子结点不存储数据</li>
+<li>叶子结点增加了一个双向链表，所以从图中也可以看出，叶子结点上包含了所有关键字</li>
+</ul>
+<p>B+Tree 的优势，</p>
+<ul>
+<li>由于非叶子结点不存储实际的数据，所以内存中存储更多的关键字，也就是说单次磁盘 IO 信息量会大于 B-Tree</li>
+<li>叶子结点增加了顺序链表，更适合区间查询</li>
+</ul>
+<h3 id="Why-B-Tree"><a href="#Why-B-Tree" class="headerlink" title="Why B-Tree"></a>Why B-Tree</h3><p>事实上，红黑树也可以用作索引，为什么 MySQL 中使用的是 B/B+ Tree 来实现索引嘞。因为 MySQL 是基于磁盘的数据库，索引的查找过程势必会涉及到磁盘 IO，所以索引性能的两个关键点就是，</p>
+<ul>
+<li>磁盘 IO 的次数</li>
+<li>CPU 计算速度</li>
+</ul>
+<p>所以，在设计索引的时候就要尽量减少磁盘 IO 的次数，而 MySQL 将记录按照页的方式进行管理，B-Tree 每次新建结点的时候，直接申请一个页的空间，这样就保证了一个结点物理上也存储在一个页里，并且计算机存储分配都是按页对齐，所以就实现了一个结点只需要一次 IO。在树中一次检索最多需要 h - 1 次 IO，因为根结点常驻内存，B-Tree 因为可以有很多结点个数，所以 h 很小，而结点的个数与页的大小相关，同样的数据，红黑树的 h 明显要深很多，所以通常都是用 B/B+Tree 作为索引结构。</p>
+<p>B-Tree 的渐进时间复杂度为，这里记 N 为关键字个数，d 为内结点出度的 1/2，$O(h)=O(log_dN)O(h)=O(log_dN)$</p>
+<p>红黑树的渐进时间复杂度为，$O(h)$</p>
+<p>所以，为什么 MySQL 使用 B/B+Tree 来实现索引也就不言而喻啦。</p>
+<h3 id="B-Tree-的操作"><a href="#B-Tree-的操作" class="headerlink" title="B-Tree 的操作"></a>B-Tree 的操作</h3><p>这里针对 B-Tree 的一些操作就不给出图示了，因为算导中已经给出伪代码以及非常详细的图示啦~只做一个简单总结，</p>
+<ul>
+<li>插入关键字：先找到关键字应该插入的叶子结点，如果结点是满的，即关键字个数为 $2t-1$，此时应该根据这个叶子结点中的关键字的中间的关键字进行分裂，中间的关键字会被上移到该节点的父节点中，如果父节点也是满的，那么重复上述操作，直到根结点为止，如果到根结点，那么就说明高度增加了一层</li>
+<li>删除关键字：删除关键字要比插入关键字复杂一些，因为删除的不只是叶子结点，还可以是内结点，这时候我们就需要考虑如何安置内结点的孩子们，并且还要保证删除后的 B-Tree 符合要求，所以删除关键字分几种情况，<ul>
+<li>如果 k 在结点 x 中，且 x 为叶子结点，那么直接从 x 中删除 k 即可</li>
+<li>如果 x 中前于 k 的结点 u1 中的关键字个数为 t，那么找到 u1 中最大的关键字 key，删除 u1 中的 key，并在 x 中用 key 代替 k</li>
+<li>如果 x 中前于 k 的节点 u1 中的关键字个数小于 t，那么找到 x 中后于 k 的结点 u2，如果 u2 中的关键字个数为 t，那么找到 u2 中最小的关键字 key，删除 u2 中的 key，并在 x 中用 key 代替 k</li>
+<li>如果前后两个节点的关键字个数都是 t-1，那么合并 u1 和 u2，并在 x 中删除 k，将 x 中的指针指向新的结点</li>
+<li>如果 k 不在当前的内结点中，那么找到 k 所在的内结点后，执行上述操作即可</li>
+</ul>
+</li>
+</ul>
+<h2 id="B-Tree-索引"><a href="#B-Tree-索引" class="headerlink" title="B-Tree 索引"></a>B-Tree 索引</h2><p>以 B-Tree 为结构的索引是最常见的索引类型，比如 InnoDB 和 MyISAM 都是以 B-Tree 为索引结构的索引，事实上是以 B+ Tree 为索引结构，B-Tree 和 B+Tree 区别在于，B+ Tree 在叶子节点上增加了顺序访问指针，方便叶子节点的范围遍历。这里主要介绍一下 InnoDB 和 MyISAM 两种不同的索引。</p>
+<h3 id="InnoDB"><a href="#InnoDB" class="headerlink" title="InnoDB"></a>InnoDB</h3><p>InnoDB 支持聚簇索引，聚簇索引和非聚簇索引严格来说不是一种索引，而是一种数据存储方式，这个名字跟它本身的存储方式有关系，“聚簇“表示数据行和相邻的键值存储在一起，简单的说，就是叶子节点中存储的实际是真实的数据。InnoDB 通过主键聚集数据，所以一个表只能有一个聚簇索引，且必须有主键，如果没有定义主键，且不存在非空索引可以代替，InnoDB 会隐式定义一个主键作为聚簇索引。</p>
 <p>聚簇索引的二级索引存储的不是指向行的物理位置的指针，而是行的主键值，所以如果通过二级索引查找行，需要找到二级索引的叶子结点获得对应的主键值，然后再去查找对应的行。对于 InnoDB，自适应哈希索引可以减少这样的重复工作。</p>
-<h4 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h4><p>MyISAM 支持非聚簇索引，和 InnoDB 的区别在于，叶子结点上存的是指向对应行的物理地址，也就是说索引和数据实际是分开存储的。</p>
+<h3 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h3><p>MyISAM 支持非聚簇索引，和 InnoDB 的区别在于，叶子结点上存的是指向对应行的物理地址，也就是说索引和数据实际是分开存储的。</p>
 <p>MyISAM 采用了前缀压缩技术，从而使得更多索引可以放入到内存中，默认只压缩字符串，但是通过参数设置也可以对整数做压缩。压缩方法为，完整保存索引块中的第一个IE之，然后将其他值和第一个值进行比较得到相同前缀的字节数和剩余的不同后缀部分，把这部分存储起来即可。例如，索引块中的第一个值是“perform”，第二个值是“performance”，那么第二个值的前缀压缩后存储的是类似“7，ance”这样的形式。MyISAM 对行指针也采用类似的前缀压缩方式。</p>
 <p>压缩可以使索引使用更少的空间，在某种程度上性能有所提升，但是代价是某些操作可能更慢。因为每个值的压缩前缀都依赖前面的值，所以 MyISAM 查找时无法在索引块使用二分查找，只能从头开始扫描，正序扫描速度还不错，逆序扫描的话查找某一行的操作平均都需要扫描半个索引块。对于 CPU 密集型应用，扫描需要随机查找，所以压缩索引会使得索引查找慢很多，而对于 I/O 密集型应用，对于某些查询的优化更明显。</p>
-<h4 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h4><p>InnoDB 使用的是行锁，所以支持事务，而 MyISAM 使用的是表锁，不支持事务。</p>
-<h4 id="适用范围"><a href="#适用范围" class="headerlink" title="适用范围"></a>适用范围</h4><p>B-Tree 索引适用于区间查询，因为 B-Tree 存储后的叶子节点本身就是有序的，并且 B+ Tree 结构还增加了叶子节点的连续顺序指针，对于区间查询来说就更加方便了。</p>
-<h3 id="哈希索引"><a href="#哈希索引" class="headerlink" title="哈希索引"></a>哈希索引</h3><p>哈希索引是基于哈希表实现的，只有精确匹配索引所有列的查询才有效。方法是，对所有的索引列计算一个 hash code，hash code 作为索引，在哈希表中保存指向每个数据行的指针。</p>
-<h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><ul>
+<h3 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h3><p>InnoDB 使用的是行锁，所以支持事务，而 MyISAM 使用的是表锁，不支持事务。</p>
+<h3 id="适用范围"><a href="#适用范围" class="headerlink" title="适用范围"></a>适用范围</h3><p>B-Tree 索引适用于区间查询，因为 B-Tree 存储后的叶子节点本身就是有序的，并且 B+ Tree 结构还增加了叶子节点的连续顺序指针，对于区间查询来说就更加方便了。</p>
+<h2 id="哈希索引"><a href="#哈希索引" class="headerlink" title="哈希索引"></a>哈希索引</h2><p>哈希索引是基于哈希表实现的，只有精确匹配索引所有列的查询才有效。方法是，对所有的索引列计算一个 hash code，hash code 作为索引，在哈希表中保存指向每个数据行的指针。</p>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ul>
 <li>索引本身只存储 hash code，所以结构很紧凑，并且查找速度很快</li>
 </ul>
-<h4 id="限制"><a href="#限制" class="headerlink" title="限制"></a>限制</h4><ul>
+<h3 id="限制"><a href="#限制" class="headerlink" title="限制"></a>限制</h3><ul>
 <li>索引中的 hash code 是顺序存储的，但是 hash code 对应的数据并不是顺序的，所以无法用于排序</li>
 <li>不支持部分索引列匹配查找，因为哈希索引是使用索引列的全部内容来计算 hash code</li>
 <li>只支持等值比较，不支持范围查询</li>
 <li>如果哈希冲突严重时，必须遍历链表中所有行指针</li>
 <li>哈希冲突严重的话，索引维护操作的代价也很高</li>
 </ul>
-<h4 id="InnoDB-的自适应哈希索引"><a href="#InnoDB-的自适应哈希索引" class="headerlink" title="InnoDB 的自适应哈希索引"></a>InnoDB 的自适应哈希索引</h4><p>首先，请注意，自适应哈希索引对于用户来说是无感知的，这是一个完全自动、内部的行为，用户无法控制或者配置，但是可以关闭。</p>
+<h3 id="InnoDB-的自适应哈希索引"><a href="#InnoDB-的自适应哈希索引" class="headerlink" title="InnoDB 的自适应哈希索引"></a>InnoDB 的自适应哈希索引</h3><p>首先，请注意，自适应哈希索引对于用户来说是无感知的，这是一个完全自动、内部的行为，用户无法控制或者配置，但是可以关闭。</p>
 <p>当 InnoDB 注意到某个索引值被使用的非常频繁时，它会在内存中基于 B-Tree 索引之上再创建一个哈希索引，这样 B-Tree 也可以具有哈希索引的一些优点，比如快速的哈希查找。</p>
 <p>当然如果存储引擎不支持哈希索引，用户也可以自定义哈希索引，这样性能会比较高，缺陷是需要自己维护哈希值，如果采用这种方法，不要使用 <code>SHA1()</code> 和 <code>MD5()</code> 作为哈希函数，因为这两个是强加密函数，设计目标是最大限度消除冲突，生成的 hash code 是一个非常长的字符串，浪费大量的空间，哈希索引中对于索引的冲突要求没有那么高。</p>
-<h3 id="索引的优点"><a href="#索引的优点" class="headerlink" title="索引的优点"></a>索引的优点</h3><ul>
+<h2 id="索引的优点"><a href="#索引的优点" class="headerlink" title="索引的优点"></a>索引的优点</h2><ul>
 <li>使用索引可以减少服务器需要扫描的数据量</li>
 <li>使用索引可以帮助服务器避免排序和临时表</li>
 <li>使用索引可以将随机 I/O 变为顺序 I/O</li>
 </ul>
 <p>但是不是所有情况下，索引都是最好的解决方案，对于非常小的表来说，大部分情况下简单的全表扫描更高效，对于中到大型表，索引就比较有效，对于特大型的表来说，分区会更加有效。</p>
-<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><p>《高性能 MySQL》</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a href="https://blog.csdn.net/guoziqing506/article/details/64122287" target="_blank" rel="external">B 树与 B+ 树</a></p>
+<p><a href="https://blog.csdn.net/v_july_v/article/details/6530142" target="_blank" rel="external">从B树、B+树、B*树谈到R 树</a></p>
+<p>《算法导论》</p>
+<p>《高性能 MySQL》</p>
 
   </section>
 
