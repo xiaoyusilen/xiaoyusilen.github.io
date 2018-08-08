@@ -244,7 +244,7 @@ classes that you can use:
 <p>$\ln\frac{P(y = 1 | x)}{P(y = 0 | x)} = g(x) = z = \theta^Tx$</p>
 <p>以上就是 Logistic 到线性方程的推导。</p>
 <h3 id="Question"><a href="#Question" class="headerlink" title="Question"></a>Question</h3><p><strong>为什么使用 $ y = \frac{P}{1-P}$，而不是用 $y = P$ ？</strong></p>
-<p>首先我们分析一下线性回归和逻辑回归的数据，线性回归的样本输出都是连续值 $ y \in (-\infty, +\infty)$，而逻辑回归的样本输出是 <script type="math/tex">y \in (0, 1)</script>，只能取 0 和 1。如果要直接通过回归的方法去预测二分类问题，最好的函数是单位阶跃函数，但是单位阶跃函数是一个不连续的函数，而 Sigmoid 的函数图像和单位阶跃函数的函数图像非常像，且连续，所以我们使用 Sigmoid 函数。</p>
+<p>首先我们分析一下线性回归和逻辑回归的数据，线性回归的样本输出都是连续值 $ y \in (-\infty, +\infty)$，而逻辑回归的样本输出是 $$y \in (0, 1)$$，只能取 0 和 1。如果要直接通过回归的方法去预测二分类问题，最好的函数是单位阶跃函数，但是单位阶跃函数是一个不连续的函数，而 Sigmoid 的函数图像和单位阶跃函数的函数图像非常像，且连续，所以我们使用 Sigmoid 函数。</p>
 <p>其实我们所求的 $y$ 并不是一个具体的事件发生的概率，而是要具体到 0 或者 1。我们思考一下，针对事件 $E$，如果 $P(E) = P(E’)$，那么 $Odds(E) = \frac {P(E)}{P(E’)} = 1$，此时 $P(E) = P(E’) = 0.5$，</p>
 <p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fl1ioq4n63j30ik0cdwex.jpg" alt="sigmoid"></p>
 <p>上图为 Sigmoid 函数图，已知 $z = ax + b = \theta ^ TX$，我们可以看出，</p>

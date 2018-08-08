@@ -274,7 +274,8 @@ classes that you can use:
 <h3 id="Wide-amp-Deep-Learning"><a href="#Wide-amp-Deep-Learning" class="headerlink" title="Wide &amp; Deep Learning"></a>Wide &amp; Deep Learning</h3><p>在介绍中说到，这篇 paper 的核心点就在于，结合了 wide model 和 deep model，一个用作记忆，一个用作归纳泛化，结合各自的优势行程了 Wide&amp;Deep 模型用于推荐排序。</p>
 <p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1ft1gje5vacj31900aemzo.jpg" alt="image-20180707180752592"></p>
 <h4 id="Wide-Model"><a href="#Wide-Model" class="headerlink" title="Wide Model"></a>Wide Model</h4><p>上图的左半部分就是组合模型中的 wide model，这部分使用的模型是 LR，这部分主要用作学习样本中特征的共现性，产生的结果是和用户有过直接行为的 item，线性模型表达如下，</p>
-<script type="math/tex; mode=display">y = \mathbf{w}^T \mathbf{x} + b</script><p>其中 $y$ 是预测的概率，$x$ 是表示特征的向量，$w$ 表示模型的参数，也就是最终训练出来的每个特征向量的权重，$b$ 是贝叶斯项，也就是常数项。</p>
+<p>$$y = \mathbf{w}^T \mathbf{x} + b$$</p>
+<p>其中 $y$ 是预测的概率，$x$ 是表示特征的向量，$w$ 表示模型的参数，也就是最终训练出来的每个特征向量的权重，$b$ 是贝叶斯项，也就是常数项。</p>
 <p>在这部分特征使用 one-hot 编码，为了达到记忆的目的，对稀疏的特征采用了 cross-product transformation，表达如下</p>
 <p>$\phi_k(\mathbf{x}) = \prod_{i = 1}^d x_i^{c_{k_i}}\quad c_{k_i} \in {0, 1}$</p>
 <p>比如对于“AND(gender=female, language=en)”这个特征，当且仅当这个用户的性别为 female，语言为 en 的时候，这个特征值才为 1，其他情况都为 0。这个操作，增加了二元特征之间的相互作用，并且为线性模型增加了非线性因素。</p>

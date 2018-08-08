@@ -26,7 +26,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://ws4.sinaimg.cn/large/0069RVTdly1fu1kb6yoz9j30ju05x0tc.jpg">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/0069RVTdly1fu1kb856bpj30kn06mgm7.jpg">
-<meta property="og:updated_time" content="2018-08-07T16:47:04.264Z">
+<meta property="og:updated_time" content="2018-08-08T02:01:48.517Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MySQL 学习笔记 - 索引类型 | 小宇宙 | xiaoyusilen">
 <meta name="twitter:description" content="索引类型包括 B-Tree、哈希索引、R-Tree、全文索引等，这里主要总结 B-Tree 和哈希索引。 B-Tree说索引之前就不得不先说一说 B-Tree。 B-Tree 是一种平衡搜索树，结构类似于普通的二叉树，区别在于每个结点允许有更多的子结点。 B-Tree 结构B-Tree，这里的图直接引用了参考中第一篇文章的图~如有侵权，烦请私信我~  B+Tree 结构B+Tree 是 B-Tre">
@@ -252,7 +252,7 @@ classes that you can use:
 </ul>
 </li>
 <li>内部结点包含 x.n+1 个指针指向它的孩子</li>
-<li>每个叶子结点具有相同的深度，即树的高度$h=log_t \frac{n+1}{2}+1$</li>
+<li>每个叶子结点具有相同的深度，即树的高度$h=log_t \frac{n+1}{2}$</li>
 <li>每个结点中的关键字个数有上界和下界，这里使用 B-Tree 的最小度即 t 来表示，$t \ge 2$<ul>
 <li>除了根结点和叶子结点外，每个结点的孩子个数为 $t \leq n \leq 2t$</li>
 <li>除了根结点和叶子结点外，每个结点的关键字个数为$t-1 \leq n \leq 2t-1$</li>
