@@ -24,7 +24,7 @@
 <meta property="og:site_name" content="小宇宙 | xiaoyusilen">
 <meta property="og:description" content="写在前面这篇文章是《高性能 MySQL》第五章的读书笔记以及总结~旨在帮助我自己梳理并总结书中的知识点和内容~同时也为一些懒得看书的小伙伴提供一个提取好的知识点~觉得水的朋友烦请关闭哟 巧妙的使用 Explain看一条 SQL 语句的性能，可以使用 explain 关键字查看语句性能，这里说一下其中的 type 字段的部分含义，  all，即全表扫描，说明这个 SQL 语句没有使用到索引，有可能是">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-08-12T06:31:53.018Z">
+<meta property="og:updated_time" content="2018-08-12T07:13:13.831Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MySQL 学习笔记 - 索引优化 | 小宇宙 | xiaoyusilen">
 <meta name="twitter:description" content="写在前面这篇文章是《高性能 MySQL》第五章的读书笔记以及总结~旨在帮助我自己梳理并总结书中的知识点和内容~同时也为一些懒得看书的小伙伴提供一个提取好的知识点~觉得水的朋友烦请关闭哟 巧妙的使用 Explain看一条 SQL 语句的性能，可以使用 explain 关键字查看语句性能，这里说一下其中的 type 字段的部分含义，  all，即全表扫描，说明这个 SQL 语句没有使用到索引，有可能是">
@@ -239,6 +239,9 @@ classes that you can use:
 <li>range，说明使用的是有范围的索引扫描，性能优于 index</li>
 <li>index，这里说明使用了索引，这种情况下，如果 <code>extra</code> 列中的值为 <code>Using index</code>，这种情况是索引覆盖，索引覆盖的意思是，我们想要查询的数据，索引中已经都存在啦，这种情况下就不需要再回表取数据了</li>
 <li>ref，说明条件列使用了索引，但是不是主键和 unique，所以这里即使使用了索引，索引值不唯一，有重复的情况</li>
+<li>eq_ref，相对于 ref 来说就是使用的是唯一索引，对于每个索引键值，只有唯一的一条匹配记录</li>
+<li>const/system，单表中最多只有一条匹配行，查询起来非常迅速，所以这个匹配行中的其他列中的值可以被优化器在当前查询中当做常量来处理。例如根据主键或者唯一索引进行的查询</li>
+<li>index_merge，说明使用了 MySQL 的索引合并的优化方法，当使用合并索引的时候，就需要检查一下我们所创建的索引是否为多个单列索引</li>
 </ul>
 <h3 id="如何有效的优化索引"><a href="#如何有效的优化索引" class="headerlink" title="如何有效的优化索引"></a>如何有效的优化索引</h3><h4 id="使用索引的时候，索引必须作为独立的列出现"><a href="#使用索引的时候，索引必须作为独立的列出现" class="headerlink" title="使用索引的时候，索引必须作为独立的列出现"></a>使用索引的时候，索引必须作为独立的列出现</h4><p>作为独立的列的意思是，索引不能作为表达式的一部分，也不能作为函数的参数出现，否则索引会失效，原因是 MySQL 无法自动解析表达式以及参数，所以也就无法使用索引了，索引失效还有以下几种情况：</p>
 <ul>
