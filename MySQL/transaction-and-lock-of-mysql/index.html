@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      MySQL 学习笔记 - 事务&amp;锁 | 小宇宙 | xiaoyusilen 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="xiaoyusilen">
+    
+    
+
+    <meta name="description" content="写在前面这是一篇读（重）书（点）笔（摘）记（要）~内容为《高性能 MySQL》第一章~ and 七夕快乐，所以今天的配图是粉红色的(๑•̀ㅂ•́)و✧ 事务简单的说，事务就是一组原子性的 SQL 查询，这一组 SQL 要么全部执行成功，要么全部执行失败。这里简单介绍一下事务的 ACID，ACID 表示原子性、一致性、隔离性和持久性。  原子性：一个事务是不可分割的最小工作单元，整个事务要么全部成功">
+<meta name="keywords" content="MySQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL 学习笔记 - 事务&amp;锁 | 小宇宙 | xiaoyusilen">
+<meta property="og:url" content="http://yoursite.com/MySQL/transaction-and-lock-of-mysql/index.html">
+<meta property="og:site_name" content="小宇宙 | xiaoyusilen">
+<meta property="og:description" content="写在前面这是一篇读（重）书（点）笔（摘）记（要）~内容为《高性能 MySQL》第一章~ and 七夕快乐，所以今天的配图是粉红色的(๑•̀ㅂ•́)و✧ 事务简单的说，事务就是一组原子性的 SQL 查询，这一组 SQL 要么全部执行成功，要么全部执行失败。这里简单介绍一下事务的 ACID，ACID 表示原子性、一致性、隔离性和持久性。  原子性：一个事务是不可分割的最小工作单元，整个事务要么全部成功">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNbRwgy1fuct0wxvvgj31bw0msabs.jpg">
+<meta property="og:updated_time" content="2018-08-17T09:26:39.150Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL 学习笔记 - 事务&amp;锁 | 小宇宙 | xiaoyusilen">
+<meta name="twitter:description" content="写在前面这是一篇读（重）书（点）笔（摘）记（要）~内容为《高性能 MySQL》第一章~ and 七夕快乐，所以今天的配图是粉红色的(๑•̀ㅂ•́)و✧ 事务简单的说，事务就是一组原子性的 SQL 查询，这一组 SQL 要么全部执行成功，要么全部执行失败。这里简单介绍一下事务的 ACID，ACID 表示原子性、一致性、隔离性和持久性。  原子性：一个事务是不可分割的最小工作单元，整个事务要么全部成功">
+<meta name="twitter:image" content="https://ws4.sinaimg.cn/large/006tNbRwgy1fuct0wxvvgj31bw0msabs.jpg">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</head>
+<body>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">小宇宙 | xiaoyusilen</a></h1>
+        <hr class="panel-cover__divider" />
+
+        
+        <p class="panel-cover__description">
+          Life.pop(&#39;Fear&#39;)
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title="" class="">关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title="" class="">归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/xiaoyusilen" title="Huno on GitHub">
+          <i class='icon icon-social-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+    <li class="navigation__item">
+      <a href="mailto:debug@xiaoyu.fail" title="">
+        <i class='icon icon-mail'></i>
+        <span class="label">Weixin</span>
+      </a>
+    </li>
+
+  </ul>
+</nav>
+
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">MySQL 学习笔记 - 事务&amp;锁</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2018-08-17" class="post-meta__date date">2018-08-17</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+            <font class="categories">
+            &#8226; 分类:
+            <a class="categories-link" href="/categories/MySQL/">MySQL</a>
+            </font>
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/MySQL/">MySQL</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>这是一篇读（重）书（点）笔（摘）记（要）~内容为《高性能 MySQL》第一章~</p>
+<p>and 七夕快乐，所以今天的配图是粉红色的(๑•̀ㅂ•́)و✧</p>
+<h2 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h2><p>简单的说，事务就是一组原子性的 SQL 查询，这一组 SQL 要么全部执行成功，要么全部执行失败。这里简单介绍一下事务的 ACID，ACID 表示原子性、一致性、隔离性和持久性。</p>
+<ul>
+<li>原子性：一个事务是不可分割的最小工作单元，整个事务要么全部成功，要么全部失败，不可能只执行中间的一部分操作。</li>
+<li>一致性：执行事务是使得数据库从一个一致性状态到另一个一致性状态，如果事务最终没有被提交，那么事务所做的修改也不会保存到数据库中。</li>
+<li>隔离性：通常来说，一个事务提交之前对其他事务是不可见的，但是这里所说的不可见需要考虑隔离级别，比如未提交读在提交前对于其他事务来说也是可见的，隔离级别，在下面会详细讲。</li>
+<li>持久性：事务一旦被提交，那么对数据库的修改会被永久的保存，即使数据库崩溃修改后的数据也不会丢失。</li>
+</ul>
+<h2 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h2><p>SQL 标准中定义了四种隔离级别，这里简单介绍一下这四种隔离级别。</p>
+<ul>
+<li>未提交读：未提交读的意思是，事务中的修改，即使没有提交，对其他事务也都是可见的，但是这样会出现脏读，一般情况下，通常都不会使用未提交读。</li>
+<li>提交读：提交读的意思是，一个事务所做的修改在提交之前对其他事务都是不可见的，这个级别也叫做“不可重复读”，因为执行两次相同的操作，可能会得到不同的结果。</li>
+<li>可重复读：可重复读解决了脏读的问题，这个级别保证了同一个事务多次读取同样记录的结果是一致的，但是这个隔离级别无法解决幻读的问题，所谓幻读就是说，当某个事务读取范围数据时，另一个事务又在该范围内插入了新的记录，当之前的事务再次读取该范围数据时，会产生幻行。InnoDB 存储引擎通过 MVCC 解决了幻读的问题，可重复读是 MySQL 默认的事务隔离级别。</li>
+<li>可串行化：是最高的隔离级别，避免了前面说到的幻读问题。可串行化会给读取的每一行都加锁，所以可能导致大量超时和锁争用的问题，实际中很少使用这个隔离级别。</li>
+</ul>
+<h2 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h2><p>死锁是指两个或者多个事务在同一资源上相互占用，并请求锁定对方占用的资源。解决死锁的方法就是回滚一个或者多个事务。</p>
+<h2 id="MVCC"><a href="#MVCC" class="headerlink" title="MVCC"></a>MVCC</h2><p>MVCC 可以看做是行锁的一个变种，在很多情况下 MVCC 可以避免加锁，因此开销更小，不同事务型存储引擎对于 MVCC 的实现各有不同。</p>
+<p>MVCC 的实现是通过保存数据在某个时间点的快照来实现的。也就是说，不管执行多长时间，每个事务看到的数据都是一致的。根据事务的开始时间不同，每个事务对同一张表，同一时刻看到的数据可能是不一样的。这里简单介绍一下 InnoDB 的 MVCC。</p>
+<p>InnoDB 的 MVCC 通过在每行记录后面保存两个隐藏的列来实现。这两个列，一个保存了行的创建时间，一个保存了行的过期时间，存储的不是实际的时间，而是版本号。每开始一个新的事务，系统版本号都会自动递增。事务开始时刻的系统版本号会作为事务的版本号，用来和查询到的每行记录的版本号作对比。下面详细介绍一下在可重复读隔离级别下，MVCC 的具体操作。</p>
+<ul>
+<li>SELECT<ul>
+<li>InnoDB 会根据以下两个条件检查每条记录：<ul>
+<li>只查找版本小于等于事务版本号的行</li>
+<li>只查找未定义删除时间或者删除时间大于事务版本号的行</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>INSERT<ul>
+<li>InnoDB 为新插入的每一行保存当前的系统版本号作为行版本号</li>
+</ul>
+</li>
+<li>DELETE<ul>
+<li>InnoDB 为删除的每一行保存当前的系统版本号作为行的删除版本号</li>
+</ul>
+</li>
+<li>UPDATE<ul>
+<li>InnoDB 新增一条记录，保存当前系统版本号作为新增行的版本号</li>
+<li>在被删除记录的原始行，保存当前系统版本号作为被删除记录行的删除版本号</li>
+</ul>
+</li>
+</ul>
+<p>优点：</p>
+<ol>
+<li>因为有了两个隐藏列来记录数据的状态，所以大多数读操作都可以不加锁</li>
+<li>性能好，同时可以保证读取的数据是正确的</li>
+</ol>
+<p>缺点：</p>
+<ol>
+<li>需要额外的空间记录每行的状态</li>
+<li>需要行状态的维护和检查</li>
+</ol>
+<h2 id="如何解决幻读"><a href="#如何解决幻读" class="headerlink" title="如何解决幻读"></a>如何解决幻读</h2><p>MVCC 解决幻读的时候使用了间隙锁，也就是 next-key lock，这部分就要先从 InnoDB 的三种行锁说起：</p>
+<ul>
+<li>Record Lock：单个行记录上的锁，锁住的是索引</li>
+<li>Gap Lock：区间锁，锁定一个区间范围，但不包括记录本身，开区间</li>
+<li>Next-Key Lock：间隙锁，Record Lock + Gap Lock</li>
+</ul>
+<p>举个简单的例子，</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> <span class="keyword">id</span> &gt; <span class="number">15</span> <span class="keyword">and</span> <span class="keyword">id</span> &lt; <span class="number">30</span></div></pre></td></tr></table></figure>
+<p><img src="https://ws4.sinaimg.cn/large/006tNbRwgy1fuct0wxvvgj31bw0msabs.jpg" alt="Next-Key Lock"></p>
+<p>图示清楚的表示了间隙锁~</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这一章发的貌似有点晚了，应该在索引之前发的。But，依然感谢观看~</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p>《高性能 MySQL》</p>
+
+  </section>
+
+  <section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2016-2018. | <a href="http://xiaoyu.world">xiaoyusilen</a> ❤ <a href="http://dcspsy.world">dcspsy</a> | <a href="https://github.com/someus/huno">Huno</a></span>
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv" style="display: inline;">
+         This site already had <span id="busuanzi_value_site_pv"></span> Visits by
+    </span>
+    <span id="busuanzi_container_site_uv" style="display: inline;">
+    <span id="busuanzi_value_site_uv"></span> Visitors 
+    </span>
+
+</footer>
+
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+    
+
+        <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['$','$'],['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>
