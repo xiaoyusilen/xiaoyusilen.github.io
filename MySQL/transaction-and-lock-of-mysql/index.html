@@ -314,7 +314,7 @@ classes that you can use:
 
             <footer class="footer">
 
-    <span class="footer__copyright">&copy; 2016-2019. | <a href="http://xiaoyu.world">xiaoyusilen</a> ❤ <a href="http://dcspsy.world">dcspsy</a> | <a href="https://github.com/someus/huno">Huno</a></span>
+    <span class="footer__copyright">&copy; 2016-2020. | <a href="http://xiaoyu.world">xiaoyusilen</a> ❤ <a href="http://dcspsy.world">dcspsy</a> | <a href="https://github.com/someus/huno">Huno</a></span>
     <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
     <span id="busuanzi_container_site_pv" style="display: inline;">
          This site already had <span id="busuanzi_value_site_pv"></span> Visits by
@@ -362,7 +362,23 @@ classes that you can use:
     <!--kill ie6 -->
 <!--[if IE 6]>
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
-<![endif]--><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config("");
 </script>
@@ -380,6 +396,5 @@ classes that you can use:
 </script>
 <!-- End: Injected MathJax -->
 <!-- hexo-inject:end -->
-
 </body>
 </html>
